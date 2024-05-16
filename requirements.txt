@@ -1,4 +1,0 @@
-django-allauth
-oauthlib
-requests
-requests-oauthlib
