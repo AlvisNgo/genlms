@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+# Load dotenv
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -84,11 +88,11 @@ WSGI_APPLICATION = 'genlms.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'genlms',
-        'USER': 'root',
-        'PASSWORD': 'root',
-        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
-        'PORT': '3307',
+        'NAME': os.getenv("DB_NAME"),
+        'USER': os.getenv("DB_USER"),
+        'PASSWORD': os.getenv("DB_PASSWORD"),
+        'HOST': os.getenv("DB_HOST"),   # Or an IP Address that your DB is hosted on
+        'PORT': os.getenv("DB_PORT"),
     }
 }
 
@@ -143,13 +147,12 @@ ACCOUNT_EMAIL_VERIFICATION = "none"
 ACCOUNT_AUTHENTICATION_METHOD = "username"
 ACCOUNT_EMAIL_REQUIRED = True
 LOGIN_REDIRECT_URL = "/dashboard"
-ACCOUNT_ADAPTER = 'genlms.account_adapter.NoNewUsersAccountAdapter'
 
 SOCIALACCOUNT_PROVIDERS = {
     'microsoft': {
         'APP': {
-            'client_id': '453401de-e447-4f96-a572-b99b143eb466',
-            'secret': '1Ef8Q~od4sISM~ZYv7aiQhqxsrunJQdU87Uvtdhs',
+            'client_id': os.getenv("MS_ID"),
+            'secret': os.getenv("MS_SECRET"),
             'key': ''
         },
         'AUTH_PARAMS': {
