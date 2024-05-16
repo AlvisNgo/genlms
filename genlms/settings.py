@@ -143,6 +143,7 @@ ACCOUNT_EMAIL_VERIFICATION = "none"
 ACCOUNT_AUTHENTICATION_METHOD = "username"
 ACCOUNT_EMAIL_REQUIRED = True
 LOGIN_REDIRECT_URL = "/dashboard"
+ACCOUNT_ADAPTER = 'genlms.account_adapter.NoNewUsersAccountAdapter'
 
 SOCIALACCOUNT_PROVIDERS = {
     'microsoft': {
