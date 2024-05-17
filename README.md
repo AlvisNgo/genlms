@@ -14,6 +14,8 @@ MS_SECRET=1Ef8Q~od4sISM~ZYv7aiQhqxsrunJQdU87Uvtdhs
 Edit the environment as necessary. For example, if your MySQL server is running on port 3306, change it to 3306.
 
 In real world, I should not expose the MS_SECRET in this readme file. However, this is a closed project, and we can't expect Prof to create a new Azure application just to test our assignment. So, we decided to share this secret key here.
+
+Next, enter the following command from this directory.
 ```
 pip install requirements.txt
 python manage.py migrate
@@ -26,4 +28,4 @@ python manage.py runserver
 Upon successful, the command prompt will prompt you to visit http://localhost:8000.
 
 ## Notice
-Whenever you change the DB schema, run to `python manage.py migrate` update the database schema.
+Whenever you change the DB schema, run `python manage.py migrate` to update the database schema.
