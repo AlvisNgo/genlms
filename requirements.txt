@@ -3,5 +3,5 @@ django_allauth==0.63.0
 oauthlib==3.2.2
 requests==2.31.0
 requests-oauthlib==2.0.0
-mysqlclient==2.24
+mysqlclient==2.2.4
 python-dotenv==1.0.1

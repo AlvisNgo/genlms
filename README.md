@@ -17,7 +17,7 @@ In real world, I should not expose the MS_SECRET in this readme file. However, t
 
 Next, enter the following command from this directory.
 ```
-pip install requirements.txt
+pip install -r requirements.txt
 python manage.py migrate
 ```
 
