@@ -33,6 +33,8 @@ Now, you should be able to login from http://localhost:8000/login/.
 
 ![Screenshot of the creating user steps](/static/readme-1.png)
 ![Screenshot of the creating user steps](/static/steps.gif)
+## Load dummy data
+After successful logging in, stop the process and run the following command to load dummy data (courses and enrolled courses) `python manage.py loaddata dummy`.
 # Running
 ```
 python manage.py runserver

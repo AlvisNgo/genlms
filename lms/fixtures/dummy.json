@@ -1,0 +1,42 @@
+[
+	{
+		"model": "lms.Course",
+		"pk": 1,
+		"fields": {
+			"course_name": "Intro to Computing",
+			"description": "Learn C++."
+		}
+	},
+	{
+		"model": "lms.Course",
+		"pk": 2,
+		"fields": {
+			"course_name": "Math 1",
+			"description": "Learn simple Math."
+		}
+	},
+	{
+		"model": "lms.Course",
+		"pk": 3,
+		"fields": {
+			"course_name": "Object-Oriented Programming",
+			"description": "Learn Java."
+		}
+	},
+	{
+		"model": "lms.EnrolledCourse",
+		"pk": 1,
+		"fields": {
+			"course_id": 1,
+			"user_id": 2
+		}
+	},
+	{
+		"model": "lms.EnrolledCourse",
+		"pk": 2,
+		"fields": {
+			"course_id": 3,
+			"user_id": 2
+		}
+	}
+]
