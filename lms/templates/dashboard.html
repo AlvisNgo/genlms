@@ -59,11 +59,11 @@
                     <!-- /.card-header -->
                     <div class="card-body">
                         <div class="row">
-							<!-- Ecommerce System -->
+                            {% for course in my_courses %}
                             <div class="col-12 col-sm-6 col-md-3">
 								<div class="small-box bg-info">
 									<div class="inner">
-									  <h3>Ecommerce System</h3>
+									  <h4>{{ course.course }}</h4>
 									  <p>AY2023/24 Trimester 3</p>
 									</div>
 									<div class="icon">
@@ -74,55 +74,7 @@
 									</a>
 								</div>								  
 							</div>
-
-							<!-- Ecommerce System -->
-                            <div class="col-12 col-sm-6 col-md-3">
-								<div class="small-box bg-info">
-									<div class="inner">
-									  <h3>Social Media Marketing</h3>
-									  <p>AY2023/24 Trimester 3</p>
-									</div>
-									<div class="icon">
-									  <i class="fas fa-thumbs-up"></i>
-									</div>
-									<a href="#" class="small-box-footer">
-									  View Course <i class="fas fa-arrow-circle-right"></i>
-									</a>
-								</div>								  
-							</div>
-							
-							<!-- Ecommerce System -->
-                            <div class="col-12 col-sm-6 col-md-3">
-								<div class="small-box bg-info">
-									<div class="inner">
-									  <h3>Cryptography</h3>
-									  <p>AY2023/24 Trimester 3</p>
-									</div>
-									<div class="icon">
-									  <i class="fas fa-twitter"></i>
-									</div>
-									<a href="#" class="small-box-footer">
-									  View Course <i class="fas fa-arrow-circle-right"></i>
-									</a>
-								</div>								  
-							</div>
-
-							<!-- Ecommerce System -->
-                            <div class="col-12 col-sm-6 col-md-3">
-								<div class="small-box bg-info">
-									<div class="inner">
-									  <h3>Team Management</h3>
-									  <p>AY2023/24 Trimester 3</p>
-									</div>
-									<div class="icon">
-									  <i class="fas fa-users"></i>
-									</div>
-									<a href="#" class="small-box-footer">
-									  View Course <i class="fas fa-arrow-circle-right"></i>
-									</a>
-								</div>								  
-							</div>
-							<!-- /.col -->
+                            {% endfor %}
                         </div>
                         <!-- /.row -->
                     </div>
