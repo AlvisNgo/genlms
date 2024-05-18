@@ -1,5 +1,4 @@
 # Installation
-
 First, create a file `.env` and paste the following information.
 ```
 DB_NAME=genlms
@@ -20,23 +19,24 @@ Next, enter the following command from this directory.
 pip install -r requirements.txt
 python manage.py migrate
 ```
-
-# Setting up - whitelist
+# Setting up
 ## Superadmin
 Please create a superadmin account via the command `python manage.py createsuperuser`. The recommended username and password for testing purposes is `admin`.
+## Whitelist Students
 Upon creation, start the server via `python manage.py runserver`. And then visit http://localhost:8000/admin to login with your superuser credentials.
+
 Next, under "Authentication and Authorization", add a new user, username is your student ID, password please auto generate one.
+
 Finally, enter the first name, followed by email address. Click save.
+
 Now, you should be able to login from http://localhost:8000/login/.
 
 ![Screenshot of the creating user steps](/static/readme-1.png)
 ![Screenshot of the creating user steps](/static/steps.gif)
-
 # Running
 ```
 python manage.py runserver
 ```
 Upon successful, the command prompt will prompt you to visit http://localhost:8000.
-
 ## Notice
 Whenever you change the DB schema, run `python manage.py migrate` to update the database schema.
