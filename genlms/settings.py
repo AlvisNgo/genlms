@@ -46,8 +46,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.microsoft',
-    'login',
-    'student'
+    'lms',
 ]
 
 MIDDLEWARE = [
@@ -66,7 +65,7 @@ ROOT_URLCONF = 'genlms.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -147,8 +146,8 @@ AUTHENTICATION_BACKENDS = (
 ACCOUNT_EMAIL_VERIFICATION = "none"
 ACCOUNT_AUTHENTICATION_METHOD = "username"
 ACCOUNT_EMAIL_REQUIRED = True
-LOGIN_REDIRECT_URL = "/student"
-SOCIALACCOUNT_ADAPTER = 'login.adapter.MySocialAccountAdapter'
+LOGIN_REDIRECT_URL = "/dashboard"
+SOCIALACCOUNT_ADAPTER = 'lms.adapter.MySocialAccountAdapter'
 
 SOCIALACCOUNT_PROVIDERS = {
     'microsoft': {

@@ -25,7 +25,7 @@ class MySocialAccountAdapter(DefaultSocialAccountAdapter):
         else:
             # If no such user exists, disallow the login
             messages.error(request, "No account exists with this credentials. Please contact the adminstrator for assistance.")
-            raise ImmediateHttpResponse(redirect('/login'))
+            raise ImmediateHttpResponse(redirect('/'))
 
     def get_user(self, email):
         from django.contrib.auth import get_user_model

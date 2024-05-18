@@ -1,11 +1,10 @@
 from django.shortcuts import render, redirect
 from allauth.socialaccount.models import SocialAccount
 
-# Create your views here.
-def root(request):
-    return redirect('/student/dashboard')
+def login(request):
+    return render(request, 'login.html')
 
-def dashboard(request):
+def student_dashboard(request):
     user = request.user
     context = {}
 

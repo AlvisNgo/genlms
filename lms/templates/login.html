@@ -1,4 +1,4 @@
-{% extends "template.html" %}
+{% extends "base.html" %}
 {% block title %}Login{% endblock %}
 {% block bodyclass %}hold-transition dark-mode login-page{% endblock %}
 {% load socialaccount %}
@@ -30,7 +30,7 @@
 			<div class="social-auth-links text-center mt-2 mb-3">
 				<form action="/accounts/microsoft/login/" method="post">
 					{% csrf_token %}
-					<input type="hidden" name="next" value="/student">
+					<input type="hidden" name="next" value="/student/dashboard">
 					<input type="submit" class="btn btn-block btn-primary" value="Sign in as Student">
 					<br/>
     			</form>
