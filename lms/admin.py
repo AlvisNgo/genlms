@@ -1,3 +1,6 @@
-from django.contrib import admin
+from django.contrib import admin, messages
+from lms.models import Admin
 
-# Register your models here.
+@admin.register(Admin)
+class PersonAdmin(admin.ModelAdmin):
+    actions = ("uppercase", "lowercase") # Necessary 

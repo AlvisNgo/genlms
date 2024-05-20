@@ -18,3 +18,9 @@ class EnrolledCourse(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['user_id', 'course_id'], name='composite_key')
         ]
+
+class Admin(models.Model):
+    user = models.ForeignKey(User, primary_key=True, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return '{} ({})'.format(self.user.email, self.user.first_name)
