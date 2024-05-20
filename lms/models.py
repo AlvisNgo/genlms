@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Course(models.Model):
-    course_id = models.IntegerField(primary_key=True)
+    course_id = models.AutoField(primary_key=True)
     course_name = models.CharField(max_length=255)
     description = models.TextField()
 
