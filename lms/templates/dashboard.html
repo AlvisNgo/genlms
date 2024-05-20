@@ -70,7 +70,9 @@
 									<div class="icon">
 									  <i class="fas fa-shopping-cart"></i>
 									</div>
-                                    <h4>{{course.id}}</h4>
+                                    <div class="inner">
+                                        <h4>Course ID: {{course.id}}</h4>
+                                    </div>
 									<a href="{% url 'course' course.id %}" class="small-box-footer">
 									  View Course <i class="fas fa-arrow-circle-right"></i>
 									</a>
