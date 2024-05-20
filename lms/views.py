@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from allauth.socialaccount.models import SocialAccount
 
-from lms.models import EnrolledCourse
+from lms.models import EnrolledCourse, Admin, CourseAdmin
 
 def login(request):
     return render(request, 'login.html')
@@ -21,8 +21,16 @@ def student_dashboard(request):
         avatar_url = extra_data.get('photo', {}).get('url')
         context['avatar_url'] = avatar_url
     
-    # Get enrolled course
-    my_courses = EnrolledCourse.objects.filter(user_id=uid).select_related('course')
-    context['my_courses'] = my_courses;
+    # Check if user is lms admin
+    is_admin = Admin.objects.filter(user_id=uid).exists()
+    
+    # Get enrolled course if student, else get assigned course (CourseAdmin)
+    if (not is_admin):
+        my_courses = EnrolledCourse.objects.filter(user_id=uid).select_related('course')
+        context['my_courses'] = my_courses;
+    else:
+        admin_info = Admin.objects.get(user_id=uid)
+        my_courses = CourseAdmin.objects.filter(admin_id=admin_info.admin_id).select_related('course')
+        context['my_courses'] = my_courses;
     
     return render(request, 'dashboard.html', context)
