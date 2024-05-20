@@ -37,5 +37,20 @@ Now, you'll be able to login to the system with your SIT and Glasgow account. Fo
 python manage.py runserver
 ```
 Upon successful, the command prompt will prompt you to visit http://localhost:8000.
-## Notice
+# Notice
 Whenever you change the DB schema, run `python manage.py migrate` to update the database schema.
+
+# Admin Panel
+Visit http://localhost:8000/admin to login with your superuser credentials - default: `admin` for both password and username.
+
+## Add user to white list
+Next, under "Authentication and Authorization", add a new user, username is your student ID, password please auto generate one.
+
+Finally, enter the first name, followed by email address. Click save.
+
+Now, you should be able to login from http://localhost:8000/login/.
+
+![Screenshot of the creating user steps](/static/steps.gif)
+
+## Misc
+In the admin panel, you can create new course, add/remove user as LMS admin, add admin as course administrator.
