@@ -18,6 +18,9 @@ class EnrolledCourse(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['user_id', 'course_id'], name='composite_key')
         ]
+    
+    def __str__(self):
+        return '{} ({}) - {}'.format(self.user.email, self.user.first_name, self.course)
 
 class Admin(models.Model):
     admin_id = models.AutoField(primary_key=True)

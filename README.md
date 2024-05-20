@@ -32,6 +32,8 @@ python manage.py loaddata courseadmin
 ```
 
 Now, you'll be able to login to the system with your SIT and Glasgow account. For testing purposes, the SIT is a student account. The Glasgow is the LMS admin account.
+## Add course to your student account
+Upon logging in, you'll notice that you're not in any course. To add course to your student account, please refer to [Add course to student](#add-course-to-student)
 # Running
 ```
 python manage.py runserver
@@ -51,6 +53,10 @@ Finally, enter the first name, followed by email address. Click save.
 Now, you should be able to login from http://localhost:8000/login/.
 
 ![Screenshot of the creating user steps](/static/steps.gif)
+
+## Add course to student
+In the admin panel, under ["LMS" -> "Enrolled Course"](http://localhost:8000/admin/lms/enrolledcourse/), you may assigned yourself a course.
+Now, you may refresh the dashboard and it should appear under "My Course" section.
 
 ## Misc
 In the admin panel, you can create new course, add/remove user as LMS admin, add admin as course administrator.

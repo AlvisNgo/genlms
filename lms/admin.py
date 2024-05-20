@@ -1,5 +1,5 @@
 from django.contrib import admin, messages
-from lms.models import Admin, Course, CourseAdmin
+from lms.models import Admin, Course, CourseAdmin, EnrolledCourse
 
 # Empty admin to let django knows we allow adding of admin via the /admin dashboard.
 @admin.register(Admin)
@@ -21,3 +21,7 @@ class AddCourseAdmin(admin.ModelAdmin):
     def course_name(self, obj):
         return obj.course
     course_name.short_description = 'Course'
+
+@admin.register(EnrolledCourse)
+class AddEnrolCourse(admin.ModelAdmin):
+    pass
