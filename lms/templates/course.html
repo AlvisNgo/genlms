@@ -4,29 +4,65 @@
 {% block content-wrapper %}
 {% load static %}
 
+<!-- Content Header (Page header) -->
 <div class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
                 <h1 class="m-0">My Courses</h1>
-                {% for obj in course_info %}
+                <!-- {% for obj in course_info %}
                 <h4>{{ obj.course_name }}</h4>
                 <h4>{{ obj.description }}</h4>
-                {% endfor %}
+                {% endfor %} -->
             </div>
             <!-- /.col -->
             <div class="col-sm-6">
-
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item">
                         <a href="#">Home</a>
                     </li>
                     <li class="breadcrumb-item active">Dashboard</li>
                 </ol>
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
 
+<!--Main body-->
+<section class="content">
+    <!--Course name and description-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        {% for obj in course_info %}
+                        <h4>{{ obj.course_name }}</h4>
+                        <h4>{{ obj.description }}</h4>
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
+    <!--/.course name and description-->
+    <!--Course content-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Content</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- /.main body -->
 
 {% endblock %}
