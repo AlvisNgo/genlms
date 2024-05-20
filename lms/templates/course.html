@@ -1,0 +1,32 @@
+{% extends "base-student.html" %}
+{% block title %}Student Dashboard{% endblock %}
+
+{% block content-wrapper %}
+{% load static %}
+
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">My Courses</h1>
+                {% for obj in course_info %}
+                <h4>{{ obj.course_name }}</h4>
+                <h4>{{ obj.description }}</h4>
+                {% endfor %}
+            </div>
+            <!-- /.col -->
+            <div class="col-sm-6">
+
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item">
+                        <a href="#">Home</a>
+                    </li>
+                    <li class="breadcrumb-item active">Dashboard</li>
+                </ol>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
