@@ -1,0 +1,240 @@
+[
+	{
+		"model": "auth.user",
+		"pk": 1,
+		"fields": {
+			"password": "pbkdf2_sha256$720000$1hpekc8KKRLpF3BJbpz9r7$fyBLsaDcWVGpojaxKx5MiHu7WxJ6ST1DH9X7Ro0/ASg=",
+			"is_superuser": 1,
+            "username": "admin",
+            "first_name": "admin",
+            "last_name": "admin",
+            "is_staff": 1,
+            "is_active": 1
+		}
+	},
+    {
+		"model": "auth.user",
+		"pk": 2,
+		"fields": {
+			"password": "pbkdf2_sha256$720000$1hpekc8KKRLpF3BJbpz9r7$fyBLsaDcWVGpojaxKx5MiHu7WxJ6ST1DH9X7Ro0/ASg=",
+			"is_superuser": 0,
+            "username": "2301033",
+            "first_name": "LEE WEI KWAN BERNARD",
+            "last_name": "LEE",
+            "email": "2301033@sit.singaporetech.edu.sg",
+            "is_staff": 0,
+            "is_active": 1
+		}
+	},
+    {
+		"model": "auth.user",
+		"pk": 3,
+		"fields": {
+			"password": "pbkdf2_sha256$720000$1hpekc8KKRLpF3BJbpz9r7$fyBLsaDcWVGpojaxKx5MiHu7WxJ6ST1DH9X7Ro0/ASg=",
+			"is_superuser": 0,
+            "username": "2301245",
+            "first_name": "DANIEL TOH JIA XING",
+            "last_name": "TOH",
+            "email": "2301245@sit.singaporetech.edu.sg",
+            "is_staff": 0,
+            "is_active": 1
+		}
+	},
+    {
+		"model": "auth.user",
+		"pk": 4,
+		"fields": {
+			"password": "pbkdf2_sha256$720000$1hpekc8KKRLpF3BJbpz9r7$fyBLsaDcWVGpojaxKx5MiHu7WxJ6ST1DH9X7Ro0/ASg=",
+			"is_superuser": 0,
+            "username": "2301077",
+            "first_name": "ALVIS NGO",
+            "last_name": "NGO",
+            "email": "2301077@sit.singaporetech.edu.sg",
+            "is_staff": 0,
+            "is_active": 1
+		}
+	},
+    {
+		"model": "auth.user",
+		"pk": 5,
+		"fields": {
+			"password": "pbkdf2_sha256$720000$1hpekc8KKRLpF3BJbpz9r7$fyBLsaDcWVGpojaxKx5MiHu7WxJ6ST1DH9X7Ro0/ASg=",
+			"is_superuser": 0,
+            "username": "2301019",
+            "first_name": "BEN SURNAME",
+            "last_name": "SURNAME",
+            "email": "2301019@sit.singaporetech.edu.sg",
+            "is_staff": 0,
+            "is_active": 1
+		}
+	},
+    {
+		"model": "auth.user",
+		"pk": 6,
+		"fields": {
+			"password": "pbkdf2_sha256$720000$1hpekc8KKRLpF3BJbpz9r7$fyBLsaDcWVGpojaxKx5MiHu7WxJ6ST1DH9X7Ro0/ASg=",
+			"is_superuser": 0,
+            "username": "2300898",
+            "first_name": "ZYAN TOH",
+            "last_name": "TOH",
+            "email": "2300898@sit.singaporetech.edu.sg",
+            "is_staff": 0,
+            "is_active": 1
+		}
+	},
+    {
+		"model": "auth.user",
+		"pk": 7,
+		"fields": {
+			"password": "pbkdf2_sha256$720000$1hpekc8KKRLpF3BJbpz9r7$fyBLsaDcWVGpojaxKx5MiHu7WxJ6ST1DH9X7Ro0/ASg=",
+			"is_superuser": 0,
+            "username": "2300912",
+            "first_name": "VICENT SURNAME",
+            "last_name": "SURNAME",
+            "email": "2300912@sit.singaporetech.edu.sg",
+            "is_staff": 0,
+            "is_active": 1
+		}
+	},
+    {
+		"model": "auth.user",
+		"pk": 8,
+		"fields": {
+			"password": "pbkdf2_sha256$720000$1hpekc8KKRLpF3BJbpz9r7$fyBLsaDcWVGpojaxKx5MiHu7WxJ6ST1DH9X7Ro0/ASg=",
+			"is_superuser": 0,
+            "username": "2300930",
+            "first_name": "SEAN SURNAME",
+            "last_name": "SURNAME",
+            "email": "2300930@sit.singaporetech.edu.sg",
+            "is_staff": 0,
+            "is_active": 1
+		}
+	},
+    {
+		"model": "auth.user",
+		"pk": 9,
+		"fields": {
+			"password": "pbkdf2_sha256$720000$1hpekc8KKRLpF3BJbpz9r7$fyBLsaDcWVGpojaxKx5MiHu7WxJ6ST1DH9X7Ro0/ASg=",
+			"is_superuser": 0,
+            "username": "2300985",
+            "first_name": "ERNEST LIM",
+            "last_name": "LIM",
+            "email": "2300985@sit.singaporetech.edu.sg",
+            "is_staff": 0,
+            "is_active": 1
+		}
+	},
+    {
+		"model": "auth.user",
+		"pk": 10,
+		"fields": {
+			"password": "pbkdf2_sha256$720000$1hpekc8KKRLpF3BJbpz9r7$fyBLsaDcWVGpojaxKx5MiHu7WxJ6ST1DH9X7Ro0/ASg=",
+			"is_superuser": 0,
+            "username": "2957895L",
+            "first_name": "PROF LEE WEI KWAN BERNARD",
+            "last_name": "LEE",
+            "email": "2957895L@student.gla.ac.uk",
+            "is_staff": 0,
+            "is_active": 1
+		}
+	},
+    {
+		"model": "auth.user",
+		"pk": 11,
+		"fields": {
+			"password": "pbkdf2_sha256$720000$1hpekc8KKRLpF3BJbpz9r7$fyBLsaDcWVGpojaxKx5MiHu7WxJ6ST1DH9X7Ro0/ASg=",
+			"is_superuser": 0,
+            "username": "2957910T",
+            "first_name": "PROF DANIEL TOH JIA XING",
+            "last_name": "TOH",
+            "email": "2957910T@student.gla.ac.uk",
+            "is_staff": 0,
+            "is_active": 1
+		}
+	},
+    {
+		"model": "auth.user",
+		"pk": 12,
+		"fields": {
+			"password": "pbkdf2_sha256$720000$1hpekc8KKRLpF3BJbpz9r7$fyBLsaDcWVGpojaxKx5MiHu7WxJ6ST1DH9X7Ro0/ASg=",
+			"is_superuser": 0,
+            "username": "2957946n",
+            "first_name": "PROF ALVIS NGO",
+            "last_name": "NGO",
+            "email": "2957946n@student.gla.ac.uk ",
+            "is_staff": 0,
+            "is_active": 1
+		}
+	},
+    {
+		"model": "auth.user",
+		"pk": 13,
+		"fields": {
+			"password": "pbkdf2_sha256$720000$1hpekc8KKRLpF3BJbpz9r7$fyBLsaDcWVGpojaxKx5MiHu7WxJ6ST1DH9X7Ro0/ASg=",
+			"is_superuser": 0,
+            "username": "2957936L",
+            "first_name": "PROF BEN SURNAME",
+            "last_name": "SURNAME",
+            "email": "2957936L@student.gla.ac.uk",
+            "is_staff": 0,
+            "is_active": 1
+		}
+	},
+    {
+		"model": "auth.user",
+		"pk": 14,
+		"fields": {
+			"password": "pbkdf2_sha256$720000$1hpekc8KKRLpF3BJbpz9r7$fyBLsaDcWVGpojaxKx5MiHu7WxJ6ST1DH9X7Ro0/ASg=",
+			"is_superuser": 0,
+            "username": "2963431T",
+            "first_name": "PROF ZYAN TOH",
+            "last_name": "TOH",
+            "email": "2963431T@student.gla.ac.uk",
+            "is_staff": 0,
+            "is_active": 1
+		}
+	},
+    {
+		"model": "auth.user",
+		"pk": 15,
+		"fields": {
+			"password": "pbkdf2_sha256$720000$1hpekc8KKRLpF3BJbpz9r7$fyBLsaDcWVGpojaxKx5MiHu7WxJ6ST1DH9X7Ro0/ASg=",
+			"is_superuser": 0,
+            "username": "2957957S",
+            "first_name": "PROF VICENT SURNAME",
+            "last_name": "SURNAME",
+            "email": "2957957S@student.gla.ac.uk",
+            "is_staff": 0,
+            "is_active": 1
+		}
+	},
+    {
+		"model": "auth.user",
+		"pk": 16,
+		"fields": {
+			"password": "pbkdf2_sha256$720000$1hpekc8KKRLpF3BJbpz9r7$fyBLsaDcWVGpojaxKx5MiHu7WxJ6ST1DH9X7Ro0/ASg=",
+			"is_superuser": 0,
+            "username": "2957965S",
+            "first_name": "PROF SEAN SURNAME",
+            "last_name": "SURNAME",
+            "email": "2957965S@student.gla.ac.uk",
+            "is_staff": 0,
+            "is_active": 1
+		}
+	}
+    ,
+    {
+		"model": "auth.user",
+		"pk": 17,
+		"fields": {
+			"password": "pbkdf2_sha256$720000$1hpekc8KKRLpF3BJbpz9r7$fyBLsaDcWVGpojaxKx5MiHu7WxJ6ST1DH9X7Ro0/ASg=",
+			"is_superuser": 0,
+            "username": "2957924L",
+            "first_name": "PROF ERNEST LIM",
+            "last_name": "LIM",
+            "email": "2957924L@student.gla.ac.uk",
+            "is_staff": 0,
+            "is_active": 1
+		}
+	}
+]

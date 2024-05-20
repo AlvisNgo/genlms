@@ -17,24 +17,21 @@ In real world, I should not expose the MS_SECRET in this readme file. However, t
 Next, enter the following command from this directory.
 ```
 pip install -r requirements.txt
-python manage.py migrate
 ```
 # Setting up
-## Superadmin
-Please create a superadmin account via the command `python manage.py createsuperuser`. The recommended username and password for testing purposes is `admin`.
-## Whitelist Students
-Upon creation, start the server via `python manage.py runserver`. And then visit http://localhost:8000/admin to login with your superuser credentials.
+## Create Database
+Using command prompt or any GUI application, please create a new database with `genlms` as it name. Make sure you can login to the database.
+After that, please run `python manage.py migrate` to create all the necessary tables.
+## Loading of dummy data
+We will need to load dummy data into the database. Please use those command line by line.
+```
+python manage.py loaddata user
+python manage.py loaddata lmsadmin
+python manage.py loaddata course
+python manage.py loaddata courseadmin
+```
 
-Next, under "Authentication and Authorization", add a new user, username is your student ID, password please auto generate one.
-
-Finally, enter the first name, followed by email address. Click save.
-
-Now, you should be able to login from http://localhost:8000/login/.
-
-![Screenshot of the creating user steps](/static/readme-1.png)
-![Screenshot of the creating user steps](/static/steps.gif)
-## Load dummy data
-After successful logging in, stop the process and run the following command to load dummy data (courses and enrolled courses) `python manage.py loaddata dummy`.
+Now, you'll be able to login to the system with your SIT and Glasgow account. For testing purposes, the SIT is a student account. The Glasgow is the LMS admin account.
 # Running
 ```
 python manage.py runserver

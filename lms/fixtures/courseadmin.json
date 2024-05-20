@@ -1,0 +1,143 @@
+[
+	{
+		"model": "lms.courseadmin",
+		"pk": 1,
+		"fields": {
+			"admin_id": 1,
+			"course_id": 1
+		}
+	},
+    {
+		"model": "lms.courseadmin",
+		"pk": 2,
+		"fields": {
+			"admin_id": 1,
+			"course_id": 2
+		}
+	},
+
+    {
+		"model": "lms.courseadmin",
+		"pk": 3,
+		"fields": {
+			"admin_id": 2,
+			"course_id": 1
+		}
+	},
+    {
+		"model": "lms.courseadmin",
+		"pk": 4,
+		"fields": {
+			"admin_id": 2,
+			"course_id": 2
+		}
+	}
+
+    ,
+    {
+		"model": "lms.courseadmin",
+		"pk": 5,
+		"fields": {
+			"admin_id": 3,
+			"course_id": 1
+		}
+	},
+    {
+		"model": "lms.courseadmin",
+		"pk": 6,
+		"fields": {
+			"admin_id": 3,
+			"course_id": 2
+		}
+	}
+
+    ,
+    {
+		"model": "lms.courseadmin",
+		"pk": 7,
+		"fields": {
+			"admin_id": 4,
+			"course_id": 1
+		}
+	},
+    {
+		"model": "lms.courseadmin",
+		"pk": 8,
+		"fields": {
+			"admin_id": 4,
+			"course_id": 2
+		}
+	}
+
+    ,
+    {
+		"model": "lms.courseadmin",
+		"pk": 9,
+		"fields": {
+			"admin_id": 5,
+			"course_id": 1
+		}
+	},
+    {
+		"model": "lms.courseadmin",
+		"pk": 10,
+		"fields": {
+			"admin_id": 5,
+			"course_id": 2
+		}
+	}
+
+    ,
+    {
+		"model": "lms.courseadmin",
+		"pk": 11,
+		"fields": {
+			"admin_id": 6,
+			"course_id": 1
+		}
+	},
+    {
+		"model": "lms.courseadmin",
+		"pk": 12,
+		"fields": {
+			"admin_id": 6,
+			"course_id": 2
+		}
+	}
+
+    ,
+    {
+		"model": "lms.courseadmin",
+		"pk": 13,
+		"fields": {
+			"admin_id": 7,
+			"course_id": 1
+		}
+	},
+    {
+		"model": "lms.courseadmin",
+		"pk": 14,
+		"fields": {
+			"admin_id": 7,
+			"course_id": 2
+		}
+	}
+
+    ,
+    {
+		"model": "lms.courseadmin",
+		"pk": 15,
+		"fields": {
+			"admin_id": 8,
+			"course_id": 1
+		}
+	},
+    {
+		"model": "lms.courseadmin",
+		"pk": 16,
+		"fields": {
+			"admin_id": 8,
+			"course_id": 2
+		}
+	}
+]
