@@ -1,7 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, get_object_or_404
+from django.db.models import Count
 from allauth.socialaccount.models import SocialAccount
 
-from lms.models import EnrolledCourse, Admin, CourseAdmin, Course
+from lms.models import EnrolledCourse, Admin, CourseAdmin, Course, Thread, Post
 
 
 def login(request):
@@ -67,9 +68,16 @@ def profile_view(request):
 
 
 def discussion_board(request, id):
-    context = {}
-    # Get enrolled course corresponding course id, then get course details
-    course_info = Course.objects.filter(pk=EnrolledCourse.objects.filter(
-        pk=id).values_list("course_id", flat=True)[0]).values()
-    context['course_info'] = course_info
+    enrolled_course = get_object_or_404(EnrolledCourse, pk=id)
+    course_info = get_object_or_404(Course, pk=enrolled_course.course_id)
+    threads = Thread.objects.filter(course=course_info).annotate(
+        post_count=Count('post')).prefetch_related('post_set', 'post_set__user')
+
+    context = {
+        'course_info': course_info,
+        'threads': threads,
+    }
+
+    print(context)  # Debugging statement to verify context
+
     return render(request, 'discussionboard.html', context)
