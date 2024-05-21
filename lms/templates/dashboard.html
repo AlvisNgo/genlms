@@ -61,7 +61,7 @@
                     <div class="card-body">
                         <div class="row">
                             {% for course in my_courses %}
-                            <div class="col-12 col-sm-6 col-md-3">
+                            <div class="col-12 col-sm-6 col-md-4">
 								<div class="small-box bg-info">
 									<div class="inner">
 									  <h4>{{ course.course }}</h4>
@@ -70,9 +70,6 @@
 									<div class="icon">
 									  <i class="fas fa-shopping-cart"></i>
 									</div>
-                                    <div class="inner">
-                                        <h4>Course ID: {{course.id}}</h4>
-                                    </div>
 									<a href="{% url 'course' course.id %}" class="small-box-footer">
 									  View Course <i class="fas fa-arrow-circle-right"></i>
 									</a>
