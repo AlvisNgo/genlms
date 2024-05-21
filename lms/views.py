@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from allauth.socialaccount.models import SocialAccount
 
-from lms.models import EnrolledCourse, Admin, CourseAdmin
+from lms.models import EnrolledCourse, Admin, CourseAdmin, Course
 
 def login(request):
     return render(request, 'login.html')
@@ -32,5 +32,12 @@ def student_dashboard(request):
         admin_info = Admin.objects.get(user_id=uid)
         my_courses = CourseAdmin.objects.filter(admin_id=admin_info.admin_id).select_related('course')
         context['my_courses'] = my_courses;
-    
     return render(request, 'dashboard.html', context)
+
+def student_course_info(request, id):
+    context = {}
+    # Get enrolled course corresponding course id, then get course details
+    course_info = Course.objects.filter(pk=EnrolledCourse.objects.filter(pk=id).values_list("course_id",flat=True)[0]).values()
+    context['course_info'] = course_info;
+    print(context)
+    return render(request, 'course.html', context)
