@@ -71,7 +71,11 @@
             <!-- Sidebar user panel (optional) -->
             <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                 <div class="image">
-                    <img src="{{ profile.profile_picture.url }}" class="img-circle elevation-2" alt="User Image">
+                    {% if profile.profile_picture %}
+                        <img src="{{ profile.profile_picture.url }}" class="img-circle elevation-2" alt="User Image">
+                    {% else %}
+                        <p>No profile picture uploaded.</p>
+                    {% endif %}    
                 </div>
                 <div class="info">
                     <a href="#" class="d-block">{{ user.first_name }}</a>
@@ -103,8 +107,12 @@
                             <div class="card-body box-profile">
                                 <div class="text-center">
                                     <img class="profile-user-img img-fluid img-circle"
-                                         src="{{ profile.profile_picture.url }}"
-                                         alt="User profile picture">
+                                        {% if profile.profile_picture %}
+                                            src="{{ profile.profile_picture.url }}"
+                                            alt="User profile picture">
+                                        {% else %}
+                                            <p>No profile picture uploaded.</p>
+                                        {% endif %}
                                 </div>
                                 <h3 class="profile-username text-center">{{ user.username }}</h3>
                                 <p class="text-muted text-center">{{ user.email }}</p>
