@@ -1,0 +1,70 @@
+{% extends "base-student.html" %}
+{% block title %}Student Dashboard{% endblock %}
+{% block content-wrapper %}
+{% load static %}
+{% for course in course_info %}
+<!-- Header -->
+<div class="content-header">
+  <div class="container-fluid">
+    <div class="row no-gutters">
+      <div class="col-12 col-sm-6 col-md-8">
+        <h1 class="font-weight-bold">
+          {{ course.course_name }} [AY2023/24 Trimester 3]
+        </h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="card-title">Discussion Board</h2>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">Rule 1</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card mt-4">
+        <div class="card-body">
+          <h2 class="card-title">Discussion Board</h2>
+          <p>Hi all,</p>
+          <ol>
+            <li>This discussion board is for all the topics communication related to the module, course contents, and teach & learn materials.</li>
+            <li>Only confidential or personal matters, please send an email to <a href="mailto:PeterCYYau@glasgow.ac.uk">PeterCYYau@glasgow.ac.uk</a></li>
+            <li>Feel free to discuss any programming related problems but please don't expect this as your debug helper. Google and Stack Overflow are your friends.</li>
+            <li>I don't wanna set up too many rules here. Please observe some basic courtesy which you can easily find online like this one: <a href="https://ctl.wiley.com/sample-discussion-board-ground-rules/">https://ctl.wiley.com/sample-discussion-board-ground-rules/</a></li>
+          </ol>
+          <div class="table-responsive">
+            <table class="table table-bordered mt-3">
+              <thead class="thead-light">
+                <tr>
+                  <th>Topic</th>
+                  <th>Threads</th>
+                  <th>Posts</th>
+                  <th>Last Post</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Discussion Board</td>
+                  <td>7</td>
+                  <td>14 (11)</td>
+                  <td class="last-post">
+                    <img src="path/to/user-pic.png" alt="User Picture" class="rounded-circle" style="height: 30px; margin-right: 10px;">
+                    ANDREW FOO FANG JIAN, 1 hour ago
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+{% endblock %}
