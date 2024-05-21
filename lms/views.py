@@ -42,6 +42,9 @@ def student_course_info(request, id):
     print(context)
     return render(request, 'course.html', context)
 
+def student_discussionboard_info(request):
+    return render(request, 'discussionboard.html')
+
 def profile_view(request):
     user = request.user
     profile, created = Profile.objects.get_or_create(user=user)

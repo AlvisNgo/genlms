@@ -1,0 +1,151 @@
+{% extends "base-student.html" %}
+{% block title %}Student Dashboard{% endblock %}
+
+{% block content-wrapper %}
+{% load static %}
+{% for course in course_info %}
+
+<!-- Header -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row no-gutters">
+            <div class="col-12 col-sm-6 col-md-8">
+                <h1 class="font-weight-bold">{{ course.course_name }} [AY2023/24 Trimester 3]</h1>
+            </div>
+        </div>
+    </div>
+</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discussion Page</title>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discussion Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .header img {
+            height: 40px;
+        }
+        .content {
+            margin-top: 20px;
+        }
+        .rules, .discussion-board {
+            margin-bottom: 20px;
+        }
+        .discussion-board h2 {
+            margin-top: 0;
+        }
+        .board-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .board-table th, .board-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        .board-table th {
+            background-color: #f4f4f4;
+        }
+        .board-table td {
+            background-color: #fff;
+        }
+        .last-post {
+            display: flex;
+            align-items: center;
+        }
+        .last-post img {
+            border-radius: 50%;
+            height: 30px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>CSC1106 - Web Programming Discussions</h1>
+            <img src="path/to/profile-pic.png" alt="Profile Picture">
+        </div>
+        <div class="content">
+            <div class="rules">
+                <h2>General Rules</h2>
+                <ul>
+                    <li>Rule 1</li>
+                </ul>
+            </div>
+            <div class="discussion-board">
+                <h2>Discussion Board</h2>
+                <p>Hi all,</p>
+                <ol>
+                    <li>This discussion board is for all the topics communication related to the module, course contents, and teach & learn materials.</li>
+                    <li>Only confidential or personal matters, please send an email to <a href="mailto:PeterCYYau@glasgow.ac.uk">PeterCYYau@glasgow.ac.uk</a></li>
+                    <li>Feel free to discuss any programming related problems but please don't expect this as your debug helper. Google and Stack Overflow are your friends.</li>
+                    <li>I don't wanna set up too many rules here. Please observe some basic courtesy which you can easily find online like this one: <a href="https://ctl.wiley.com/sample-discussion-board-ground-rules/">https://ctl.wiley.com/sample-discussion-board-ground-rules/</a></li>
+                </ol>
+                <table class="board-table">
+                    <thead>
+                        <tr>
+                            <th>Topic</th>
+                            <th>Threads</th>
+                            <th>Posts</th>
+                            <th>Last Post</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Discussion Board</td>
+                            <td>7</td>
+                            <td>14 (11)</td>
+                            <td class="last-post">
+                                <img src="path/to/user-pic.png" alt="User Picture">
+                                ANDREW FOO FANG JIAN, 1 hour ago
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+message.txt
+4 KB
+
+
+
+
+
+
+
+
+{% endfor %}
+{% endblock %}
