@@ -9,6 +9,7 @@
     <div class="preloader flex-column justify-content-center align-items-center">
         <img class="animation__wobble" src="{% static 'adminlte/dist/img/AdminLTELogo.png' %}" alt="AdminLTELogo" height="60" width="60">
     </div>
+    
     <!-- Navbar -->
     <nav class="main-header navbar navbar-expand navbar-dark">
         <!-- Left navbar links -->
@@ -42,10 +43,7 @@
                     </form>
                 </div>
             </li>
-            <!-- Messages Dropdown Menu -->
-            <!-- ... your message dropdown items ... -->
-            <!-- Notifications Dropdown Menu -->
-            <!-- ... your notification dropdown items ... -->
+            <!-- Fullscreen and Control Sidebar Toggle -->
             <li class="nav-item">
                 <a class="nav-link" data-widget="fullscreen" href="#" role="button">
                     <i class="fas fa-expand-arrows-alt"></i>
@@ -59,6 +57,7 @@
         </ul>
     </nav>
     <!-- /.navbar -->
+    
     <!-- Main Sidebar Container -->
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
         <!-- Brand Logo -->
@@ -66,21 +65,23 @@
             <img src="{% static 'adminlte/dist/img/AdminLTELogo.png' %}" alt="GenLMS Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
             <span class="brand-text font-weight-light">GenLMS</span>
         </a>
+        
         <!-- Sidebar -->
         <div class="sidebar">
-            <!-- Sidebar user panel (optional) -->
+            <!-- Sidebar user panel -->
             <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                 <div class="image">
                     {% if profile.profile_picture %}
                         <img src="{{ profile.profile_picture.url }}" class="img-circle elevation-2" alt="User Image">
                     {% else %}
-                        <p>No profile picture uploaded.</p>
-                    {% endif %}    
+                        <img src="{% static 'adminlte/dist/img/default-150x150.png' %}" class="img-circle elevation-2" alt="Default User Image">
+                    {% endif %}
                 </div>
                 <div class="info">
                     <a href="#" class="d-block">{{ user.first_name }}</a>
                 </div>
             </div>
+            
             <!-- SidebarSearch Form -->
             <div class="form-inline">
                 <div class="input-group" data-widget="sidebar-search">
@@ -95,40 +96,42 @@
         </div>
         <!-- /.sidebar -->
     </aside>
-    <!-- Content Wrapper. Contains page content -->
+    
+    <!-- Content Wrapper -->
     <div class="content-wrapper">
-        <!-- Profile content -->
+        <!-- Profile Content -->
         <section class="content">
             <div class="container-fluid">
                 <div class="row">
+                    <!-- Profile Image -->
                     <div class="col-md-3">
-                        <!-- Profile Image -->
                         <div class="card card-primary card-outline">
                             <div class="card-body box-profile">
                                 <div class="text-center">
-                                    <img class="profile-user-img img-fluid img-circle"
-                                        {% if profile.profile_picture %}
-                                            src="{{ profile.profile_picture.url }}"
-                                            alt="User profile picture">
-                                        {% else %}
-                                            <p>No profile picture uploaded.</p>
-                                        {% endif %}
+                                    {% if profile.profile_picture %}
+                                        <img class="profile-user-img img-fluid img-circle" src="{{ profile.profile_picture.url }}" alt="User profile picture">
+                                    {% else %}
+                                        <img class="profile-user-img img-fluid img-circle" src="{% static 'adminlte/dist/img/default-150x150.png' %}" alt="Default User Image">
+                                    {% endif %}
                                 </div>
                                 <h3 class="profile-username text-center">{{ user.username }}</h3>
                                 <p class="text-muted text-center">{{ user.email }}</p>
                             </div>
-                            <!-- /.card-body -->
                         </div>
-                        <!-- /.card -->
                     </div>
                     <!-- /.col -->
+                    
+                    <!-- Settings Form -->
                     <div class="col-md-9">
                         <div class="card">
                             <div class="card-header p-2">
                                 <ul class="nav nav-pills">
-                                    <li class="nav-item"><a class="nav-link active" href="#settings" data-toggle="tab">Settings</a></li>
+                                    <li class="nav-item">
+                                        <a class="nav-link active" href="#settings" data-toggle="tab">Settings</a>
+                                    </li>
                                 </ul>
-                            </div><!-- /.card-header -->
+                            </div>
+                            <!-- /.card-header -->
                             <div class="card-body">
                                 <div class="tab-content">
                                     <div class="active tab-pane" id="settings">
@@ -145,26 +148,31 @@
                                     <!-- /.tab-pane -->
                                 </div>
                                 <!-- /.tab-content -->
-                            </div><!-- /.card-body -->
+                            </div>
+                            <!-- /.card-body -->
                         </div>
                         <!-- /.card -->
                     </div>
                     <!-- /.col -->
                 </div>
                 <!-- /.row -->
-            </div><!-- /.container-fluid -->
+            </div>
+            <!-- /.container-fluid -->
         </section>
         <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
+    
     <!-- Control Sidebar -->
     <aside class="control-sidebar control-sidebar-dark">
         <!-- Control sidebar content goes here -->
     </aside>
     <!-- /.control-sidebar -->
+    
     <!-- Main Footer -->
     <footer class="main-footer">
-        <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>. </strong> All rights reserved. <div class="float-right d-none d-sm-inline-block">
+        <strong>&copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
+        <div class="float-right d-none d-sm-inline-block">
             <b>Version</b> 3.2.0
         </div>
     </footer>
