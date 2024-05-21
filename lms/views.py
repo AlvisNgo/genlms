@@ -41,3 +41,18 @@ def student_course_info(request, id):
     context['course_info'] = course_info;
     print(context)
     return render(request, 'course.html', context)
+
+def profile_view(request):
+    user = request.user
+    profile, created = Profile.objects.get_or_create(user=user)
+
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            print(f"Redirecting to profile: {profile}") 
+            return redirect('profile')
+    else:
+        form = ProfileForm(instance=profile)
+
+    return render(request, 'profile.html', {'form': form, 'profile': profile, 'user': user})
