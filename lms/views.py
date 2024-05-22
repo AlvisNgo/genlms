@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import redirect, render, get_object_or_404
 from django.db.models import Count
 from allauth.socialaccount.models import SocialAccount
 
@@ -27,6 +27,7 @@ def student_dashboard(request):
 
     # Check if user is lms admin
     is_admin = Admin.objects.filter(user_id=uid).exists()
+    context["is_admin"] = is_admin
 
     # Get enrolled course if student, else get assigned course (CourseAdmin)
     if (not is_admin):
@@ -81,3 +82,7 @@ def discussion_board(request, id):
     print(context)  # Debugging statement to verify context
 
     return render(request, 'discussionboard.html', context)
+
+
+def announcement_add(request, id):
+    return render(request, 'announcement_add.html')
