@@ -1,8 +1,9 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Count
 from allauth.socialaccount.models import SocialAccount
 
 from lms.models import EnrolledCourse, Admin, CourseAdmin, Course, Thread, Post
+from lms.forms import ThreadForm, PostForm
 
 
 def login(request):
@@ -81,3 +82,38 @@ def discussion_board(request, id):
     print(context)  # Debugging statement to verify context
 
     return render(request, 'discussionboard.html', context)
+
+
+def view_thread(request, thread_id):
+    thread = get_object_or_404(Thread, pk=thread_id)
+    posts = Post.objects.filter(thread=thread).select_related('user')
+    context = {'thread': thread, 'posts': posts}
+    return render(request, 'view_thread.html', context)
+
+
+def create_thread(request):
+    if request.method == 'POST':
+        form = ThreadForm(request.POST)
+        if form.is_valid():
+            thread = form.save(commit=False)
+            thread.user = request.user
+            thread.save()
+            return redirect('discussionboard', id=thread.course.id)
+    else:
+        form = ThreadForm()
+    return render(request, 'create_thread.html', {'form': form})
+
+
+def create_post(request, thread_id):
+    thread = get_object_or_404(Thread, pk=thread_id)
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.thread = thread
+            post.user = request.user
+            post.save()
+            return redirect('view_thread', thread_id=thread.id)
+    else:
+        form = PostForm()
+    return render(request, 'create_post.html', {'form': form, 'thread': thread})

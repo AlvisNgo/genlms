@@ -3,8 +3,6 @@
 {% block content-wrapper %}
 {% load static %}
 
-
-<!-- Header -->
 <div class="content-header">
     <div class="container-fluid">
         <div class="row no-gutters">
@@ -35,6 +33,7 @@
 
             <div class="card mt-4">
                 <div class="card-body">
+                    <a href="{% url 'create_thread' %}" class="btn btn-primary mb-4">Create New Thread</a>
                     <div class="table-responsive">
                         <table class="table table-bordered mt-3">
                             <thead class="thead-light">
@@ -48,7 +47,7 @@
                             <tbody>
                                 {% for thread in threads %}
                                 <tr>
-                                    <td>{{ thread.title }}</td>
+                                    <td><a href="{% url 'view_thread' thread.id %}">{{ thread.title }}</a></td>
                                     <td>{{ thread.content }}</td>
                                     <td>{{ thread.post_count }}</td>
                                     <td class="last-post">
@@ -64,25 +63,6 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
-            </div>
-
-            <div class="card mt-4">
-                <div class="card-body">
-                    <h3 class="card-title">Posts</h3>
-                    {% for thread in threads %}
-                        <h4>{{ thread.title }}</h4>
-                        {% for post in thread.post_set.all %}
-                            <div class="media mb-4">
-                                <img src="path/to/user-pic.png" alt="User Picture" class="rounded-circle mr-3" style="height: 30px;">
-                                <div class="media-body">
-                                    <h5 class="mt-0">{{ post.user.username }}</h5>
-                                    <p>{{ post.content }}</p>
-                                    <small>{{ post.created_at|date:"Y-m-d H:i" }}</small>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    {% endfor %}
                 </div>
             </div>
         </div>
