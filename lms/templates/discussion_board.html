@@ -1,7 +1,6 @@
-{% extends "base-student.html" %}
-{% block title %}Student Dashboard{% endblock %}
 {% block content-wrapper %}
 {% load static %}
+<a href="javascript:history.back()" class="btn btn-secondary mb-3">Back</a>
 
 <div class="content-header">
     <div class="container-fluid">
@@ -33,7 +32,7 @@
 
             <div class="card mt-4">
                 <div class="card-body">
-                    <a href="{% url 'create_thread' %}" class="btn btn-primary mb-4">Create New Thread</a>
+                    <a href="{% url 'create_thread' course_info.id %}" class="btn btn-primary mb-4">Create New Thread</a>
                     <div class="table-responsive">
                         <table class="table table-bordered mt-3">
                             <thead class="thead-light">

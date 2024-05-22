@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from django.db.models import Count
 from allauth.socialaccount.models import SocialAccount
 
@@ -71,17 +72,17 @@ def profile_view(request):
 def discussion_board(request, id):
     enrolled_course = get_object_or_404(EnrolledCourse, pk=id)
     course_info = get_object_or_404(Course, pk=enrolled_course.course_id)
-    threads = Thread.objects.filter(course=course_info).annotate(
-        post_count=Count('post')).prefetch_related('post_set', 'post_set__user')
+    threads = Thread.objects.filter(course=course_info).annotate(post_count=Count('post')).prefetch_related('post_set', 'post_set__user')
 
     context = {
         'course_info': course_info,
         'threads': threads,
     }
 
-    print(context)  # Debugging statement to verify context
+    print(f"Discussion Board Context: {context}")  # Debugging statement
 
-    return render(request, 'discussionboard.html', context)
+    return render(request, 'discussion_board.html', context)
+
 
 
 def view_thread(request, thread_id):
@@ -91,17 +92,21 @@ def view_thread(request, thread_id):
     return render(request, 'view_thread.html', context)
 
 
-def create_thread(request):
+def create_thread(request, course_id):
+    course_info = get_object_or_404(Course, pk=course_id)
     if request.method == 'POST':
         form = ThreadForm(request.POST)
         if form.is_valid():
             thread = form.save(commit=False)
             thread.user = request.user
+            thread.course = course_info
             thread.save()
-            return redirect('discussionboard', id=thread.course.id)
+            messages.success(request, 'Thread created successfully!')
+            return redirect('discussion_board', id=course_id)
     else:
         form = ThreadForm()
-    return render(request, 'create_thread.html', {'form': form})
+    return render(request, 'create_thread.html', {'form': form, 'course_info': course_info})
+
 
 
 def create_post(request, thread_id):
