@@ -5,9 +5,8 @@ from lms.models import Thread, Post
 class ThreadForm(forms.ModelForm):
     class Meta:
         model = Thread
-        fields = ['course', 'title', 'content']
+        fields = ['title', 'content']
         widgets = {
-            'course': forms.HiddenInput(),
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'content': forms.Textarea(attrs={'class': 'form-control'}),
         }

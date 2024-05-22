@@ -98,10 +98,10 @@ def create_thread(request, course_id):
         form = ThreadForm(request.POST)
         if form.is_valid():
             thread = form.save(commit=False)
+            thread.course_id = course_id
             thread.user = request.user
             thread.course = course_info
             thread.save()
-            messages.success(request, 'Thread created successfully!')
             return redirect('discussion_board', id=course_id)
     else:
         form = ThreadForm()

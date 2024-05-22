@@ -12,7 +12,7 @@ urlpatterns = [
     # Paths for threads and posts under the discussion board
     path("student/course/discussion_board/thread/<int:thread_id>/",
          views.view_thread, name="view_thread"),
-    path("student/course/discussion_board/<int:course_id>/thread/new",
+    path("student/course/discussion_board/thread/new/<int:course_id>/",
          views.create_thread, name="create_thread"),
     path("student/course/discussion_board/thread/<int:thread_id>/post/new/",
          views.create_post, name="create_post"),
