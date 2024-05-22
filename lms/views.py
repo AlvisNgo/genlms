@@ -45,8 +45,7 @@ def student_dashboard(request):
 def student_course_info(request, id):
     context = {}
     # Get enrolled course corresponding course id, then get course details
-    course_info = Course.objects.filter(pk=EnrolledCourse.objects.filter(
-        pk=id).values_list("course_id", flat=True)[0]).values()
+    course_info = Course.objects.filter(pk=id).values()
     context['course_info'] = course_info
     print(context)
     return render(request, 'course.html', context)
