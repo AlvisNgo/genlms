@@ -45,10 +45,20 @@ def student_dashboard(request):
 
 
 def student_course_info(request, id):
-    context = {}
+    
     # Get enrolled course corresponding course id, then get course details
     course_info = Course.objects.filter(pk=id).values()
-    context['course_info'] = course_info
+
+    try:
+        courseAnnouncement_info = CourseAnnouncement.objects.latest( "created_at", "updated_at")
+    except:
+        courseAnnouncement_info = None
+
+    
+    context = {
+        'course_info':course_info,
+        'courseAnnouncement_info':courseAnnouncement_info,
+        }
     print(context)
     return render(request, 'course.html', context)
 
@@ -86,6 +96,7 @@ def discussion_board(request, id):
 
 
 def announcement_add(request, id):
+
     context = {}
 
     # Check if user is admin - only admin can add new announcement

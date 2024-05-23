@@ -36,10 +36,14 @@
         <div class="card">
           <div class="card-body">
             <h4>Announcement</h4>
-            <p class="mt-0 mb-0 text-justify">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam
-              quam at dolorem. Qui modi laborum iste animi, odit ex debitis iure
-              molestias veritatis tempore doloremque eius cum id. Facere, enim.
+            {% if courseAnnouncement_info%}
+            <h3>{{ courseAnnouncement_info.title }}</h3>
+            <p class="latest-anouncement">
+              {{ courseAnnouncement_info.content }}          
+              {% else %}
+              No Anouncements
+              {% endif %}
+              
             </p>
           </div>
 
