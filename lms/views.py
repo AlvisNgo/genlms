@@ -81,3 +81,33 @@ def discussion_board(request, id):
     print(context)  # Debugging statement to verify context
 
     return render(request, 'discussionboard.html', context)
+
+def grades(request, id):
+    enrolled_course = get_object_or_404(EnrolledCourse, pk=id)
+    course_info = get_object_or_404(Course, pk=enrolled_course.course_id)
+    threads = Thread.objects.filter(course=course_info).annotate(
+        post_count=Count('post')).prefetch_related('post_set', 'post_set__user')
+
+    context = {
+        'course_info': course_info,
+        'threads': threads,
+    }
+
+    print(context)  # Debugging statement to verify context
+
+    return render(request, 'grades.html', context)
+
+def feedback(request, id):
+    enrolled_course = get_object_or_404(EnrolledCourse, pk=id)
+    course_info = get_object_or_404(Course, pk=enrolled_course.course_id)
+    threads = Thread.objects.filter(course=course_info).annotate(
+        post_count=Count('post')).prefetch_related('post_set', 'post_set__user')
+
+    context = {
+        'course_info': course_info,
+        'threads': threads,
+    }
+
+    print(context)  # Debugging statement to verify context
+
+    return render(request, 'feedback.html', context)
