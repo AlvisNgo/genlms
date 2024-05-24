@@ -76,13 +76,13 @@
                     <a class="nav-link p-2 text-muted" href="#">Content</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link p-2 text-muted" href="{% url 'discussion_board' course.course_id %}">Discussion Forums</a>
+                    <a class="nav-link p-2 text-muted" href="{% url 'discussion_board' course_info.course_id %}">Discussion Forums</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link p-2 text-muted" href="{% url 'grades' course.course_id %}">My Grades</a>
+                    <a class="nav-link p-2 text-muted" href="{% url 'grades' course_info.course_id %}">My Grades</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link p-2 text-muted" href="{% url 'feedback' course.course_id %}"
+                    <a class="nav-link p-2 text-muted" href="{% url 'feedback' course_info.course_id %}"
                       >Email / Feedback</a>
                   </li>
                 </ul>
