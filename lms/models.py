@@ -19,9 +19,8 @@ class Course(models.Model):
     def __str__(self):
         return self.course_name
 
+
 # Composite key in Django referenced from https://stackoverflow.com/a/65005218
-
-
 class EnrolledCourse(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
@@ -81,3 +80,15 @@ class Post(models.Model):
 
     def __str__(self):
         return f"Post by {self.user.username} in {self.thread.title}"
+
+
+class CourseAnnouncement(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    owner = models.ForeignKey(Admin, on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Announcement by {self.owner.user.username} in {self.course}"
