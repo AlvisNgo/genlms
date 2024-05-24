@@ -22,4 +22,7 @@ urlpatterns = [
           views.create_thread, name="create_thread"),
      path("student/course/discussion_board/thread/<int:thread_id>/post/new/",
           views.create_post, name="create_post"),
+  
+     # Announcement
+     path("student/course/<int:id>/announcement_add", views.announcement_add, name="announcement_add"),
 ]
