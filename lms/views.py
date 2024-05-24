@@ -5,8 +5,8 @@ from django.db.models import Count
 from allauth.socialaccount.models import SocialAccount
 from django.urls import reverse
 from lms.course_annoucement import AnnouncementForm
-from lms.models import EnrolledCourse, Admin, CourseAdmin, Course, Thread, Post, CourseAnnouncement
-from lms.forms import ThreadForm, PostForm
+from lms.models import EnrolledCourse, Admin, CourseAdmin, Course, Thread, Post, CourseAnnouncement, Profile
+from lms.forms import ThreadForm, PostForm, ProfileForm
 
 
 def login(request):
@@ -47,6 +47,22 @@ def student_dashboard(request):
     print(context)
     return render(request, 'dashboard.html', context)
 
+# @login_required
+def profile_view(request):
+    user = request.user
+    profile, created = Profile.objects.get_or_create(user=user)
+
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            print(f"Redirecting to profile: {profile}")  # Debug statement
+            return redirect('profile')
+    else:
+        form = ProfileForm(instance=profile)
+
+    print(f"Rendering profile view for user: {user}, profile: {profile}")  # Debug statement
+    return render(request, 'profile.html', {'form': form, 'profile': profile, 'user': user})
 
 def student_course_info(request, id):
     # Get enrolled course corresponding course id, then get course details
