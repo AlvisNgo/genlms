@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Count
 from allauth.socialaccount.models import SocialAccount
+from .forms import ProfileForm
+from .models import Profile, EnrolledCourse
 
 from lms.models import EnrolledCourse, Admin, CourseAdmin, Course, Thread, Post
 
