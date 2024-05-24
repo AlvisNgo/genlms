@@ -40,6 +40,8 @@ def student_dashboard(request):
         my_courses = CourseAdmin.objects.filter(
             admin_id=admin_info.admin_id).select_related('course')
         context['my_courses'] = my_courses
+    
+    print(context)
     return render(request, 'dashboard.html', context)
 
 
@@ -81,7 +83,7 @@ def discussion_board(request, id):
 
     print(f"Discussion Board Context: {context}")  # Debugging statement
     
-    return render(request, 'discussionboard.html', context)
+    return render(request, 'discussion_board.html', context)
 
 def view_thread(request, thread_id):
     thread = get_object_or_404(Thread, pk=thread_id)
