@@ -1,5 +1,7 @@
 from django.urls import path
-from .views import views_login, views_announcement, views_course, views_discussion, views_profile
+from .views import views_login, views_announcement, views_course, views_discussion, views_profile, api_generative
+import pathlib
+import textwrap
 
 urlpatterns = [
      path("", views_login.login, name="login"),
@@ -25,4 +27,7 @@ urlpatterns = [
   
      # Announcement
      path("student/course/<int:id>/announcement_add", views_announcement.announcement_add, name="announcement_add"),
+
+     # Generative AI API
+     path("api/generative", api_generative.generate, name="generative")
 ]

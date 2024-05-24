@@ -43,7 +43,7 @@
                                     <div class="col-sm-12">
                                         <!-- textarea -->
                                         <div class="form-group">
-                                            <label for="content">Content</label>
+                                            <label for="content">Content <a href="#" onClick="generateWithAI();">[Generate with AI]</a></label>
                                             {{ form.content }}
                                         </div>
                                     </div>
@@ -62,4 +62,9 @@
         </div>
     </div>
 </section>
+
+<script>
+    const csrfToken = "{{ csrf_token }}";
+</script>
+
 {% endblock %}
