@@ -12,9 +12,6 @@ def student_dashboard(request):
     uid = request.user.id
     context = {}
 
-    if not user.is_authenticated:
-        return redirect("/")
-
     # Get avatar
     social_account = SocialAccount.objects.filter(
         user=user, provider='microsoft').first()
@@ -24,11 +21,10 @@ def student_dashboard(request):
         context['avatar_url'] = avatar_url
 
     # Check if user is lms admin
-    is_admin = Admin.objects.filter(user_id=uid).exists()
-    context["is_admin"] = is_admin
+    context["is_admin"] = request.is_admin
 
     # Get enrolled course if student, else get assigned course (CourseAdmin)
-    if (not is_admin):
+    if (not request.is_admin):
         my_courses = EnrolledCourse.objects.filter(
             user_id=uid).select_related('course')
         context['my_courses'] = my_courses
