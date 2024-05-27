@@ -1,0 +1,72 @@
+{% extends "base-student.html" %}
+{% block title %}Student Dashboard{% endblock %}
+{% block content-wrapper %}
+{% load static %}
+<a href="javascript:history.back()" class="btn btn-secondary mb-3">Back</a>
+
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row no-gutters">
+            <div class="col-12 col-sm-6 col-md-8">
+                <h1 class="font-weight-bold">
+                    {{ course_info.course_name }} [AY2023/24 Trimester 3]
+                </h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body d-flex flex-column">
+                    <h2 class="card-title mb-2">Discussion Board</h2>
+                    <p class="card-text">Hi all,</p>
+                    <ol>
+                        <li>This discussion board is for all the topics communication related to the module, course contents, and teach & learn materials.</li>
+                        <li>Only confidential or personal matters, please send an email to <a href="mailto:courseprofessor@glasgow.ac.uk">courseprofessor@glasgow.ac.uk</a></li>
+                        <li>Feel free to discuss any programming related problems but please don't expect this as your debug helper. Google and Stack Overflow are your friends.</li>
+                        <li>Please observe some basic courtesy which you can easily find online like this one: <a href="https://ctl.wiley.com/sample-discussion-board-ground-rules/">https://ctl.wiley.com/sample-discussion-board-ground-rules/</a></li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-body">
+                    <a href="{% url 'create_thread' course_info.course_id %}"class="btn btn-primary mb-4">Create New Thread</a>
+                    <div class="table-responsive">
+                        <table class="table table-bordered mt-3">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Threads</th>
+                                    <th>Content</th>
+                                    <th>Posts</th>
+                                    <th>Last Post</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for thread in threads %}
+                                <tr>
+                                    <td><a href="{% url 'view_thread' thread.id %}">{{ thread.title }}</a></td>
+                                    <td>{{ thread.content }}</td>
+                                    <td>{{ thread.post_count }}</td>
+                                    <td class="last-post">
+                                        {% if thread.post_set.last %}
+                                        <img src="path/to/user-pic.png" alt="User Picture" class="rounded-circle" style="height: 30px; margin-right: 10px;">
+                                        {{ thread.post_set.last.user.username }}, {{ thread.post_set.last.created_at|timesince }} ago
+                                        {% else %}
+                                        No posts yet
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
