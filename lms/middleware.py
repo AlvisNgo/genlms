@@ -8,8 +8,9 @@ class CheckAdminMiddleware(MiddlewareMixin):
         user = request.user
 
         # If not authenticated, redirect to root (unless we're already in root)
-        if request.path != '/' and not user.is_authenticated:
+        if request.path.startswith('/student') and not user.is_authenticated:
             return redirect("/")
 
-        # Set is_admin attribute in request
+        # Set admin and is_admin attribute in request
+        request.admin = Admin.objects.filter(user_id=user.id).first()
         request.is_admin = Admin.objects.filter(user_id=user.id).exists()
