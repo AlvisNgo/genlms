@@ -48,7 +48,10 @@
           </div>
 
           <div class="card-footer">
-            <a href="{% url 'announcement_add' course_info.course_id %}" class="btn btn-primary">Add Announcement</a>
+            {% if is_admin%}
+            <a href="{% url 'announcement_add' course.course_id %}" class="btn btn-primary">Add Announcement</a>
+            {% else %}
+            {% endif %}          
           </div>
         </div>
 
