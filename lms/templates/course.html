@@ -37,9 +37,17 @@
           <div class="card-body">
             <h4>Announcement</h4>
             {% if courseAnnouncement_info%}
-            <h3>{{ courseAnnouncement_info.title }}</h3>
-            <p class="latest-anouncement">
-              {{ courseAnnouncement_info.content }}          
+
+              {% for announce in courseAnnouncement_info%}
+              <p> Last updated on: {{ announce.updated_at }}</p>
+              <h3>{{ announce.title }}</h3>
+              <p class="latest-anouncement">
+                {{ announce.content }} 
+                
+                <hr class="solid" color="9C9C9C">
+                
+                {% endfor %}
+
               {% else %}
               No Anouncements
               {% endif %}

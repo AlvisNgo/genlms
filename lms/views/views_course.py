@@ -14,7 +14,7 @@ def student_course_info(request, id):
 
     # Get enrolled course corresponding course id, then get course details
     course_info = get_object_or_404(Course, pk=id)
-    courseAnnouncement_info = CourseAnnouncement.objects.filter(course=course_info).order_by('-created_at').first()
+    courseAnnouncement_info = CourseAnnouncement.objects.filter(course=course_info).order_by('-created_at')
     uid = request.user.id
     is_admin = Admin.objects.filter(user_id=uid).exists()
     context = {
