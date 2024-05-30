@@ -1,3 +1,5 @@
+import os
+from dotenv import load_dotenv
 from django.shortcuts import redirect, render
 from django.contrib.auth import logout
 from django.db.models import Count
@@ -5,11 +7,21 @@ from allauth.socialaccount.models import SocialAccount
 from lms.models import Admin, CourseAdmin, EnrolledCourse
 
 def login(request):
+    session_data = request.session
+    # Inspect session keys and values
+    for key, value in session_data.items():
+        print(key, value)
     return render(request, 'login.html')
 
 def logoutfunction(request):
     logout(request)
-    return redirect('login')
+    logout_url = "https://login.microsoftonline.com/{tenant_id}/oauth2/v2.0/logout?post_logout_redirect_uri={redirect_uri}"
+    # Replace {tenant_id} with your Azure Active Directory tenant ID
+    # Replace {redirect_uri} with the URL to redirect the user after logout (typically your application's logout page)
+    # Redirect the user to the logout URL
+    redirect_uri = "http://localhost:8000"  # Replace with your actual logout URL
+    logout_url = logout_url.format(tenant_id=os.getenv("MS_ID"), redirect_uri=redirect_uri)
+    return redirect(logout_url)
 
 def student_dashboard(request):
     user = request.user

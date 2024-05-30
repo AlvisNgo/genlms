@@ -1,9 +1,8 @@
 from django.urls import path
-from django.contrib.auth import views as auth_views
 from .views import views_login, views_announcement, views_course, views_discussion, views_profile
 urlpatterns = [
      path("", views_login.login, name="login"),
-     path("", views_login.logoutfunction, name="logout"),
+     path("logout", views_login.logoutfunction, name="logout"),
      path("student/dashboard", views_login.student_dashboard, name="dashboard"),
      path("student/course/discussion_board/<int:id>",
           views_discussion.discussion_board, name="discussion_board"),
