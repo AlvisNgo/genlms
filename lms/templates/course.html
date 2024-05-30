@@ -1,5 +1,5 @@
 {% extends "base-student.html" %} {% block title %}Student Dashboard{% endblock %} 
-{% block content-wrapper %} {% load static %} {% for course in course_info %}
+{% block content-wrapper %} {% load static %}
 
 <!-- Header -->
 <div class="content-header">
@@ -7,7 +7,7 @@
     <div class="row no-gutters">
       <div class="col-12 col-sm-6 col-md-8">
         <h1 class="font-weight-bold">
-          {{ course.course_name }} [AY2023/24 Trimester 3]
+          {{ course_info.course_name }} [AY2023/24 Trimester 3]
         </h1>
       </div>
     </div>
@@ -23,7 +23,7 @@
         <div class="card">
           <div class="card-body">
             <h4>Module Description</h4>
-            <p class="mt-0 mb-0">{{ course.description }}</p>
+            <p class="mt-0 mb-0">{{ course_info.description }}</p>
             <p class="mt-0 mb-0 text-justify">
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore,
               alias voluptate est assumenda autem eligendi dolorem ea at
@@ -35,12 +35,31 @@
 
         <div class="card">
           <div class="card-body">
-            <h4>Announcements</h4>
-            <p class="mt-0 mb-0 text-justify">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam
-              quam at dolorem. Qui modi laborum iste animi, odit ex debitis iure
-              molestias veritatis tempore doloremque eius cum id. Facere, enim.
+            <h4>Announcement</h4>
+            {% if courseAnnouncement_info%}
+
+              {% for announce in courseAnnouncement_info%}
+              <p> Last updated on: {{ announce.updated_at }}</p>
+              <h3>{{ announce.title }}</h3>
+              <p class="latest-anouncement">
+                {{ announce.content }} 
+                
+                <hr class="solid" color="9C9C9C">
+                
+                {% endfor %}
+
+              {% else %}
+              No Anouncements
+              {% endif %}
+              
             </p>
+          </div>
+
+          <div class="card-footer">
+            {% if is_admin%}
+            <a href="{% url 'announcement_add' course_info.course_id %}" class="btn btn-primary">Add Announcement</a>
+            {% else %}
+            {% endif %}          
           </div>
         </div>
 
@@ -68,16 +87,14 @@
                     <a class="nav-link p-2 text-muted" href="#">Content</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link p-2 text-muted" href="{% url 'discussion_board' course.course_id %}">Discussion Forums</a
-                    >
+                    <a class="nav-link p-2 text-muted" href="{% url 'discussion_board' course_info.course_id %}">Discussion Forums</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link p-2 text-muted" href="#">My Grades</a>
+                    <a class="nav-link p-2 text-muted" href="{% url 'grades' course_info.course_id %}">My Grades</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link p-2 text-muted" href="#"
-                      >Email / Feedback</a
-                    >
+                    <a class="nav-link p-2 text-muted" href="{% url 'feedback' course_info.course_id %}"
+                      >Email / Feedback</a>
                   </li>
                 </ul>
               </nav>
@@ -101,4 +118,4 @@
   </div>
 </section>
 
-{% endfor %} {% endblock %}
+{% endblock %}
