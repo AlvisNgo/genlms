@@ -9,20 +9,9 @@ def login(request):
 
 def logoutfunction(request):
     logout(request)
-    session_data = request.session
-    
-    # Inspect session keys and values
-    for key, value in session_data.items():
-        print(key, value)
-
     return redirect('login')
 
 def student_dashboard(request):
-    session_data = request.session
-    # Inspect session keys and values
-    for key, value in session_data.items():
-        print(key, value)
-    
     user = request.user
     uid = request.user.id
     context = {}
