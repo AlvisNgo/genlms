@@ -93,6 +93,10 @@ DATABASES = {
         'PASSWORD': os.getenv("DB_PASSWORD"),
         'HOST': os.getenv("DB_HOST"),   # Or an IP Address that your DB is hosted on
         'PORT': os.getenv("DB_PORT"),
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+            'use_unicode': True
+        },
     }
 }
 
