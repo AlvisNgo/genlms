@@ -7,7 +7,7 @@
     <div class="row no-gutters">
       <div class="col-12 col-sm-6 col-md-8">
         <h1 class="font-weight-bold">
-          {{ course.course_name }} [AY2023/24 Trimester 3]
+          {{ course_info.course_name }} [AY2023/24 Trimester 3]
         </h1>
       </div>
     </div>
@@ -23,7 +23,7 @@
         <div class="card">
           <div class="card-body">
             <h4>Module Description</h4>
-            <p class="mt-0 mb-0">{{ course.description }}</p>
+            <p class="mt-0 mb-0">{{ course_info.description }}</p>
             <p class="mt-0 mb-0 text-justify">
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore,
               alias voluptate est assumenda autem eligendi dolorem ea at
@@ -37,9 +37,17 @@
           <div class="card-body">
             <h4>Announcement</h4>
             {% if courseAnnouncement_info%}
-            <h3>{{ courseAnnouncement_info.title }}</h3>
-            <p class="latest-anouncement">
-              {{ courseAnnouncement_info.content }}          
+
+              {% for announce in courseAnnouncement_info%}
+              <p> Last updated on: {{ announce.updated_at }}</p>
+              <h3>{{ announce.title }}</h3>
+              <p class="latest-anouncement">
+                {{ announce.content }} 
+                
+                <hr class="solid" color="9C9C9C">
+                
+                {% endfor %}
+
               {% else %}
               No Anouncements
               {% endif %}
@@ -48,7 +56,10 @@
           </div>
 
           <div class="card-footer">
+            {% if is_admin%}
             <a href="{% url 'announcement_add' course_info.course_id %}" class="btn btn-primary">Add Announcement</a>
+            {% else %}
+            {% endif %}          
           </div>
         </div>
 

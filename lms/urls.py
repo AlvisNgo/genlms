@@ -1,10 +1,9 @@
 from django.urls import path
 from .views import views_login, views_announcement, views_course, views_discussion, views_profile, api_generative
-import pathlib
-import textwrap
 
 urlpatterns = [
      path("", views_login.login, name="login"),
+     path("logout", views_login.logoutfunction, name="logout"),
      path("student/dashboard", views_login.student_dashboard, name="dashboard"),
      path("student/course/discussion_board/<int:id>",
           views_discussion.discussion_board, name="discussion_board"),
