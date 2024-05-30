@@ -1,5 +1,8 @@
-{% extends "base-student.html" %} {% block title %}Student Dashboard{% endblock %} 
-{% block content-wrapper %} {% load static %}
+{% extends "base-student.html" %}
+{% block title %}Student Dashboard{% endblock %} 
+{% load static %}
+{% load markdownify %}
+{% block content-wrapper %}
 
 <!-- Header -->
 <div class="content-header">
@@ -42,7 +45,7 @@
               <p> Last updated on: {{ announce.updated_at }}</p>
               <h3>{{ announce.title }}</h3>
               <p class="latest-anouncement">
-                {{ announce.content }} 
+                {{ announce.content|markdownify }} 
                 
                 <hr class="solid" color="9C9C9C">
                 
