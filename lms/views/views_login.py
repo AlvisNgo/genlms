@@ -1,4 +1,5 @@
 from django.shortcuts import redirect, render
+from django.contrib.auth import logout
 from django.db.models import Count
 from allauth.socialaccount.models import SocialAccount
 from lms.models import Admin, CourseAdmin, EnrolledCourse
@@ -6,8 +7,22 @@ from lms.models import Admin, CourseAdmin, EnrolledCourse
 def login(request):
     return render(request, 'login.html')
 
+def logoutfunction(request):
+    logout(request)
+    session_data = request.session
+    
+    # Inspect session keys and values
+    for key, value in session_data.items():
+        print(key, value)
+
+    return redirect('login')
 
 def student_dashboard(request):
+    session_data = request.session
+    # Inspect session keys and values
+    for key, value in session_data.items():
+        print(key, value)
+    
     user = request.user
     uid = request.user.id
     context = {}
@@ -33,6 +48,5 @@ def student_dashboard(request):
         my_courses = CourseAdmin.objects.filter(
             admin_id=admin_info.admin_id).select_related('course')
         context['my_courses'] = my_courses
-    
     print(context)
     return render(request, 'dashboard.html', context)
