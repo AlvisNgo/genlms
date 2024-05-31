@@ -26,4 +26,6 @@ urlpatterns = [
      # Announcement
      path("student/course/<int:id>/announcement_add", views_announcement.announcement_add, name="announcement_add"),
      path("student/course/<int:id>/announcement_edit/<int:announcement_id>", views_announcement.announcement_edit, name="announcement_edit"),
+     path("student/course/<int:id>/announcement_delete/<int:announcement_id>", views_announcement.announcement_delete, name="announcement_delete"),
+
 ]

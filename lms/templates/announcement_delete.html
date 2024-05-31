@@ -24,35 +24,18 @@
                 <div class="card card-primary">
                     <form action="{{ request.path }}" method="post">
                         <div class="card-header">
-                            <h3 class="card-title">Edit Announcement</h3>
+                            <h3 class="card-title">Delete Announcement</h3>
                         </div>
                         <!-- /.card-header -->
 
                         <div class="card-body">
-                                {% csrf_token %}
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <!-- text input -->
-                                        <div class="form-group">
-                                            <label for="title">Announcement Title</label>
-                                            {{ form.title }}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        <!-- textarea -->
-                                        <div class="form-group">
-                                            <label for="content">Content</label>
-                                            {{ form.content }}
-                                        </div>
-                                    </div>
-                                </div>
+                            {% csrf_token %}
+                            <h3>Are you sure you want to delete this announcement?</h3>        
                         </div>
                         <!-- /.card-body -->
 
                         <div class="card-footer">
-                            <input type="submit" method="EDIT" class="btn btn-primary" value="Save Edit" />
+                            <input type="submit" method="delete" class="btn btn-danger" value="Confirm Delete" />
                             
                         </div>
                         <!-- /.card-footer -->

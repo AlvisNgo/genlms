@@ -51,7 +51,7 @@ def announcement_edit(request, id, announcement_id):
     dynamic_title_value = announcement_info.title
     dynamic_content_value = announcement_info.content
     context['course_info'] = course_info
-
+    print(request.method)
     if request.method == 'POST':
         form = AnnouncementEditForm(request.POST)
         if form.is_valid():
@@ -67,7 +67,9 @@ def announcement_edit(request, id, announcement_id):
             return redirect(reverse('course', args=[id]))
         
     elif request.method == 'DELETE':
-        CourseAnnouncement.objects.filter(id=id).delete()
+        announcement_info.deleted_at = timezone.now()
+        announcement_info.save()
+        print(announcement_info.deleted_at)
 
         return redirect(reverse('course', args=[id]))
     else:
@@ -80,5 +82,27 @@ def announcement_edit(request, id, announcement_id):
     return render(request, 'announcement_edit.html', context)
 
 
+def announcement_delete(request, id, announcement_id):
+    context = {}
 
+    # Check if user is admin - only admin can add new announcement
+    admin_info = get_object_or_404(Admin, user_id=request.user.id) # TODO: Change to 401 status
+
+    # Get enrolled course corresponding course id, then get course details
+    course_info = get_object_or_404(Course, pk=id)
+    announcement_info = get_object_or_404(CourseAnnouncement,pk=announcement_id)
+    
+    context['course_info'] = course_info
+    print(request.method)
+    if request.method == 'POST':
+
+        announcement_info.deleted_at = timezone.now()
+        announcement_info.save()
+
+        return redirect(reverse('course', args=[id]))
+    
+    # Debugging purpose
+    print(context)
+
+    return render(request, 'announcement_delete.html', context)
     
