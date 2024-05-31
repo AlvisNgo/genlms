@@ -1,0 +1,66 @@
+{% extends "base-student.html" %}
+{% block title %}Edit Announcement{% endblock %}
+{% block content-wrapper %}
+{% load static %}
+
+
+<!-- Header -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row no-gutters">
+            <div class="col-12 col-sm-6 col-md-8">
+                <h1 class="font-weight-bold">
+                    {{ course_info.course_name }} [AY2023/24 Trimester 3]
+                </h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <form action="{{ request.path }}" method="post">
+                        <div class="card-header">
+                            <h3 class="card-title">Edit Announcement</h3>
+                        </div>
+                        <!-- /.card-header -->
+
+                        <div class="card-body">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <!-- text input -->
+                                        <div class="form-group">
+                                            <label for="title">Announcement Title</label>
+                                            {{ form.title }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <!-- textarea -->
+                                        <div class="form-group">
+                                            <label for="content">Content</label>
+                                            {{ form.content }}
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                        <!-- /.card-body -->
+
+                        <div class="card-footer">
+                            <input type="submit" method="EDIT" class="btn btn-primary" value="Save Edit" />
+                            <input type="button" method="DELETE" class="btn btn-danger" value="Delete Annoucement" />
+                        </div>
+                        <!-- /.card-footer -->
+                    </form>
+                    <!-- /.form -->
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

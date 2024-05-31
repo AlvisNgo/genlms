@@ -43,12 +43,18 @@
 
               {% for announce in courseAnnouncement_info%}
               <p> Last updated on: {{ announce.updated_at }}</p>
+              
               <h3>{{ announce.title }}</h3>
               <p class="latest-anouncement">
                 {{ announce.content|markdownify }} 
                 
+                {% if is_admin%}
+                </br>
+                </br>
+                <a href="{% url 'announcement_edit' course_info.course_id announce.id %}" class="btn btn-primary">Edit</a>
+              
+                {% endif %}              
                 <hr class="solid" color="9C9C9C">
-                
                 {% endfor %}
 
               {% else %}

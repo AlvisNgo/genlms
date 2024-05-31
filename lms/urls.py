@@ -26,6 +26,7 @@ urlpatterns = [
   
      # Announcement
      path("student/course/<int:id>/announcement_add", views_announcement.announcement_add, name="announcement_add"),
+     path("student/course/<int:id>/announcement_edit/<int:announcement_id>", views_announcement.announcement_edit, name="announcement_edit"),
 
      # Generative AI API
      path("api/generative", api_generative.generate, name="generative")
