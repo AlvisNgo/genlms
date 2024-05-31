@@ -22,9 +22,9 @@ class PostForm(forms.ModelForm):
         }
 
 class ProfileForm(forms.ModelForm):
-    first_name = forms.CharField(max_length=30, required=False)
-    last_name = forms.CharField(max_length=30, required=False)
-    email = forms.EmailField(required=False)
+    first_name = forms.CharField(max_length=30, required=False, widget=forms.TextInput(attrs={'readonly': 'readonly'}))
+    last_name = forms.CharField(max_length=30, required=False, widget=forms.TextInput(attrs={'readonly': 'readonly'}))
+    email = forms.EmailField(required=False, widget=forms.TextInput(attrs={'readonly': 'readonly'}))
     profile_picture = forms.ImageField(required=False)
     phone = forms.CharField(max_length=15, required=False)
     gender = forms.ChoiceField(choices=[
@@ -33,6 +33,7 @@ class ProfileForm(forms.ModelForm):
         ('other', 'Other'),
         ('prefer_not_to_say', 'Prefer not to say')
     ], required=False)
+    address = forms.CharField(max_length=255, required=False)
     description = forms.CharField(widget=forms.Textarea, required=False)
 
     class Meta:
