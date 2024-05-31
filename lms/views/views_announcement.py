@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
-from lms.course_annoucement import AnnouncementForm
+from django.utils import timezone
+from lms.course_annoucement import AnnouncementForm, AnnouncementEditForm
 from lms.models import Admin, Course, CourseAnnouncement
 
 def announcement_add(request, id):
@@ -32,3 +33,52 @@ def announcement_add(request, id):
     print(context)
 
     return render(request, 'announcement_add.html', context)
+'''
+class AnnouncementEditView(UpdateView):
+    model = CourseAnnouncement
+    fields = ['title', 'content']
+    template_name = 'announcement_edit'
+'''
+def announcement_edit(request, id, announcement_id):
+    context = {}
+
+    # Check if user is admin - only admin can add new announcement
+    admin_info = get_object_or_404(Admin, user_id=request.user.id) # TODO: Change to 401 status
+
+    # Get enrolled course corresponding course id, then get course details
+    course_info = get_object_or_404(Course, pk=id)
+    announcement_info = get_object_or_404(CourseAnnouncement,pk=announcement_id)
+    dynamic_title_value = announcement_info.title
+    dynamic_content_value = announcement_info.content
+    context['course_info'] = course_info
+
+    if request.method == 'POST':
+        form = AnnouncementEditForm(request.POST)
+        if form.is_valid():
+            # Process the form data
+            title = form.cleaned_data['title']
+            content = form.cleaned_data['content']
+
+            announcement_info.title = title
+            announcement_info.content = content
+            announcement_info.updated_at = timezone.now()
+            announcement_info.save()
+
+            return redirect(reverse('course', args=[id]))
+        
+    elif request.method == 'DELETE':
+        CourseAnnouncement.objects.filter(id=id).delete()
+
+        return redirect(reverse('course', args=[id]))
+    else:
+        form = AnnouncementEditForm(title_value=dynamic_title_value, content_value = dynamic_content_value)
+        context['form'] = form
+    
+    # Debugging purpose
+    print(context)
+
+    return render(request, 'announcement_edit.html', context)
+
+
+
+    
