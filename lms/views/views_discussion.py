@@ -1,20 +1,22 @@
+# lms/views/views_discussion.py
 from django.shortcuts import get_object_or_404, redirect, render
 from lms.forms import PostForm, ThreadForm
 from django.db.models import Count
 from lms.models import Course, EnrolledCourse, Post, Thread
+from django.http import JsonResponse
+
 
 def discussion_board(request, id):
     enrolled_course = get_object_or_404(EnrolledCourse, pk=id)
     course_info = get_object_or_404(Course, pk=enrolled_course.course_id)
-    threads = Thread.objects.filter(course=course_info).annotate(post_count=Count('post')).prefetch_related('post_set', 'post_set__user')
+    threads = Thread.objects.filter(course=course_info).annotate(
+        like_count=Count('likes')).order_by('-like_count')
 
     context = {
         'course_info': course_info,
         'threads': threads,
     }
 
-    print(f"Discussion Board Context: {context}")  # Debugging statement
-    
     return render(request, 'discussion_board.html', context)
 
 
@@ -54,3 +56,21 @@ def create_post(request, thread_id):
     else:
         form = PostForm()
     return render(request, 'create_post.html', {'form': form, 'thread': thread})
+
+
+def like_thread(request, thread_id):
+    thread = get_object_or_404(Thread, id=thread_id)
+    if request.user in thread.likes.all():
+        thread.likes.remove(request.user)
+    else:
+        thread.likes.add(request.user)
+    return JsonResponse({'likes': thread.total_likes()})
+
+
+def like_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    if request.user in post.likes.all():
+        post.likes.remove(request.user)
+    else:
+        post.likes.add(request.user)
+    return JsonResponse({'likes': post.total_likes()})

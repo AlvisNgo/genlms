@@ -27,39 +27,62 @@
 
             <div class="card mt-4">
                 <div class="card-body">
-                    <a href="{% url 'create_thread' course_info.course_id %}"class="btn btn-primary mb-4">Create New Thread</a>
-                    <div class="table-responsive">
-                        <table class="table table-bordered mt-3">
-                            <thead class="thead-light">
-                                <tr>
-                                    <th>Threads</th>
-                                    <th>Content</th>
-                                    <th>Posts</th>
-                                    <th>Last Post</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for thread in threads %}
-                                <tr>
-                                    <td><a href="{% url 'view_thread' thread.id %}">{{ thread.title }}</a></td>
-                                    <td>{{ thread.content }}</td>
-                                    <td>{{ thread.post_count }}</td>
-                                    <td class="last-post">
-                                        {% if thread.post_set.last %}
-                                        <img src="path/to/user-pic.png" alt="User Picture" class="rounded-circle" style="height: 30px; margin-right: 10px;">
-                                        {{ thread.post_set.last.user.username }}, {{ thread.post_set.last.created_at|timesince }} ago
-                                        {% else %}
-                                        No posts yet
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Threads</th>
+                                <th class="text-center">Content</th>
+                                <th class="text-center">Posts</th>
+                                <th class="text-center">Likes</th>
+                                <th class="text-center">Last Post</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for thread in threads %}
+                            <tr>
+                                <td class="text-center"><a href="{% url 'view_thread' thread.id %}">{{ thread.title }}</a></td>
+                                <td>{{ thread.content|linebreaks }}</td>
+                                <td class="text-center">{{ thread.post_set.count }}</td> <!-- Correctly access post count -->
+                                <td class="text-center">
+                                    <span id="thread-likes-{{ thread.id }}">{{ thread.like_count }}</span>
+                                </td>
+                                <td class="text-center">
+                                    {% if thread.post_set.count > 0 %}
+                                        {{ thread.post_set.last.created_at|date:"Ymd" }}, {{ thread.post_set.last.created_at|timesince }} ago
+                                    {% else %}
+                                        No posts
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    function likeThread(threadId) {
+        fetch("{% url 'like_thread' 0 %}".replace('0', threadId))
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('thread-likes-' + threadId).innerText = data.likes;
+        });
+    }
+</script>
+<style>
+    .like-button {
+        background: none;
+        border: none;
+        color: #007bff;
+        font-size: 1rem;
+        cursor: pointer;
+    }
+    .like-button:hover {
+        color: #0056b3;
+    }
+</style>
+
 {% endblock %}
