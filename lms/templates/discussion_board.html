@@ -27,6 +27,7 @@
 
             <div class="card mt-4">
                 <div class="card-body">
+                    <a href="{% url 'create_thread' course_info.course_id %}"class="btn btn-primary mb-4">Create New Thread</a>
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -48,7 +49,7 @@
                                 </td>
                                 <td class="text-center">
                                     {% if thread.post_set.count > 0 %}
-                                        {{ thread.post_set.last.created_at|date:"Ymd" }}, {{ thread.post_set.last.created_at|timesince }} ago
+                                        {{ thread.post_set.last.user_id }}, {{ thread.post_set.last.created_at|timesince }} ago
                                     {% else %}
                                         No posts
                                     {% endif %}
