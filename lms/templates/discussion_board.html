@@ -49,7 +49,7 @@
                                 </td>
                                 <td class="text-center">
                                     {% if thread.post_set.count > 0 %}
-                                        {{ thread.post_set.last.user.username }}, {{ thread.post_set.last.created_at|timesince }} ago
+                                        {{ thread.post_set.last.user.first_name }}, {{ thread.post_set.last.created_at|timesince }} ago
                                     {% else %}
                                         No posts
                                     {% endif %}
