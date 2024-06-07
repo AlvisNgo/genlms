@@ -1,6 +1,6 @@
 # lms/views/views_discussion.py
 from django.shortcuts import get_object_or_404, redirect, render
-from lms.forms import PostForm, ThreadForm
+from lms.forms import PostForm, ThreadForm, ReplyPostForm
 from django.db.models import Count
 from lms.models import Course, EnrolledCourse, Post, Thread
 from django.http import JsonResponse
@@ -35,7 +35,8 @@ def discussion_board(request, id):
 
 def view_thread(request, thread_id):
     thread = get_object_or_404(Thread, pk=thread_id)
-    posts = Post.objects.filter(thread=thread).select_related('user')
+    posts = Post.objects.filter(thread=thread).annotate(
+        like_count=Count('likes')).order_by('-like_count').select_related('user')
     context = {'thread': thread, 'posts': posts}
     return render(request, 'view_thread.html', context)
 
@@ -74,7 +75,7 @@ def create_post(request, thread_id):
 def reply_post(request, post_id):
     parent_post = get_object_or_404(Post, pk=post_id)
     if request.method == 'POST':
-        form = PostForm(request.POST)
+        form = ReplyPostForm(request.POST)
         if form.is_valid():
             post = form.save(commit=False)
             post.parent_post = parent_post
@@ -83,7 +84,7 @@ def reply_post(request, post_id):
             post.save()
             return redirect('view_thread', thread_id=parent_post.thread.id)
     else:
-        form = PostForm()
+        form = ReplyPostForm()
     return render(request, 'reply_post.html', {'form': form, 'parent_post': parent_post})
 
 
@@ -97,12 +98,14 @@ def like_thread(request, thread_id):
 
 
 def like_post(request, post_id):
-    post = get_object_or_404(Post, id=post_id)
+    post = get_object_or_404(Post, pk=post_id)
     if request.user in post.likes.all():
         post.likes.remove(request.user)
+        liked = False
     else:
         post.likes.add(request.user)
-    return JsonResponse({'likes': post.total_likes()})
+        liked = True
+    return JsonResponse({'likes': post.likes.count(), 'liked': liked})
 
 
 def mark_as_read(request, thread_id):

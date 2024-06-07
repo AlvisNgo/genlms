@@ -58,7 +58,7 @@
                                     <span class="badge badge-secondary">{{ thread.tags }}</span>
                                 </td>
                                 <td>{{ thread.content|linebreaks }}</td>
-                                <td class="text-center">{{ thread.post_set.count }}</td> <!-- Correctly access post count -->
+                                <td class="text-center">{{ thread.post_set.count }}</td>
                                 <td class="text-center">
                                     <span id="thread-likes-{{ thread.id }}">{{ thread.like_count }}</span>
                                 </td>

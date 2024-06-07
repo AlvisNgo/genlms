@@ -1,0 +1,21 @@
+<!-- replies.html -->
+{% for reply in post.post_set.all %}
+    <div class="media mt-3 ml-4">
+        <img src="path/to/user-pic.png" alt="User Picture" class="rounded-circle mr-3" style="height: 30px;">
+        <div class="media-body">
+            <h6 class="mt-0">{{ reply.user.username }}</h6>
+            <p>{{ reply.content|linebreaks }}</p>
+            <small>{{ reply.created_at|date:"Y-m-d H:i" }}</small>
+            <div>
+                <span id="post-likes-{{ reply.id }}">{{ reply.total_likes }}</span> likes
+                <button class="btn btn-link like-button" onclick="likePost({{ reply.id }})">
+                    <i class="fas fa-thumbs-up"></i> Like
+                </button>
+                <button class="btn btn-link reply-button" onclick="replyPost({{ reply.id }})">
+                    <i class="fas fa-reply"></i> Reply
+                </button>
+            </div>
+            {% include 'replies.html' with post=reply %}
+        </div>
+    </div>
+{% endfor %}
