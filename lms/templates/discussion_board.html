@@ -28,7 +28,18 @@
             <div class="card mt-4">
                 <div class="card-body">
                     <a href="{% url 'create_thread' course_info.course_id %}"class="btn btn-primary mb-4">Create New Thread</a>
-                    <table class="table table-striped">
+                    <div class="mt-3">
+                        <form method="get" class="form-inline">
+                            <label for="sort">Sort by:</label>
+                            <select name="sort" id="sort" class="form-control mx-2" onchange="this.form.submit()">
+                                <option value="likes" {% if sort_option == 'likes' %}selected{% endif %}>Likes</option>
+                                <option value="name" {% if sort_option == 'name' %}selected{% endif %}>Name</option>
+                                <option value="id" {% if sort_option == 'id' %}selected{% endif %}>ID</option>
+                                <option value="newest" {% if sort_option == 'newest' %}selected{% endif %}>Newest</option>
+                            </select>
+                        </form>
+                    </div>
+                    <table class="table">
                         <thead>
                             <tr>
                                 <th class="text-center">Threads</th>
@@ -40,8 +51,12 @@
                         </thead>
                         <tbody>
                             {% for thread in threads %}
-                            <tr>
-                                <td class="text-center"><a href="{% url 'view_thread' thread.id %}">{{ thread.title }}</a></td>
+                            <tr class="{% if request.user in thread.is_read.all %}read{% else %}unread{% endif %}">
+                                <td>
+                                    <a href="{% url 'view_thread' thread.id %}" onclick="markAsRead({{ thread.id }})">{{ thread.title }}</a>
+                                    <br>
+                                    <span class="badge badge-secondary">{{ thread.tags }}</span>
+                                </td>
                                 <td>{{ thread.content|linebreaks }}</td>
                                 <td class="text-center">{{ thread.post_set.count }}</td> <!-- Correctly access post count -->
                                 <td class="text-center">
@@ -65,6 +80,17 @@
 </div>
 
 <script>
+    function likeThread(threadId) {
+        fetch("{% url 'like_thread' 0 %}".replace('0', threadId))
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('thread-likes-' + threadId).innerText = data.likes;
+        });
+    }
+    
+    function markAsRead(threadId) {
+        fetch("{% url 'mark_as_read' 0 %}".replace('0', threadId));
+    }
 </script>
 <style>
     .like-button {
@@ -76,6 +102,20 @@
     }
     .like-button:hover {
         color: #0056b3;
+    }
+    .text-center {
+        text-align: center;
+    }
+    .read {
+        background-color: gray; /* Light gray background for read threads */
+        font-weight: normal; /* Normal font weight for read threads */
+        a {
+            color: black;
+        }
+    }
+    .unread {
+        font-weight: bold; /* Bold font weight for unread threads */
+        color: #f0f0f0;
     }
 </style>
 

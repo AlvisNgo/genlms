@@ -70,6 +70,9 @@ class Thread(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     likes = models.ManyToManyField(
         User, related_name='thread_likes', blank=True)
+    tags = models.CharField(max_length=200, blank=True)  # Add tags field
+    is_read = models.ManyToManyField(
+        User, related_name='read_threads', blank=True)  # Read/unread status
 
     def total_likes(self):
         return self.likes.count()

@@ -30,6 +30,10 @@ urlpatterns = [
          views_discussion.like_thread, name="like_thread"),
     path("student/course/discussion_board/post/<int:post_id>/like/",
          views_discussion.like_post, name="like_post"),
+    path("student/course/discussion_board/post/<int:post_id>/reply/",
+         views_discussion.reply_post, name="reply_post"),
+    path("student/course/discussion_board/thread/<int:thread_id>/mark_as_read/",
+         views_discussion.mark_as_read, name="mark_as_read"),
 
     # Announcement
     path("student/course/<int:id>/announcement_add",
