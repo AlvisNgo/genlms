@@ -43,7 +43,6 @@
                         <thead>
                             <tr>
                                 <th class="text-center">Threads</th>
-                                <th class="text-center">Content</th>
                                 <th class="text-center">Posts</th>
                                 <th class="text-center">Likes</th>
                                 <th class="text-center">Last Post</th>
@@ -57,7 +56,6 @@
                                     <br>
                                     <span class="badge badge-secondary">{{ thread.tags }}</span>
                                 </td>
-                                <td>{{ thread.content|linebreaks }}</td>
                                 <td class="text-center">{{ thread.post_set.count }}</td>
                                 <td class="text-center">
                                     <span id="thread-likes-{{ thread.id }}">{{ thread.like_count }}</span>
