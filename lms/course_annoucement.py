@@ -40,7 +40,7 @@ class AnnouncementEditForm(forms.ModelForm):
     widget=forms.Textarea(attrs={
         'class': 'form-control',
         'id': 'content',
-        'rows': 3,
+        'rows': 12,
         'placeholder': 'Enter ...'
     }),
     label='Content'

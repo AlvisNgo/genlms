@@ -32,7 +32,8 @@ function generateWithAI() {
                 Swal.showValidationMessage(`Request failed: ${error}`);
             }
         },
-        allowOutsideClick: () => !Swal.isLoading()
+        backdrop: true,
+        allowOutsideClick: () => !Swal.isLoading(),
     }).then((result) => {
         if (result.isConfirmed) {
             Swal.fire({
