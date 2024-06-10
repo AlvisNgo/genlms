@@ -1,13 +1,13 @@
-function generateWithAI() {
+function generateWithAI(confirmButtonText = "Generate", defaultValue = "Generate a sample markdown content", contentId = "content") {
     Swal.fire({
         title: "Enter your prompt",
         input: "text",
-        inputValue: "I'm a Prof. Help me write an annoucement for Quiz 2 for module Computing Science with weightage of 30%.",
+        inputValue: defaultValue,
         inputAttributes: {
             autocapitalize: "off"
         },
         showCancelButton: true,
-        confirmButtonText: "Generate Announcement",
+        confirmButtonText: confirmButtonText,
         showLoaderOnConfirm: true,
         preConfirm: async (prompt) => {
             try {
@@ -42,7 +42,7 @@ function generateWithAI() {
                 icon: "success"
             });
 
-            const textarea = document.getElementById("content");
+            const textarea = document.getElementById(contentId);
             textarea.value = result.value.response;
         }
     });

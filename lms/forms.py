@@ -13,7 +13,7 @@ class ThreadForm(forms.ModelForm):
         fields = ['title', 'content', 'tags']
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
-            'content': forms.Textarea(attrs={'class': 'form-control'}),
+            'content': forms.Textarea(attrs={'class': 'form-control', 'id': 'content'}),
         }
 
 
