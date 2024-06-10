@@ -166,3 +166,12 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
+
+# Markdown Settings
+MARKDOWNIFY = {
+   "default": {
+        "WHITELIST_TAGS": ["a", "p", "h1", "h2", "h3", "h4", "b", "em", "u", "i", "ul", "li", "ol", "br", "hr", "strong", "blockquote", "abbr"],
+        "WHITELIST_ATTRS": ['href', 'src', 'alt', 'target'],
+        "WHITELIST_PROTOCOLS": ['http', 'https']
+   }
+}
