@@ -1,3 +1,4 @@
+# lms/urls.py
 from django.urls import path
 from .views import views_login, views_announcement, views_course, views_discussion, views_profile, api_generative
 
@@ -13,8 +14,16 @@ urlpatterns = [
      path("student/course/<int:id>/grade", views_course.grades, name="grades"),
      path("student/course/<int:id>/feedback", views_course.feedback, name="feedback"),
 
+     # Course
+     path("student/course/<int:id>",
+          views_course.student_course_info, name="course"),
+     path("student/course/<int:id>/grade", views_course.grades, name="grades"),
+     path("student/course/<int:id>/feedback",
+          views_course.feedback, name="feedback"),
+
      # Profile
-     path("student/dashboard/profile/", views_profile.profile_view, name="profile"),
+     path("student/dashboard/profile/",
+          views_profile.profile_view, name="profile"),
 
      # Paths for threads and posts under the discussion board
      path("student/course/discussion_board/thread/<int:thread_id>/",
@@ -23,7 +32,15 @@ urlpatterns = [
           views_discussion.create_thread, name="create_thread"),
      path("student/course/discussion_board/thread/<int:thread_id>/post/new/",
           views_discussion.create_post, name="create_post"),
-  
+     path("student/course/discussion_board/thread/<int:thread_id>/like/",
+          views_discussion.like_thread, name="like_thread"),
+     path("student/course/discussion_board/post/<int:post_id>/like/",
+          views_discussion.like_post, name="like_post"),
+     path("student/course/discussion_board/post/<int:post_id>/reply/",
+          views_discussion.reply_post, name="reply_post"),
+     path("student/course/discussion_board/thread/<int:thread_id>/mark_as_read/",
+          views_discussion.mark_as_read, name="mark_as_read"),
+
      # Announcement
      path("student/course/<int:id>/announcement_add", views_announcement.announcement_add, name="announcement_add"),
      path("student/course/<int:id>/announcement_edit/<int:announcement_id>", views_announcement.announcement_edit, name="announcement_edit"),
