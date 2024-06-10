@@ -2,7 +2,7 @@
 {% block title %}View Announcement{% endblock %}
 {% block content-wrapper %}
 {% load static %}
-
+{% load markdownify %}
 
 <!-- Header -->
 <div class="content-header">
@@ -43,7 +43,7 @@
                                         <!-- textarea -->
                                         <div class="form-group">
                                             <p class="latest-anouncement">
-                                                {{ announcement_info.content }} 
+                                                {{ announcement_info.content|markdownify }} 
                                             </p>
                                         </div>
                                     </div>
