@@ -91,7 +91,7 @@ def announcement_delete(request, id, announcement_id):
     # Get enrolled course corresponding course id, then get course details
     course_info = get_object_or_404(Course, pk=id)
     announcement_info = get_object_or_404(CourseAnnouncement,pk=announcement_id)
-    
+
     context['course_info'] = course_info
     print(request.method)
     if request.method == 'POST':
@@ -105,4 +105,27 @@ def announcement_delete(request, id, announcement_id):
     print(context)
 
     return render(request, 'announcement_delete.html', context)
+
+def announcement_view(request, id, announcement_id):
+    context = {}
+
+    # Check if user is admin - only admin can add new announcement
+    #admin_info = get_object_or_404(Admin, user_id=request.user.id) # TODO: Change to 401 status
+
+    # Get enrolled course corresponding course id, then get course details
+    course_info = get_object_or_404(Course, pk=id)
+    announcement_info = get_object_or_404(CourseAnnouncement,pk=announcement_id)
+    
+    context['course_info'] = course_info
+    context['announcement_info'] = announcement_info
+
+    print(request.method)
+    if request.method == 'POST':
+
+        return redirect(reverse('course', args=[id]))
+    
+    # Debugging purpose
+    print(context)
+
+    return render(request, 'announcement_view.html', context)
     

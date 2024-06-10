@@ -26,10 +26,6 @@ def student_course_info(request, id):
     
     print(context)
     return render(request, 'course.html', context)
-'''
-def announcement_delete(request, id):
-    course_announcement_id = CourseAnnouncement.objects.get(id=id)
-    course_announcement_id.delete()'''
 
 
 def grades(request, id):
