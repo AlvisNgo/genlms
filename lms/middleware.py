@@ -1,7 +1,7 @@
 from django.shortcuts import redirect
 from django.utils.deprecation import MiddlewareMixin
 
-from lms.models import Admin
+from lms.models import Admin, Profile
 
 class CheckAdminMiddleware(MiddlewareMixin):
     def process_request(self, request):
@@ -14,3 +14,8 @@ class CheckAdminMiddleware(MiddlewareMixin):
         # Set admin and is_admin attribute in request
         request.admin = Admin.objects.filter(user_id=user.id).first()
         request.is_admin = Admin.objects.filter(user_id=user.id).exists()
+
+def profile_picture_context_processor(request):
+    return {
+        'profile_picture': Profile.objects.filter(user=request.user).first().profile_picture
+    }

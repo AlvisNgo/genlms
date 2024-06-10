@@ -15,6 +15,7 @@ class ThreadForm(forms.ModelForm):
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'content': forms.Textarea(attrs={'class': 'form-control', 'id': 'content'}),
         }
+        
 
 
 class PostForm(forms.ModelForm):
@@ -36,9 +37,9 @@ class ReplyPostForm(forms.ModelForm):
 
 
 class ProfileForm(forms.ModelForm):
-    first_name = forms.CharField(max_length=30, required=False)
-    last_name = forms.CharField(max_length=30, required=False)
-    email = forms.EmailField(required=False)
+    first_name = forms.CharField(max_length=30, required=False, widget=forms.TextInput(attrs={'readonly': 'readonly'}))
+    last_name = forms.CharField(max_length=30, required=False, widget=forms.TextInput(attrs={'readonly': 'readonly'}))
+    email = forms.EmailField(required=False, widget=forms.TextInput(attrs={'readonly': 'readonly'}))
     profile_picture = forms.ImageField(required=False)
     phone = forms.CharField(max_length=15, required=False)
     gender = forms.ChoiceField(choices=[
@@ -51,8 +52,7 @@ class ProfileForm(forms.ModelForm):
 
     class Meta:
         model = Profile
-        fields = ['first_name', 'last_name', 'email',
-                  'profile_picture', 'phone', 'gender', 'description']
+        fields = ['first_name', 'last_name', 'email', 'profile_picture', 'description']
 
     def __init__(self, *args, **kwargs):
         super(ProfileForm, self).__init__(*args, **kwargs)

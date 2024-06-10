@@ -1,6 +1,6 @@
 # lms/urls.py
 from django.urls import path
-from .views import views_login, views_announcement, views_course, views_discussion, views_profile, api_generative
+from .views import views_login, views_announcement, views_course, views_discussion, views_profile, api_generative, views_calender
 
 urlpatterns = [
      path("", views_login.login, name="login"),
@@ -24,6 +24,9 @@ urlpatterns = [
      # Profile
      path("student/dashboard/profile/",
           views_profile.profile_view, name="profile"),
+
+     # Calender
+     path('calendar/', views_calender.calendar_view, name='calendar'),
 
      # Paths for threads and posts under the discussion board
      path("student/course/discussion_board/thread/<int:thread_id>/",
