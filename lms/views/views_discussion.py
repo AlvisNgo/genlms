@@ -37,7 +37,8 @@ def view_thread(request, thread_id):
     thread = get_object_or_404(Thread, pk=thread_id)
     posts = Post.objects.filter(thread=thread).annotate(
         like_count=Count('likes')).order_by('-like_count').select_related('user')
-    context = {'thread': thread, 'posts': posts}
+    course_info = get_object_or_404(Course, pk=thread.course.course_id)
+    context = {'thread': thread, 'posts': posts, 'course_info': course_info}
     return render(request, 'view_thread.html', context)
 
 
