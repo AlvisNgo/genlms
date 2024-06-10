@@ -52,7 +52,8 @@
                 </br>
                 </br>
                 <a href="{% url 'announcement_edit' course_info.course_id announce.id %}" class="btn btn-primary">Edit</a>
-              
+                <a href="{% url 'announcement_delete' course_info.course_id announce.id %}" class="btn btn-danger">Delete</a>
+
                 {% endif %}              
                 <hr class="solid" color="9C9C9C">
                 {% endfor %}
