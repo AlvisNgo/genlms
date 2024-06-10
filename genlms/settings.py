@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.microsoft',
+    'markdownify',
     'lms',
 ]
 
@@ -73,7 +74,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'django.template.context_processors.request',
+                'django.template.context_processors.request'
             ],
         },
     },
@@ -93,6 +94,10 @@ DATABASES = {
         'PASSWORD': os.getenv("DB_PASSWORD"),
         'HOST': os.getenv("DB_HOST"),   # Or an IP Address that your DB is hosted on
         'PORT': os.getenv("DB_PORT"),
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+            'use_unicode': True
+        },
     }
 }
 
@@ -160,4 +165,13 @@ SOCIALACCOUNT_PROVIDERS = {
             'scope': 'User.Read'
         }
     }
+}
+
+# Markdown Settings
+MARKDOWNIFY = {
+   "default": {
+        "WHITELIST_TAGS": ["a", "p", "h1", "h2", "h3", "h4", "b", "em", "u", "i", "ul", "li", "ol", "br", "hr", "strong", "blockquote", "abbr"],
+        "WHITELIST_ATTRS": ['href', 'src', 'alt', 'target'],
+        "WHITELIST_PROTOCOLS": ['http', 'https']
+   }
 }

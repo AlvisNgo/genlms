@@ -2,21 +2,69 @@
 {% block title %}Create New Thread{% endblock %}
 {% block content-wrapper %}
 
-<div class="container mt-4">
-    <a href="{% url 'discussion_board' course_info.course_id %}" class="btn btn-secondary my-3">Back to Discussion Board</a>
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body">
-                    <h3 class="">Create a new thread</h3>
-                    <form method="post">
-                        {% csrf_token %}
-                        {{ form.as_p }}
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </form>
-                </div>
+<!-- Header -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row no-gutters">
+            <div class="col-12 col-sm-6 col-md-8">
+                <h1 class="font-weight-bold">
+                    {{ course_info.course_name }} [AY2023/24 Trimester 3]
+                </h1>
+
+                <a href="{% url 'discussion_board' course_info.course_id %}" class="btn btn-secondary my-3">Back to Discussion Board</a>
             </div>
         </div>
     </div>
 </div>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <form action="{{ request.path }}" method="post">
+                        <div class="card-header">
+                            <h3 class="card-title">Create a new thread</h3>
+                        </div>
+                        <!-- /.card-header -->
+
+                        <div class="card-body">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <!-- text input -->
+                                        <div class="form-group">
+                                            <label for="title">Thread Title</label>
+                                            {{ form.title }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <!-- textarea -->
+                                        <div class="form-group">
+                                            <label for="content">Content <a href="#" onClick="generateWithAI('Generate Thread', 'Generate a discussion thread for student feedback on quiz 1', 'content');">[Generate with AI]</a></label>
+                                            {{ form.content }}
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                        <!-- /.card-body -->
+
+                        <div class="card-footer">
+                            <input type="submit" class="btn btn-primary" value="Submit" />
+                        </div>
+                        <!-- /.card-footer -->
+                    </form>
+                    <!-- /.form -->
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    const csrfToken = "{{ csrf_token }}";
+</script>
+
 {% endblock %}

@@ -1,15 +1,18 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone = models.CharField(max_length=15, blank=True)
     gender = models.CharField(max_length=20, choices=[('male', 'Male'), ('female', 'Female'), ('other', 'Other'), ('prefer_not_to_say', 'Prefer not to say')], blank=True)
+    address = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
-    profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True)
+    profile_picture = models.ImageField(upload_to='static/profile_pictures/', blank=True)
 
     def __str__(self):
         return self.user.username
+
 
 class Course(models.Model):
     course_id = models.AutoField(primary_key=True)
@@ -58,25 +61,37 @@ class CourseAdmin(models.Model):
 
 
 class Thread(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=200)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    course = models.ForeignKey('Course', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    likes = models.ManyToManyField(
+        User, related_name='thread_likes', blank=True)
+    tags = models.CharField(max_length=200, blank=True)  # Add tags field
+    is_read = models.ManyToManyField(
+        User, related_name='read_threads', blank=True)  # Read/unread status
+
+    def total_likes(self):
+        return self.likes.count()
 
     def __str__(self):
         return self.title
 
 
 class Post(models.Model):
-    thread = models.ForeignKey(Thread, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    parent_post = models.ForeignKey(
-        'self', null=True, blank=True, on_delete=models.CASCADE)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    parent_post = models.ForeignKey(
+        'self', null=True, blank=True, on_delete=models.CASCADE)
+    thread = models.ForeignKey(Thread, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    likes = models.ManyToManyField(User, related_name='post_likes', blank=True)
+
+    def total_likes(self):
+        return self.likes.count()
 
     def __str__(self):
         return f"Post by {self.user.username} in {self.thread.title}"

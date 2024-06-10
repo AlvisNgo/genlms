@@ -3,53 +3,87 @@
 {% block content-wrapper %}
 {% load static %}
 
-<div class="container mt-4">
-    <a href="{% url 'course' course_info.course_id %}" class="btn btn-secondary my-3">Back to Announcements</a>
-    <div class="mb-4">
-        <h1 class="font-weight-bold">
-            {{ course_info.course_name }} [AY2023/24 Trimester 3]
-        </h1>
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">{{ course_info.course_name }} [AY2023/24 Trimester 3]</h1>
+            </div>
+    
+            <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item">
+                        <a href="{% url 'dashboard' %}">Dashboard</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="{% url 'course' course_info.course_id %}">{{ course_info.course_name }} [AY2023/24 Trimester 3]</a>
+                    </li>
+                    <li class="breadcrumb-item active">Discussion Board</li>
+            </ol>
+            </div>
+        </div>
     </div>
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body d-flex flex-column">
-                    <h2 class="card-title mb-2">Discussion Board</h2>
-                    <p class="card-text">Hi all,</p>
-                    <ol>
-                        <li>This discussion board is for all the topics communication related to the module, course contents, and teach & learn materials.</li>
-                        <li>Only confidential or personal matters, please send an email to <a href="mailto:courseprofessor@glasgow.ac.uk">courseprofessor@glasgow.ac.uk</a></li>
-                        <li>Feel free to discuss any programming related problems but please don't expect this as your debug helper. Google and Stack Overflow are your friends.</li>
-                        <li>Please observe some basic courtesy which you can easily find online like this one: <a href="https://ctl.wiley.com/sample-discussion-board-ground-rules/">https://ctl.wiley.com/sample-discussion-board-ground-rules/</a></li>
-                    </ol>
+</div>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body d-flex flex-column">
+                        <h2 class="card-title mb-2">Discussion Board</h2>
+                        <p class="card-text">Hi all,</p>
+                        <ol>
+                            <li>This discussion board is for all the topics communication related to the module, course contents, and teach & learn materials.</li>
+                            <li>Only confidential or personal matters, please send an email to <a href="mailto:courseprofessor@glasgow.ac.uk">courseprofessor@glasgow.ac.uk</a></li>
+                            <li>Feel free to discuss any programming related problems but please don't expect this as your debug helper. Google and Stack Overflow are your friends.</li>
+                            <li>Please observe some basic courtesy which you can easily find online like this one: <a href="https://ctl.wiley.com/sample-discussion-board-ground-rules/">https://ctl.wiley.com/sample-discussion-board-ground-rules/</a></li>
+                        </ol>
+                    </div>
                 </div>
             </div>
-
-            <div class="card mt-4">
-                <div class="card-body">
-                    <a href="{% url 'create_thread' course_info.course_id %}"class="btn btn-primary mb-4">Create New Thread</a>
-                    <div class="table-responsive">
-                        <table class="table table-bordered mt-3">
-                            <thead class="thead-light">
+            
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <a href="{% url 'create_thread' course_info.course_id %}"class="btn btn-primary mb-4">Create New Thread</a>
+                        <div class="mt-3">
+                            <form method="get" class="form-inline">
+                                <label for="sort">Sort by:</label>
+                                <select name="sort" id="sort" class="form-control mx-2" onchange="this.form.submit()">
+                                    <option value="likes" {% if sort_option == 'likes' %}selected{% endif %}>Likes</option>
+                                    <option value="name" {% if sort_option == 'name' %}selected{% endif %}>Name</option>
+                                    <option value="id" {% if sort_option == 'id' %}selected{% endif %}>ID</option>
+                                    <option value="newest" {% if sort_option == 'newest' %}selected{% endif %}>Newest</option>
+                                </select>
+                            </form>
+                        </div>
+                        <table class="table">
+                            <thead>
                                 <tr>
-                                    <th>Threads</th>
-                                    <th>Content</th>
-                                    <th>Posts</th>
-                                    <th>Last Post</th>
+                                    <th class="text-center">Threads</th>
+                                    <th class="text-center">Posts</th>
+                                    <th class="text-center">Likes</th>
+                                    <th class="text-center">Last Post</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for thread in threads %}
-                                <tr>
-                                    <td><a href="{% url 'view_thread' thread.id %}">{{ thread.title }}</a></td>
-                                    <td>{{ thread.content }}</td>
-                                    <td>{{ thread.post_count }}</td>
-                                    <td class="last-post">
-                                        {% if thread.post_set.last %}
-                                        <img src="path/to/user-pic.png" alt="User Picture" class="rounded-circle" style="height: 30px; margin-right: 10px;">
-                                        {{ thread.post_set.last.user.username }}, {{ thread.post_set.last.created_at|timesince }} ago
+                                <tr class="{% if request.user in thread.is_read.all %}read{% else %}unread{% endif %}">
+                                    <td>
+                                        <a href="{% url 'view_thread' thread.id %}" onclick="markAsRead({{ thread.id }})">{{ thread.title }}</a>
+                                        <br>
+                                        <span class="badge badge-secondary">{{ thread.tags }}</span>
+                                    </td>
+                                    <td class="text-center">{{ thread.post_set.count }}</td>
+                                    <td class="text-center">
+                                        <span id="thread-likes-{{ thread.id }}">{{ thread.like_count }}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        {% if thread.post_set.count > 0 %}
+                                            {{ thread.post_set.last.user.first_name }}, {{ thread.post_set.last.created_at|timesince }} ago
                                         {% else %}
-                                        No posts yet
+                                            No posts
                                         {% endif %}
                                     </td>
                                 </tr>
@@ -61,5 +95,46 @@
             </div>
         </div>
     </div>
-</div>
+</section>
+
+<script>
+    function likeThread(threadId) {
+        fetch("{% url 'like_thread' 0 %}".replace('0', threadId))
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('thread-likes-' + threadId).innerText = data.likes;
+        });
+    }
+    
+    function markAsRead(threadId) {
+        fetch("{% url 'mark_as_read' 0 %}".replace('0', threadId));
+    }
+</script>
+<style>
+    .like-button {
+        background: none;
+        border: none;
+        color: #007bff;
+        font-size: 1rem;
+        cursor: pointer;
+    }
+    .like-button:hover {
+        color: #0056b3;
+    }
+    .text-center {
+        text-align: center;
+    }
+    .read {
+        background-color: lightgrey; /* Light gray background for read threads */
+        font-weight: normal; /* Normal font weight for read threads */
+        a {
+            color: black;
+        }
+    }
+    .unread {
+        font-weight: bold; /* Bold font weight for unread threads */
+        color: #f0f0f0;
+    }
+</style>
+
 {% endblock %}

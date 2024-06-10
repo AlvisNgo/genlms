@@ -1,14 +1,24 @@
-{% extends "base-student.html" %} {% block title %}Student Dashboard{% endblock %} 
-{% block content-wrapper %} {% load static %}
+{% extends "base-student.html" %}
+{% block title %}Student Dashboard{% endblock %} 
+{% load static %}
+{% load markdownify %}
+{% block content-wrapper %}
 
 <!-- Header -->
 <div class="content-header">
   <div class="container-fluid">
-    <div class="row no-gutters">
-      <div class="col-12 col-sm-6 col-md-8">
-        <h1 class="font-weight-bold">
-          {{ course_info.course_name }} [AY2023/24 Trimester 3]
-        </h1>
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1 class="m-0">{{ course_info.course_name }} [AY2023/24 Trimester 3]</h1>
+      </div>
+
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item">
+                <a href="{% url 'dashboard' %}">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item active">{{ course_info.course_name }} [AY2023/24 Trimester 3]</li>
+        </ol>
       </div>
     </div>
   </div>
@@ -37,34 +47,27 @@
           <div class="card-body">
             <h4>Announcement</h4>
             {% if courseAnnouncement_info%}
-
               {% for announce in courseAnnouncement_info%}
-              <p> Last updated on: {{ announce.updated_at }}</p>
-              
-              <a href="{%url 'announcement_view' course_info.course_id announce.id %}" 
-              style="color: white;"
-              onmouseover="this.style.color='grey'"
-              onmouseout="this.style.color='white'">
-              <h3>{{ announce.title }}</h3>
-              </a>
-              <p class="latest-anouncement">
-                {{ announce.content }} 
-                
-                {% if is_admin%}
-                </br>
-                </br>
-                <a href="{% url 'announcement_edit' course_info.course_id announce.id %}" class="btn btn-primary">Edit</a>
-                <a href="{% url 'announcement_delete' course_info.course_id announce.id %}" class="btn btn-danger">Delete</a>
+                <a href="{%url 'announcement_view' course_info.course_id announce.id %}">
+                  <h3>{{ announce.title }}</h3>
+                </a>
+                <p><em>Last updated on: {{ announce.updated_at }}</em></p>
+                <div class="latest-anouncement">
+                  {{ announce.content|markdownify }} 
+                  
+                  {% if is_admin%}
+                  </br>
+                  </br>
+                  <a href="{% url 'announcement_edit' course_info.course_id announce.id %}" class="btn btn-primary">Edit</a>
+                  <a href="{% url 'announcement_delete' course_info.course_id announce.id %}" class="btn btn-danger">Delete</a>
+                  {% endif %}              
+                  <hr class="solid" color="9C9C9C">
+                </div>
+              {% endfor %}
 
-                {% endif %}              
-                <hr class="solid" color="9C9C9C">
-                {% endfor %}
-
-              {% else %}
-              No Anouncements
-              {% endif %}
-              
-            </p>
+            {% else %}
+              <p>No Anouncements</p>
+            {% endif %}
           </div>
 
           <div class="card-footer">
