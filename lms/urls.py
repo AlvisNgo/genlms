@@ -2,6 +2,7 @@ from django.urls import path
 from .views import views_login, views_announcement, views_course, views_discussion, views_profile, views_calender
 urlpatterns = [
      path("", views_login.login, name="login"),
+     path("logout", views_login.logoutfunction, name="logout"),
      path("student/dashboard", views_login.student_dashboard, name="dashboard"),
      path("student/course/discussion_board/<int:id>",
           views_discussion.discussion_board, name="discussion_board"),
@@ -27,4 +28,8 @@ urlpatterns = [
   
      # Announcement
      path("student/course/<int:id>/announcement_add", views_announcement.announcement_add, name="announcement_add"),
+     path("student/course/<int:id>/announcement_edit/<int:announcement_id>", views_announcement.announcement_edit, name="announcement_edit"),
+     path("student/course/<int:id>/announcement_delete/<int:announcement_id>", views_announcement.announcement_delete, name="announcement_delete"),
+     path("student/course/<int:id>/announcement_view/<int:announcement_id>", views_announcement.announcement_view, name="announcement_view"),
+
 ]
