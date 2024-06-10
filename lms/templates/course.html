@@ -44,10 +44,7 @@
               {% for announce in courseAnnouncement_info%}
               <p> Last updated on: {{ announce.updated_at }}</p>
               
-              <a href="{%url 'announcement_view' course_info.course_id announce.id %}" 
-              style="color: white;"
-              onmouseover="this.style.color='grey'"
-              onmouseout="this.style.color='white'">
+              <a href="{%url 'announcement_view' course_info.course_id announce.id %}">
               <h3>{{ announce.title }}</h3>
               </a>
               <p class="latest-anouncement">
