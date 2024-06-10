@@ -2,21 +2,14 @@
 {% block title %}Student Dashboard{% endblock %}
 {% block content-wrapper %}
 {% load static %}
-<a href="javascript:history.back()" class="btn btn-secondary mb-3">Back</a>
-
-<div class="content-header">
-    <div class="container-fluid">
-        <div class="row no-gutters">
-            <div class="col-12 col-sm-6 col-md-8">
-                <h1 class="font-weight-bold">
-                    {{ course_info.course_name }} [AY2023/24 Trimester 3]
-                </h1>
-            </div>
-        </div>
-    </div>
-</div>
 
 <div class="container mt-4">
+    <a href="{% url 'course' course_info.course_id %}" class="btn btn-secondary my-3">Back to Announcements</a>
+    <div class="mb-4">
+        <h1 class="font-weight-bold">
+            {{ course_info.course_name }} [AY2023/24 Trimester 3]
+        </h1>
+    </div>
     <div class="row">
         <div class="col-12">
             <div class="card">

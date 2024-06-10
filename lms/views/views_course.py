@@ -1,7 +1,7 @@
 from django.http import Http404
 from django.shortcuts import get_object_or_404, render
 from django.db.models import Count
-from lms.models import Course, CourseAnnouncement, EnrolledCourse, Thread, CourseAdmin
+from lms.models import Course, CourseAnnouncement, EnrolledCourse, Thread, CourseAdmin, Admin
 
 def student_course_info(request, id):
     # Check if they have access to this course
@@ -14,11 +14,14 @@ def student_course_info(request, id):
 
     # Get enrolled course corresponding course id, then get course details
     course_info = get_object_or_404(Course, pk=id)
-    courseAnnouncement_info = CourseAnnouncement.objects.filter(course=course_info).order_by('-created_at').first()
     
+    courseAnnouncement_info = CourseAnnouncement.objects.filter(course=course_info, deleted_at__isnull=True).order_by('-created_at')
+    uid = request.user.id
+    is_admin = Admin.objects.filter(user_id=uid).exists()
     context = {
         'course_info': course_info,
         'courseAnnouncement_info': courseAnnouncement_info,
+        'is_admin': is_admin,
     }
     
     print(context)
@@ -53,3 +56,6 @@ def feedback(request, id):
 
     print(context)  # Debugging statement to verify context
     return render(request, 'feedback.html', context)
+
+
+    
