@@ -11,6 +11,7 @@ class ThreadForm(forms.ModelForm):
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'content': forms.Textarea(attrs={'class': 'form-control'}),
         }
+        
 
 
 class PostForm(forms.ModelForm):
@@ -33,12 +34,11 @@ class ProfileForm(forms.ModelForm):
         ('other', 'Other'),
         ('prefer_not_to_say', 'Prefer not to say')
     ], required=False)
-    address = forms.CharField(max_length=255, required=False)
     description = forms.CharField(widget=forms.Textarea, required=False)
 
     class Meta:
         model = Profile
-        fields = ['first_name', 'last_name', 'email', 'profile_picture', 'phone', 'gender', 'description']
+        fields = ['first_name', 'last_name', 'email', 'profile_picture', 'description']
 
     def __init__(self, *args, **kwargs):
         super(ProfileForm, self).__init__(*args, **kwargs)

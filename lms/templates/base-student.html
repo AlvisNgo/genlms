@@ -154,11 +154,20 @@
         <div class="sidebar">
             <!-- Sidebar user panel (optional) -->
             <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-                <div class="image">
-                    <img src="{{avatar_url}}" class="img-circle elevation-2" alt="User Image">
-                </div>
+                {% if profile.profile_picture %}
+                    <img src="{{ profile.profile_picture.url }}" class="img-circle elevation-2" alt="User Image">
+                {% else %}
+                    <img src="{% static 'adminlte/dist/img/default-150x150.png' %}" class="img-circle elevation-2" alt="Default User Image">
+                {% endif %}
                 <div class="info">
                     <a href="{% url 'profile' %}" class="d-block">{{ user.first_name }}</a>
+                </div>
+            </div>
+            <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                <div class="info">
+                    <a href="{% url 'calendar' %}" class="d-block">
+                        <i class="fas fa-calendar-alt"></i> Calendar
+                    </a>
                 </div>
             </div>
             <!-- SidebarSearch Form -->
