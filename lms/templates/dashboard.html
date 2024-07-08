@@ -91,7 +91,7 @@
             <!-- Left col -->
             <div class="col-md-6">
                 <!-- DIRECT CHAT -->
-                <div class="card direct-chat direct-chat-warning">
+                <div class="card direct-chat direct-chat-warning" id="directChat">
                     <div class="card-header">
                         <h3 class="card-title">Direct Chat</h3>
                         <div class="card-tools">
@@ -121,16 +121,22 @@
                         <!-- Contacts are loaded here -->
                         <div class="direct-chat-contacts">
                             <ul class="contacts-list">
-                                <li>
-                                    <a href="#">
+                                <!-- {% for chat in chats %}
                                         <img class="contacts-list-img" src="{% static 'adminlte/dist/img/user1-128x128.jpg' %}" alt="User Avatar">
                                         <div class="contacts-list-info">
-                                            <span class="contacts-list-name"> Count Dracula <small class="contacts-list-date float-right">2/28/2015</small>
+                                            <span class="contacts-list-name"> {{chat.name}}
                                             </span>
-                                            <span class="contacts-list-msg">How have you been? I was...</span>
+                                            <span class="contacts-list-msg">Filer Message</span>
                                         </div>
+                                    {% endfor %} -->
+                                <li class="contacts-list-item" data-room="">
+                                        <img class="contacts-list-img" src="{% static 'adminlte/dist/img/user1-128x128.jpg' %}" alt="User Avatar">
+                                        <div class="contacts-list-info">
+                                            <span class="contacts-list-name"> Count Dracula
+                                            </span>
+                                            <span class="contacts-list-msg">Filer Message</span>
+                                        </div>  
                                         <!-- /.contacts-list-info -->
-                                    </a>
                                 </li>
                                 <!-- End Contact Item -->
                             </ul>
@@ -140,14 +146,12 @@
                     </div>
                     <!-- /.card-body -->
                     <div class="card-footer">
-                        <form action="#" method="post">
-                            <div class="input-group">
-                                <input type="text" id="id_message_send_input" name="message" placeholder="Type Message ..." class="form-control">
-                                <span class="input-group-append">
-                                    <button type="button" id="id_message_send_button" class="btn btn-warning">Send</button>
-                                </span>
-                            </div>
-                        </form>
+                        <div class="input-group">
+                            <input type="text" id="id_message_send_input" name="message" placeholder="Type Message ..." class="form-control">
+                            <span class="input-group-append">
+                                <button type="button" id="id_message_send_button" class="btn btn-warning">Send</button>
+                            </span>
+                        </div>
                     </div>
                     <!-- /.card-footer-->
                 </div>
@@ -226,31 +230,52 @@
 </section>
 <!-- /.content -->
 <script>
-    const chatSocket = new WebSocket("ws://" + window.location.host + "/");
-    chatSocket.onopen = function (e) {
-      console.log("The connection was setup successfully !");
-    };
-    chatSocket.onclose = function (e) {
-      console.log("Something unexpected happened !");
-    };
-    document.querySelector("#id_message_send_input").focus();
-    document.querySelector("#id_message_send_input").onkeyup = function (e) {
-      if (e.keyCode == 13) {
-        document.querySelector("#id_message_send_button").click();
-      }
-    };
-    document.querySelector("#id_message_send_button").onclick = function (e) {
-      var messageInput = document.querySelector(
-        "#id_message_send_input"
-      ).value;
-      chatSocket.send(JSON.stringify({ message: messageInput, username : "{{request.user.username}}"}));
-    };
-    chatSocket.onmessage = function (e) {
-      const data = JSON.parse(e.data);
-      var div = document.createElement("div");
-      div.innerHTML = data.username + " : " + data.message;
-      document.querySelector("#id_message_send_input").value = "";
-      document.querySelector("#id_chat_item_container").appendChild(div);
-    };
-  </script>
+    let chatSocket;
+
+    function connectToRoom(roomName) {
+        // Close the existing WebSocket connection if it exists
+        if (chatSocket) {
+            chatSocket.close();
+        }
+        chatSocket = new WebSocket("ws://" + window.location.host+ "/" + roomName + "/");
+
+        chatSocket.onopen = function (e) {
+            console.log("The connection was setup successfully !");
+        };
+
+        chatSocket.onclose = function (e) {
+            console.log("Exited chatroom");
+        };
+        document.querySelector("#id_message_send_input").focus();
+
+        document.querySelector("#id_message_send_input").onkeyup = function (e) {
+            if (e.keyCode == 13) {
+                document.querySelector("#id_message_send_button").click();
+            }
+        };
+
+        document.querySelector("#id_message_send_button").onclick = function (e) {
+            var messageInput = document.querySelector("#id_message_send_input").value;
+            chatSocket.send(JSON.stringify({ message: messageInput, username : "{{request.user.first_name}}"}));
+        };
+        chatSocket.onmessage = function (e) {
+            const data = JSON.parse(e.data);
+            var div = document.createElement("div");
+            div.innerHTML = `
+                            <span>${data.username} : ${data.message}</span>
+                        `;
+            document.querySelector("#id_message_send_input").value = "";
+            document.querySelector("#id_chat_item_container").appendChild(div);
+        };
+    }
+    const contactItems = document.querySelectorAll('.contacts-list-item');
+    contactItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const roomName = item.getAttribute('data-room');
+            connectToRoom(roomName);
+            document.getElementById('directChat').classList.remove('direct-chat-contacts-open');
+        });
+    });
+
+  </script> 
 {% endblock %}
