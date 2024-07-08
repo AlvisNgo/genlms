@@ -110,11 +110,8 @@
                     <div class="card-body">
                         <!-- Conversations are loaded here -->
                         <div class="direct-chat-messages">
-                            <div
-                            class="chat__item__container"
-                            id="id_chat_item_container"
-                            style="font-size: 20px"
-                          >
+                            <div class="chat__item__container" id="id_chat_item_container" style="font-size: 20px">
+                                <span>No Chat Selected</span>
                           </div>
                         </div>
                         <!--/.direct-chat-messages-->
@@ -233,10 +230,16 @@
     let chatSocket;
 
     function connectToRoom(roomName) {
-        // Close the existing WebSocket connection if it exists
+        // if there is , remove span messages
+        const container = document.querySelector("#id_chat_item_container");
+        while (container.childNodes.length > 1) {
+            container.removeChild(container.lastChild);
+        }
+        // if there is a chat socket, close it
         if (chatSocket) {
             chatSocket.close();
         }
+        // create a chat socket link
         chatSocket = new WebSocket("ws://" + window.location.host+ "/" + roomName + "/");
 
         chatSocket.onopen = function (e) {
