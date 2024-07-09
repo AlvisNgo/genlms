@@ -35,7 +35,7 @@ class AnnouncementEditForm(forms.ModelForm):
         'placeholder': 'Enter ...',
     }),
     label='Announcement Title'
-)
+    )
     content = forms.CharField(
     widget=forms.Textarea(attrs={
         'class': 'form-control',
@@ -44,7 +44,7 @@ class AnnouncementEditForm(forms.ModelForm):
         'placeholder': 'Enter ...'
     }),
     label='Content'
-)
+    )
     def __init__(self, *args, **kwargs):
         title_value = kwargs.pop('title_value', None)
         content_value = kwargs.pop('content_value', None)
