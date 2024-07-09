@@ -11,15 +11,10 @@ urlpatterns = [
      
      # Course
      path("student/course/<int:id>", views_course.student_course_info, name="course"),
-     path("student/course/<int:id>/grade", views_course.grades, name="grades"),
-     path("student/course/<int:id>/feedback", views_course.feedback, name="feedback"),
 
      # Course
      path("student/course/<int:id>",
           views_course.student_course_info, name="course"),
-     path("student/course/<int:id>/grade", views_course.grades, name="grades"),
-     path("student/course/<int:id>/feedback",
-          views_course.feedback, name="feedback"),
 
      # Profile
      path("student/dashboard/profile/",
