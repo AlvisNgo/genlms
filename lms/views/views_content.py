@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
@@ -26,7 +27,7 @@ def content_add(request, id):
             else:
                 new_content = CourseContent(course=course_info, owner=admin_info, title=title, description=description)                
             new_content.save()
-            return redirect(reverse('course', args=[id]))
+            return JsonResponse({"success": False})
     else:
         form = ContentAddForm()
         context['form'] = form

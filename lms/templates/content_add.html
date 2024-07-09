@@ -35,7 +35,7 @@
             <div class="col-md-12">
                 <div class="card card-primary">
 
-                    <form action="{{ request.path }}" method="post" enctype="multipart/form-data">
+                    <form id="content-add" action="{{ request.path }}" method="post" enctype="multipart/form-data">
 
                         <div class="card-body">
                             {% csrf_token %}
@@ -99,6 +99,6 @@
 </section>
 
 <script>const csrfToken = "{{ csrf_token }}";</script>
-<script src="{% static 'js/dragndrop.js' %}"></script>
+<script src="{% static 'js/dragndrop.js' %}" defer></script>
 
 {% endblock %}
