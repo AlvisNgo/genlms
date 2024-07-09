@@ -99,6 +99,7 @@ class ContentAddForm(forms.Form):
             'type':'file',
             'accept': '.png, .jpeg, .pdf, .doc, .docx, .txt',
             'upload_to':'content',
+            'style': 'display: none;',
         }),
         required=False, label='Upload Files'
     )
