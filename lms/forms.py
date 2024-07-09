@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from .models import Profile
-from lms.models import Thread, Post
+from lms.models import Thread, Post, CourseContent
 
 
 class ThreadForm(forms.ModelForm):
@@ -70,3 +70,35 @@ class ProfileForm(forms.ModelForm):
             user.save()
             profile.save()
         return profile
+
+
+class ContentAddForm(forms.Form):
+    title = forms.CharField(
+        max_length=200,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'id': 'title',
+            'placeholder': 'Title (Eg. Week 1 - OS Fundamentals)'
+        }),
+        label='Title'
+    )
+    
+    description = forms.CharField(
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'id': 'description',
+            'rows': 10,
+            'placeholder': 'Content description...'
+        }),
+        label='Description'
+    )
+
+    content = forms.FileField(
+        widget=forms.ClearableFileInput(attrs={
+            'id': 'content',
+            'type':'file',
+            'accept': '.png, .jpeg, .pdf, .doc, .docx, .txt',
+            'upload_to':'content',
+        }),
+        required=False, label='Upload Files'
+    )

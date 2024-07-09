@@ -45,7 +45,7 @@
 
         <div class="card">
           <div class="card-body">
-            <h4>Announcement</h4>
+            <h4>Announcements</h4>
             {% if courseAnnouncement_info%}
               {% for announce in courseAnnouncement_info%}
                 <a href="{%url 'announcement_view' course_info.course_id announce.id %}">
@@ -80,12 +80,20 @@
 
         <div class="card">
           <div class="card-body">
-            <h4>Module Content</h4>
-            <p class="mt-0 mb-0 text-justify">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam
-              quam at dolorem. Qui modi laborum iste animi, odit ex debitis iure
-              molestias veritatis tempore doloremque eius cum id. Facere, enim.
-            </p>
+            <div>
+              <h4>Module Content</h4>
+              {% if is_admin %}
+              <a href="{% url 'content_add' course_info.course_id %}" class="btn btn-primary">Add New</a>
+              {% endif %}
+            </div>
+            {% if courseContent_info%}
+              {% for content in courseContent_info %}
+              <div>{{ content.title }}</div>
+              <p class="mt-0 mb-0 text-justify">{{ content.description }}</p>
+              {% endfor %}
+            {% else %}
+            <p class="mt-0 mb-0 text-justify">No content at the moment. Check back later!</p>
+            {% endif %}
           </div>
         </div>
       </div>

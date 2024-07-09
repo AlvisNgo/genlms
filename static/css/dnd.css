@@ -1,0 +1,37 @@
+.upload_dropZone {
+    outline: 2px dashed var(--colorPrimaryHalf, #dfdfdf);
+}
+
+.upload_dropZone.highlight {
+    outline-offset: -4px;
+    outline-color: var(--colorPrimaryNormal, #0576bd);
+    background-color: var(--colorPrimaryEighth, #dfdfdf);
+}
+
+.upload_doc {
+    width: calc(33% - (2rem / 3));
+}
+
+.upload_img {
+    width: calc(33% - (2rem / 3));
+    object-fit: contain;
+}
+
+.file-wrapper {
+    display: table;
+    width: 100%;
+    margin: 5px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.upload_file {
+    display: table-cell;
+    width: 20%;
+    height: 100%;
+}
+
+.delete-btn {
+    width: 100px;
+}
+
