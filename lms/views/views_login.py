@@ -4,7 +4,7 @@ from django.shortcuts import redirect, render
 from django.contrib.auth import logout
 from django.db.models import Count
 from allauth.socialaccount.models import SocialAccount
-from lms.models import Admin, CourseAdmin, EnrolledCourse
+from lms.models import Admin, CourseAdmin, EnrolledCourse, ChatRoom, ChatRoomUser
 
 def login(request):
     session_data = request.session
@@ -27,7 +27,7 @@ def student_dashboard(request):
     user = request.user
     uid = request.user.id
     context = {}
-
+    
     # Get avatar
     social_account = SocialAccount.objects.filter(
         user=user, provider='microsoft').first()
@@ -35,7 +35,12 @@ def student_dashboard(request):
         extra_data = social_account.extra_data
         avatar_url = extra_data.get('photo', {}).get('url')
         context['avatar_url'] = avatar_url
-
+    # Get chats
+    chat_rooms = ChatRoom.objects.filter(chatroomuser__user=user)
+    if chat_rooms.exists():
+        chat_room_names = chat_rooms.values_list('name', flat=True)
+        context['chats'] = chat_room_names
+    
     # Check if user is lms admin
     context["is_admin"] = request.is_admin
 

@@ -108,3 +108,33 @@ class CourseAnnouncement(models.Model):
 
     def __str__(self):
         return f"Announcement by {self.owner.user.username} in {self.course}"
+    
+class ChatRoom(models.Model):
+
+    name = models.CharField(max_length=100, unique=True)
+    creator = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+class ChatRoomUser(models.Model):
+    chatroom = models.ForeignKey(ChatRoom,on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    joined_at = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['chatroom', 'user'], name='composite_key_chatroomuser')
+        ]
+    def __str__(self):
+        return f"{self.user.username} in {self.chatroom.name}"
+    
+class Message(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    chatroom = models.ForeignKey(ChatRoom, on_delete=models.CASCADE)
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.user.username}: {self.content[:20]}'

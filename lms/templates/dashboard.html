@@ -93,7 +93,7 @@
                 <!-- DIRECT CHAT -->
                 <div class="card direct-chat direct-chat-warning" id="directChat">
                     <div class="card-header">
-                        <h3 class="card-title">Direct Chat</h3>
+                        <h3 class="card-title">Chat Messenger</h3>
                         <div class="card-tools">
                             <button type="button" class="btn btn-tool" data-card-widget="collapse">
                                 <i class="fas fa-minus"></i>
@@ -118,23 +118,18 @@
                         <!-- Contacts are loaded here -->
                         <div class="direct-chat-contacts">
                             <ul class="contacts-list">
-                                <!-- {% for chat in chats %}
-                                        <img class="contacts-list-img" src="{% static 'adminlte/dist/img/user1-128x128.jpg' %}" alt="User Avatar">
+                                {% for chat in chats %}
+                                <li class="contacts-list-item" data-room="{{chat}}">
+                                        <img class="contacts-list-img" src="{% static 'adminlte/dist/img/user1-128x128.jpg' %}" alt="Group Picture">
                                         <div class="contacts-list-info">
-                                            <span class="contacts-list-name"> {{chat.name}}
+                                            <span class="contacts-list-name"> {{chat}}
                                             </span>
-                                            <span class="contacts-list-msg">Filer Message</span>
+                                            <span class="contacts-list-msg">Filler Message</span>
                                         </div>
-                                    {% endfor %} -->
-                                <li class="contacts-list-item" data-room="">
-                                        <img class="contacts-list-img" src="{% static 'adminlte/dist/img/user1-128x128.jpg' %}" alt="User Avatar">
-                                        <div class="contacts-list-info">
-                                            <span class="contacts-list-name"> Count Dracula
-                                            </span>
-                                            <span class="contacts-list-msg">Filer Message</span>
-                                        </div>  
-                                        <!-- /.contacts-list-info -->
                                 </li>
+                                {% endfor %}
+                                    <!-- /.contacts-list-info -->
+                            </li>
                                 <!-- End Contact Item -->
                             </ul>
                             <!-- /.contacts-list -->
@@ -240,9 +235,10 @@
             chatSocket.close();
         }
         // create a chat socket link
-        chatSocket = new WebSocket("ws://" + window.location.host+ "/" + roomName + "/");
+        chatSocket = new WebSocket("ws://" + window.location.host+ "/" + roomName);
 
         chatSocket.onopen = function (e) {
+            console.log(chatSocket);
             console.log("The connection was setup successfully !");
         };
 
