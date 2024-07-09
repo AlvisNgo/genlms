@@ -73,6 +73,7 @@
     }
 
     $(".upload_gallery").html("");
+    $("#content").val("");
 
     // Iterate uploaded file
     for (const file of dataRefs.files) {
@@ -113,6 +114,8 @@
         deleteButton.onclick = function() {
             dataRefs.gallery.removeChild(wrapper);
             dataRefs.files = Array.from(dataRefs.files).filter(f => f !== file);
+            $("#content").val("");
+            currentFile = null;
         };
         wrapper.appendChild(deleteButton);  
         dataRefs.gallery.appendChild(wrapper);
@@ -166,10 +169,12 @@
         success: function(response) {
             // Handle the successful response here
             console.log("Form submitted successfully:", response);
+            window.location.href = window.location.href.replace(/\/[^\/]+$/, '');
         },
         error: function(jqXHR, textStatus, errorThrown) {
             // Handle any errors here
             console.error("Error submitting form:", textStatus, errorThrown);
+            alert(errorThrown);
         }
     });
   });
