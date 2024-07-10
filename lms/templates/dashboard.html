@@ -252,13 +252,27 @@
     
     chatSocket.onmessage = function (e) {
         const data = JSON.parse(e.data);
+        console.log(data)
         if (roomid == data.group){
-            var div = document.createElement("div");
-            div.innerHTML = `
-                            <span>${data.username} : ${data.message}</span>
-                        `;
-            document.querySelector("#id_message_send_input").value = "";
-            document.querySelector("#id_chat_item_container").appendChild(div);
+            if (data.action == "message"){
+                var div = document.createElement("div");
+                div.innerHTML = `
+                                <span>${data.username} : ${data.message}</span>
+                            `;
+                document.querySelector("#id_message_send_input").value = "";
+                document.querySelector("#id_chat_item_container").appendChild(div);
+            };
+            
+            if ( data.action == "chat_history"){
+                data.message.forEach(function(message) {
+                    var div = document.createElement("div");
+                    div.innerHTML = `
+                                <span>${message.username} : ${message.message}</span>
+                            `;
+                    document.querySelector("#id_chat_item_container").appendChild(div);
+                    });
+            }
+
         }
     };
 
@@ -270,17 +284,18 @@
             while (container.childNodes.length > 1) {
                 container.removeChild(container.lastChild);
             }
-            fetch('dashboard/' + roomid)
-            .then(response => response.json())
-            .then(data => {
-                data.forEach(function(message) {
-                    var div = document.createElement("div");
-                    div.innerHTML = `
-                                <span>${message.username} : ${message.message}</span>
-                            `;
-                    document.querySelector("#id_chat_item_container").appendChild(div);
-                });
-            })
+            chatSocket.send(JSON.stringify({ group:roomid, action:'retrieve', username : "{{request.user.first_name}}"}));
+            // fetch('dashboard/' + roomid)
+            // .then(response => response.json())
+            // .then(data => {
+            //     data.forEach(function(message) {
+            //         var div = document.createElement("div");
+            //         div.innerHTML = `
+            //                     <span>${message.username} : ${message.message}</span>
+            //                 `;
+            //         document.querySelector("#id_chat_item_container").appendChild(div);
+            //     });
+            // })
             
             document.getElementById('directChat').classList.remove('direct-chat-contacts-open');
         });

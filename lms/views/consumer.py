@@ -25,7 +25,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         action = text_data_json["action"]
         group_id = text_data_json["group"]
         chatroom = await sync_to_async(ChatRoom.objects.filter(id=group_id).first)()
-        message = text_data_json["message"]
         username = text_data_json["username"]
         user = await sync_to_async(User.objects.filter(first_name=username).first)()
         if action == 'join':
@@ -46,6 +45,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     self.channel_name
                 )
         elif action == 'send':
+            message = text_data_json["message"]
             new_message = Message(user=user,chatroom=chatroom,content= message)
             await sync_to_async(new_message.save)()
             if (group_id == group.id for group in self.groups):
@@ -53,14 +53,38 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     group_id,
                     {
                         "type": "send_message",
+                        "content": "message",
                         "group" : group_id,
-                        "message": message,
                         "username" : username ,
+                        "message": message,
                     }
                 )
+        elif action == 'retrieve':
+            history = await sync_to_async(list)(Message.objects.filter(chatroom_id=group_id).order_by('timestamp'))
+            data = []
 
+            for message in history:
+                user_firstname = await sync_to_async(lambda: message.user.first_name)()
+                content = message.content
+                data.append({
+                    'username': user_firstname,
+                    'message': content,
+                })
+
+            if (group_id == group.id for group in self.groups):
+                await self.channel_layer.group_send(
+                    group_id,
+                    {
+                        "type": "send_message",
+                        "content": "chat_history",
+                        "group" : group_id,
+                        "username" : username ,
+                        "message": data
+                    }
+                )
     async def send_message(self , event) : 
+        content = event["content"]
         message = event["message"]
         username = event["username"]
         group = event["group"]
-        await self.send(text_data = json.dumps({"message":message ,"username":username, "group":group}))
+        await self.send(text_data = json.dumps({"action":content, "message":message ,"username":username, "group":group}))

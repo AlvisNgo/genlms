@@ -6,7 +6,7 @@ urlpatterns = [
      path("", views_login.login, name="login"),
      path("logout", views_login.logoutfunction, name="logout"),
      path("student/dashboard", views_login.student_dashboard, name="dashboard"),
-     path("student/dashboard/<str:roomid>",views_login.chat_history, name="chat_history"),
+     # path("student/dashboard/<str:roomid>",views_login.chat_history, name="chat_history"),
      path("student/course/discussion_board/<int:id>",
           views_discussion.discussion_board, name="discussion_board"),
      

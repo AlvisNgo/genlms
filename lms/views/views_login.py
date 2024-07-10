@@ -67,19 +67,19 @@ def student_dashboard(request):
     print(context)
     return render(request, 'dashboard.html', context)
 
-def chat_history(request,roomid):
-    history = Message.objects.filter(chatroom_id=roomid).order_by('timestamp')
-    # Create a list to store simplified message data
-    data = []
-    # Iterate through messages and extract userfirstname and content
-    for message in history:
-        user_firstname = message.user.first_name  # Assuming first_name field exists in User model
-        content = message.content  # Assuming content field exists in Message model
+# def chat_history(request,roomid):
+#     history = Message.objects.filter(chatroom_id=roomid).order_by('timestamp')
+#     # Create a list to store simplified message data
+#     data = []
+#     # Iterate through messages and extract userfirstname and content
+#     for message in history:
+#         user_firstname = message.user.first_name  # Assuming first_name field exists in User model
+#         content = message.content  # Assuming content field exists in Message model
         
-        # Add userfirstname and content to the data list
-        data.append({
-            'username': user_firstname,
-            'message': content,
-        })
+#         # Add userfirstname and content to the data list
+#         data.append({
+#             'username': user_firstname,
+#             'message': content,
+#         })
 
-    return JsonResponse(data, safe=False)
+#     return JsonResponse(data, safe=False)
