@@ -245,7 +245,9 @@
 
     document.querySelector("#id_message_send_button").onclick = function (e) {
         var messageInput = document.querySelector("#id_message_send_input").value;
-        chatSocket.send(JSON.stringify({ group:roomid, action:'send', message: messageInput, username : "{{request.user.first_name}}"}));
+        if (roomid != "" && messageInput != "" ){
+            chatSocket.send(JSON.stringify({ group:roomid, action:'send', message: messageInput, username : "{{request.user.first_name}}"}));
+        }
     };
     
     chatSocket.onmessage = function (e) {
