@@ -97,7 +97,6 @@
             element.textContent = `File: ${file.name}`;
         }
         let input = document.querySelector('input[type="file"]');
-        console.log(input)
 
         // Add file to wrapper
         const wrapper = document.createElement('div');
@@ -119,7 +118,6 @@
         };
         wrapper.appendChild(deleteButton);  
         dataRefs.gallery.appendChild(wrapper);
-        console.log(dataRefs);
       }
 
       currentFile = file;
