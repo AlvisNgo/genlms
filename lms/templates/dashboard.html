@@ -119,10 +119,10 @@
                         <div class="direct-chat-contacts">
                             <ul class="contacts-list">
                                 {% for chat in chats %}
-                                <li class="contacts-list-item" data-room="{{chat}}">
+                                <li class="contacts-list-item" data-room="{{chat.id}}">
                                         <!-- <img class="contacts-list-img" src="{% static 'adminlte/dist/img/user1-128x128.jpg' %}" alt="Group Picture"> -->
                                         <div class="contacts-list-info">
-                                            <span class="contacts-list-name"> {{chat}}
+                                            <span class="contacts-list-name"> {{chat.name}}
                                             </span>
                                             <span class="contacts-list-msg">Filler Message</span>
                                         </div>
@@ -222,7 +222,7 @@
 </section>
 <!-- /.content -->
 <script>
-    let roomName = ""
+    let roomid = ""
     // create a chat socket link
     chatSocket = new WebSocket("ws://" + window.location.host+ "/" + "{{request.user.id}}");
 
@@ -245,13 +245,12 @@
 
     document.querySelector("#id_message_send_button").onclick = function (e) {
         var messageInput = document.querySelector("#id_message_send_input").value;
-        chatSocket.send(JSON.stringify({ group:roomName, action:'send', message: messageInput, username : "{{request.user.first_name}}"}));
+        chatSocket.send(JSON.stringify({ group:roomid, action:'send', message: messageInput, username : "{{request.user.first_name}}"}));
     };
     
     chatSocket.onmessage = function (e) {
         const data = JSON.parse(e.data);
-        console.log(data);
-        if (roomName == data.group){
+        if (roomid == data.group){
             var div = document.createElement("div");
             div.innerHTML = `
                             <span>${data.username} : ${data.message}</span>
@@ -264,15 +263,27 @@
     const contactItems = document.querySelectorAll('.contacts-list-item');
     contactItems.forEach(item => {
         item.addEventListener('click', () => {
-            roomName = item.getAttribute('data-room');
+            roomid = item.getAttribute('data-room');
             const container = document.querySelector("#id_chat_item_container");
             while (container.childNodes.length > 1) {
                 container.removeChild(container.lastChild);
             }
-            // pull history from db here
+        // fetch('/student/dashboard/' + roomid)
+        // .then(response => response.json())
+        // .then(data => {
+        //     console.log(data);  // Log data to console (optional)
+
+        //     // Process data as needed, e.g., display in a div with id 'chat-history'
+        //     data.forEach(function(message) {
+        //         var div = document.createElement("div");
+        //         div.innerHTML = `
+        //                     <span>${data.username} : ${data.message}</span>
+        //                 `;
+        //         document.querySelector("#id_chat_item_container").appendChild(div);
+        //     });
+        // })
             document.getElementById('directChat').classList.remove('direct-chat-contacts-open');
         });
     });
-
   </script> 
 {% endblock %}
