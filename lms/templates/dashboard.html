@@ -224,7 +224,7 @@
 <script>
     let roomName = ""
     // create a chat socket link
-    chatSocket = new WebSocket("ws://" + window.location.host+ "/" + "{{request.user.id}}"); //somehow retrieve user to put at the end
+    chatSocket = new WebSocket("ws://" + window.location.host+ "/" + "{{request.user.id}}");
 
     chatSocket.onopen = function (e) {
         console.log(chatSocket);
