@@ -1,11 +1,13 @@
 import os
+import json
 from dotenv import load_dotenv
 from django.shortcuts import redirect, render
 from django.contrib.auth import logout
 from django.db.models import Count
 from allauth.socialaccount.models import SocialAccount
-from lms.models import Admin, CourseAdmin, EnrolledCourse, ChatRoom, ChatRoomUser, Message
+from lms.models import Admin, CourseAdmin, EnrolledCourse, ChatRoom, ChatRoomUser, Message , User
 from django.http import JsonResponse
+from django.core.serializers import serialize
 
 def login(request):
     session_data = request.session
@@ -65,8 +67,19 @@ def student_dashboard(request):
     print(context)
     return render(request, 'dashboard.html', context)
 
-def chat_history():
-    print("in chat_history")
-    history = Message.objects.filter(ChatRoom_id=1).order_by('created_at')
-    print(history)
-    return JsonResponse(history)
+def chat_history(request,roomid):
+    history = Message.objects.filter(chatroom_id=roomid).order_by('timestamp')
+    # Create a list to store simplified message data
+    data = []
+    # Iterate through messages and extract userfirstname and content
+    for message in history:
+        user_firstname = message.user.first_name  # Assuming first_name field exists in User model
+        content = message.content  # Assuming content field exists in Message model
+        
+        # Add userfirstname and content to the data list
+        data.append({
+            'username': user_firstname,
+            'message': content,
+        })
+
+    return JsonResponse(data, safe=False)
