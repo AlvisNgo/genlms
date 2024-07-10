@@ -35,6 +35,7 @@ def student_dashboard(request):
         extra_data = social_account.extra_data
         avatar_url = extra_data.get('photo', {}).get('url')
         context['avatar_url'] = avatar_url
+        
     # Get chats
     chat_rooms = ChatRoom.objects.filter(chatroomuser__user=user)
     if chat_rooms.exists():
