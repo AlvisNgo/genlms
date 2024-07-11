@@ -37,18 +37,18 @@ class ReplyPostForm(forms.ModelForm):
 
 
 class ProfileForm(forms.ModelForm):
-    first_name = forms.CharField(max_length=30, required=False, widget=forms.TextInput(attrs={'readonly': 'readonly'}))
-    last_name = forms.CharField(max_length=30, required=False, widget=forms.TextInput(attrs={'readonly': 'readonly'}))
-    email = forms.EmailField(required=False, widget=forms.TextInput(attrs={'readonly': 'readonly'}))
+    first_name = forms.CharField(max_length=30, required=False, widget=forms.TextInput(attrs={'readonly': 'readonly', 'class': 'form-control'}))
+    last_name = forms.CharField(max_length=30, required=False, widget=forms.TextInput(attrs={'readonly': 'readonly', 'class': 'form-control'}))
+    email = forms.EmailField(required=False, widget=forms.TextInput(attrs={'readonly': 'readonly', 'class': 'form-control'}))
     profile_picture = forms.ImageField(required=False)
-    phone = forms.CharField(max_length=15, required=False)
+    phone = forms.CharField(max_length=15, required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
     gender = forms.ChoiceField(choices=[
         ('male', 'Male'),
         ('female', 'Female'),
         ('other', 'Other'),
         ('prefer_not_to_say', 'Prefer not to say')
     ], required=False)
-    description = forms.CharField(widget=forms.Textarea, required=False)
+    description = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}), required=False)
 
     class Meta:
         model = Profile
