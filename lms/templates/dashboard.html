@@ -259,6 +259,7 @@
                 const messageid = inputbutton.getAttribute('data-message-id');
                 chatSocket.send(JSON.stringify({ group:roomid, action:'edit', messageid:messageid, message: messageInput, username : "{{request.user.first_name}}"}));
                 document.querySelector("#id_message_send_button").innerHTML = "Send";
+                document.querySelector("#id_message_send_button").removeAttribute('data-message-id');
             }
             document.querySelector("#id_message_send_input").value = "";
         }
@@ -268,12 +269,18 @@
         chatSocket.send(JSON.stringify({ group:roomid, action:'delete', messageid:postid, username : "{{request.user.first_name}}"}));
     }
     function editMessage(messageid){
-        const messageElement = document.getElementById(messageid);
-        const spancontent = messageElement.querySelector('span').textContent;
-        const message = spancontent.split(': ')[1].trim();
-        document.querySelector("#id_message_send_input").value = message;
-        document.querySelector("#id_message_send_button").innerHTML = "Save";
-        document.querySelector("#id_message_send_button").setAttribute('data-message-id', messageid);
+        if (!document.querySelector("#id_message_send_button").getAttribute('data-message-id')){
+            const messageElement = document.getElementById(messageid);
+            const message = messageElement.querySelector('span').textContent.split(': ')[1].trim();
+            const buttons = messageElement.querySelectorAll('button');
+            buttons.forEach(button => button.remove());
+            document.querySelector("#id_message_send_input").value = message;
+            document.querySelector("#id_message_send_button").innerHTML = "Save";
+            document.querySelector("#id_message_send_button").setAttribute('data-message-id', messageid);
+        }
+        else{
+            console.log("edit in progress")
+        }
     }
     function leaveGroup(groupid) {
         const elementToRemove = document.querySelector(`[data-room='${groupid}']`);
@@ -311,7 +318,17 @@
             };
             if (data.action == "edit"){
                 const elementToEdit = document.getElementById(data.message.id);
-                elementToEdit.querySelector('span').textContent = `${data.message.username} : ${data.message.message}`;
+                elementToEdit.innerHTML = `
+                                <span>${data.message.username} : ${data.message.message}</span>
+                                ${"{{request.user.first_name}}" === data.message.username ? `
+                                    <button type="button" class="btn btn-tool" onclick="deleteMessage(${data.message.id})">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-tool" onclick="editMessage(${data.message.id})">
+                                        edit
+                                    </button>
+                                ` : ''}
+                            `;;
             };
 
             if ( data.action == "chat_history"){
