@@ -41,7 +41,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     self.groups.remove(group)
                     roomUser =  await sync_to_async(ChatRoomUser.objects.filter(chatroom_id=chatroom,user_id=user).first)()
                     await self.channel_layer.group_discard(
-                        group_id,
+                        str(group_id),
                         self.channel_name
                     )
                     await sync_to_async(roomUser.delete)()
@@ -51,7 +51,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     room =  await sync_to_async(ChatRoom.objects.filter(creator=user).first)()
                     self.groups.remove(group)
                     await self.channel_layer.group_discard(
-                        group_id,
+                        str(group_id),
                         self.channel_name
                     )
                     await sync_to_async(room.delete)()
@@ -75,6 +75,27 @@ class ChatConsumer(AsyncWebsocketConsumer):
                             }
                     }
                 )
+        elif action == 'edit':
+            message = text_data_json["message"]
+            messageid = text_data_json["messageid"]
+            database_message = await sync_to_async(Message.objects.filter(id=messageid).first)()
+            database_message.content = message
+            await sync_to_async(database_message.save)()
+            if (group_id == group.id for group in self.groups):
+                await self.channel_layer.group_send(
+                    group_id,
+                    {
+                        "type": "send_message",
+                        "action": "edit",
+                        "group" : group_id,
+                            "message": {
+                                "username":username,
+                                "id": messageid,
+                                "message": message
+                            }
+                    }
+                )
+            
         elif action == 'retrieve':
             history = await sync_to_async(list)(Message.objects.filter(chatroom_id=group_id).order_by('timestamp'))
             data = []
