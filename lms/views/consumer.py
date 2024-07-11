@@ -1,7 +1,7 @@
-import json
+import json;
 from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import sync_to_async
-from lms.models import User,Message,ChatRoom,ChatRoomUser;
+from lms.models import User,Message,ChatRoom,ChatRoomUser
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -28,6 +28,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         username = text_data_json["username"]
         user = await sync_to_async(User.objects.filter(first_name=username).first)()
         if action == 'join':
+            # not done
             if (group_id != group.id for group in self.groups):
                 self.groups.append(group_id)
                 await self.channel_layer.group_add(
@@ -35,28 +36,43 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     self.channel_name
                 )
         elif action == 'leave':
-            if (group_id == group.id for group in self.groups):
-                # not tested
-                roomUser =  await sync_to_async(ChatRoomUser.objects.filter(id=id).first)()
-                await sync_to_async(roomUser.delete())
-                self.groups.remove(group_id)
-                await self.channel_layer.group_discard(
-                    group_id,
-                    self.channel_name
-                )
+            for group in self.groups :
+                if (group_id == str(group.id)):
+                    self.groups.remove(group)
+                    roomUser =  await sync_to_async(ChatRoomUser.objects.filter(chatroom_id=chatroom,user_id=user).first)()
+                    await self.channel_layer.group_discard(
+                        group_id,
+                        self.channel_name
+                    )
+                    await sync_to_async(roomUser.delete)()
+        elif action == 'destroy':
+            for group in self.groups :
+                if (group_id == str(group.id)):
+                    room =  await sync_to_async(ChatRoom.objects.filter(creator=user).first)()
+                    self.groups.remove(group)
+                    await self.channel_layer.group_discard(
+                        group_id,
+                        self.channel_name
+                    )
+                    await sync_to_async(room.delete)()
+
         elif action == 'send':
             message = text_data_json["message"]
             new_message = Message(user=user,chatroom=chatroom,content= message)
             await sync_to_async(new_message.save)()
+            database_message = await sync_to_async(Message.objects.filter(chatroom_id = chatroom, user=user ,content=message).first)()
             if (group_id == group.id for group in self.groups):
                 await self.channel_layer.group_send(
                     group_id,
                     {
                         "type": "send_message",
-                        "content": "message",
+                        "action": "message",
                         "group" : group_id,
-                        "username" : username ,
-                        "message": message,
+                            "message": {
+                                "username":username,
+                                "id": database_message.id,
+                                "message": database_message.content
+                            }
                     }
                 )
         elif action == 'retrieve':
@@ -66,25 +82,37 @@ class ChatConsumer(AsyncWebsocketConsumer):
             for message in history:
                 user_firstname = await sync_to_async(lambda: message.user.first_name)()
                 content = message.content
+                message_id = message.id
                 data.append({
                     'username': user_firstname,
-                    'message': content,
+                    'id': message_id,
+                    'message': content
                 })
+            await self.send(json.dumps({
+                    "type": "send_message",
+                    "action": "chat_history",
+                    "group" : group_id,
+                    "message": data
+                })
+            )
+        elif action == 'delete':
+            messageid = text_data_json["messageid"]
+            message_retrieved = await sync_to_async((Message.objects.filter(id=messageid).first))()
+            await self.channel_layer.group_send(
+                group_id,
+                {
+                    "type": "send_message",
+                    "action": "delete",
+                    "group" : group_id,
+                        "message": {
+                            "id": message_retrieved.id
+                        }
+                }
+            )
+            await sync_to_async(message_retrieved.delete)()
 
-            if (group_id == group.id for group in self.groups):
-                await self.channel_layer.group_send(
-                    group_id,
-                    {
-                        "type": "send_message",
-                        "content": "chat_history",
-                        "group" : group_id,
-                        "username" : username ,
-                        "message": data
-                    }
-                )
     async def send_message(self , event) : 
-        content = event["content"]
+        action = event["action"]
         message = event["message"]
-        username = event["username"]
         group = event["group"]
-        await self.send(text_data = json.dumps({"action":content, "message":message ,"username":username, "group":group}))
+        await self.send(text_data = json.dumps({"action":action, "message":message , "group":group}))

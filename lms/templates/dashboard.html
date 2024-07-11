@@ -93,7 +93,7 @@
                 <!-- DIRECT CHAT -->
                 <div class="card direct-chat direct-chat-warning" id="directChat">
                     <div class="card-header">
-                        <h3 class="card-title">Chat Messenger</h3>
+                        <h3 class="card-title" id="chat_title">Chat Messenger</h3>
                         <div class="card-tools">
                             <button type="button" class="btn btn-tool" data-card-widget="collapse">
                                 <i class="fas fa-minus"></i>
@@ -124,7 +124,11 @@
                                         <div class="contacts-list-info">
                                             <span class="contacts-list-name"> {{chat.name}}
                                             </span>
-                                            <span class="contacts-list-msg">Filler Message</span>
+                                            {%if chat.creator == user.id%}
+                                            <button class="destroy-button" onclick="destroyGroup('{{chat.id}}')">Delete Group</button>
+                                            {% else %}
+                                            <button class="leave-button" onclick="leaveGroup('{{chat.id}}')">Leave Group</button>
+                                            {% endif %}
                                         </div>
                                 </li>
                                 {% endfor %}
@@ -256,49 +260,73 @@
         if (roomid == data.group){
             if (data.action == "message"){
                 var div = document.createElement("div");
+                div.id = data.message.id
                 div.innerHTML = `
-                                <span>${data.username} : ${data.message}</span>
+                                <span>${data.message.username} : ${data.message.message}</span>
+                                <button type="button" class="btn btn-tool" onclick="deleteMessage(${data.message.id})">
+                                    <i class="fas fa-times"></i>
+                                </button>
                             `;
                 document.querySelector("#id_message_send_input").value = "";
                 document.querySelector("#id_chat_item_container").appendChild(div);
             };
             
             if ( data.action == "chat_history"){
+                document.querySelector("#id_chat_item_container").innerHTML = "";
                 data.message.forEach(function(message) {
                     var div = document.createElement("div");
+                    div.id = message.id
                     div.innerHTML = `
                                 <span>${message.username} : ${message.message}</span>
+                                <button type="button" class="btn btn-tool" onclick="deleteMessage(${message.id})">
+                                    <i class="fas fa-times"></i>
+                                </button>
                             `;
                     document.querySelector("#id_chat_item_container").appendChild(div);
                     });
             }
 
+            if ( data.action == "delete"){
+                const elementToRemove = document.getElementById(data.message.id);
+                if (elementToRemove) {
+                    elementToRemove.parentNode.removeChild(elementToRemove);
+                }
+            }
         }
     };
 
     const contactItems = document.querySelectorAll('.contacts-list-item');
     contactItems.forEach(item => {
         item.addEventListener('click', () => {
-            roomid = item.getAttribute('data-room');
-            const container = document.querySelector("#id_chat_item_container");
-            while (container.childNodes.length > 1) {
-                container.removeChild(container.lastChild);
+            if (event.target.classList.contains('destroy-button') || event.target.classList.contains('leave-button')) {
+                document.getElementById('directChat').classList.remove('direct-chat-contacts-open');
+            return;
             }
+            console.log(item)
+            roomid = item.getAttribute('data-room');
+            roomname = item.getElementsByClassName('contacts-list-name')[0].innerText;
+            title = document.querySelector('#chat_title').innerHTML = `${roomname}`;
+            document.querySelector("#id_chat_item_container").innerHTML = "";
             chatSocket.send(JSON.stringify({ group:roomid, action:'retrieve', username : "{{request.user.first_name}}"}));
-            // fetch('dashboard/' + roomid)
-            // .then(response => response.json())
-            // .then(data => {
-            //     data.forEach(function(message) {
-            //         var div = document.createElement("div");
-            //         div.innerHTML = `
-            //                     <span>${message.username} : ${message.message}</span>
-            //                 `;
-            //         document.querySelector("#id_chat_item_container").appendChild(div);
-            //     });
-            // })
-            
             document.getElementById('directChat').classList.remove('direct-chat-contacts-open');
         });
     });
+    function deleteMessage(postid) {
+        chatSocket.send(JSON.stringify({ group:roomid, action:'delete', messageid:postid, username : "{{request.user.first_name}}"}));
+    }
+    function leaveGroup(groupid) {
+        const elementToRemove = document.querySelector(`[data-room='${groupid}']`);
+            if (elementToRemove) {
+                elementToRemove.parentNode.removeChild(elementToRemove);
+            }
+        chatSocket.send(JSON.stringify({ group:groupid, action:'leave', username : "{{request.user.first_name}}"}));
+    }
+    function destroyGroup(groupid) {
+        const elementToRemove = document.querySelector(`[data-room='${groupid}']`);
+            if (elementToRemove) {
+                elementToRemove.parentNode.removeChild(elementToRemove);
+            }
+        chatSocket.send(JSON.stringify({ group:groupid, action:'destroy', username : "{{request.user.first_name}}"}));
+    }
   </script> 
 {% endblock %}
