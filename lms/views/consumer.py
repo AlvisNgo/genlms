@@ -50,6 +50,16 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 if (group_id == str(group.id)):
                     room =  await sync_to_async(ChatRoom.objects.filter(creator=user).first)()
                     self.groups.remove(group)
+                    await self.channel_layer.group_send(
+                        group_id,
+                        {
+                            "type": "send_message",
+                            "action": "leave",
+                            "group" : group_id,
+                                "message": {
+                                }
+                        }
+                    )
                     await self.channel_layer.group_discard(
                         str(group_id),
                         self.channel_name

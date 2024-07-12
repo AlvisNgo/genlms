@@ -112,7 +112,7 @@
                         <div class="direct-chat-messages">
                             <div class="chat__item__container" id="id_chat_item_container" style="font-size: 20px">
                                 <span>No Chat Selected</span>
-                          </div>
+                            </div>
                         </div>
                         <!--/.direct-chat-messages-->
                         <!-- Contacts are loaded here -->
@@ -279,22 +279,26 @@
             document.querySelector("#id_message_send_button").setAttribute('data-message-id', messageid);
         }
         else{
-            console.log("edit in progress")
+            console.log("edit already in progress")
         }
     }
     function leaveGroup(groupid) {
-        const elementToRemove = document.querySelector(`[data-room='${groupid}']`);
-            if (elementToRemove) {
-                elementToRemove.parentNode.removeChild(elementToRemove);
-            }
+        removeGroup(groupid)
         chatSocket.send(JSON.stringify({ group:groupid, action:'leave', username : "{{request.user.first_name}}"}));
     }
     function destroyGroup(groupid) {
+        removeGroup(groupid);
+        chatSocket.send(JSON.stringify({ group:groupid, action:'destroy', username : "{{request.user.first_name}}"}));
+    }
+    function removeGroup(groupid){
         const elementToRemove = document.querySelector(`[data-room='${groupid}']`);
             if (elementToRemove) {
                 elementToRemove.parentNode.removeChild(elementToRemove);
+                if (roomid == groupid){
+                    document.querySelector('#chat_title').innerHTML = "Chat Messenger";
+                    document.querySelector("#id_chat_item_container").innerHTML = "<span>No Chat Selected</span>"
+                }
             }
-        chatSocket.send(JSON.stringify({ group:groupid, action:'destroy', username : "{{request.user.first_name}}"}));
     }
     
     chatSocket.onmessage = function (e) {
@@ -329,6 +333,9 @@
                                     </button>
                                 ` : ''}
                             `;;
+            };
+            if (data.action == "leave"){
+                removeGroup(data.group);
             };
 
             if ( data.action == "chat_history"){
@@ -369,7 +376,7 @@
             }
             roomid = item.getAttribute('data-room');
             roomname = item.getElementsByClassName('contacts-list-name')[0].innerText;
-            title = document.querySelector('#chat_title').innerHTML = `${roomname}`;
+            document.querySelector('#chat_title').innerHTML = `${roomname}`;
             document.querySelector("#id_chat_item_container").innerHTML = "";
             chatSocket.send(JSON.stringify({ group:roomid, action:'retrieve', username : "{{request.user.first_name}}"}));
             document.getElementById('directChat').classList.remove('direct-chat-contacts-open');
