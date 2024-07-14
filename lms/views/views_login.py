@@ -5,6 +5,12 @@ from django.contrib.auth import logout
 from django.db.models import Count
 from allauth.socialaccount.models import SocialAccount
 from lms.models import Admin, CourseAdmin, EnrolledCourse
+from django.utils import timezone
+from ..models import Event
+from django.utils.timezone import now
+
+
+
 
 def login(request):
     session_data = request.session
@@ -24,6 +30,8 @@ def logoutfunction(request):
     return redirect(logout_url)
 
 def student_dashboard(request):
+    # Get the current date and time
+    current_date = now()
     user = request.user
     uid = request.user.id
     context = {}
@@ -50,4 +58,13 @@ def student_dashboard(request):
             admin_id=admin_info.admin_id).select_related('course')
         context['my_courses'] = my_courses
     print(context)
+
+    # Get the upcoming events for the logged-in user
+    upcoming_events = Event.objects.filter(user=request.user, end_date__gte=current_date).order_by('end_date')[:5]
+
+    context = {
+        'my_courses': my_courses,
+        'upcoming_events': upcoming_events
+    }
+
     return render(request, 'dashboard.html', context)
