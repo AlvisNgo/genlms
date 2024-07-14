@@ -1,5 +1,6 @@
 import json;
 from channels.generic.websocket import AsyncWebsocketConsumer
+from django.shortcuts import get_object_or_404
 from asgiref.sync import sync_to_async
 from lms.models import User,Message,ChatRoom,ChatRoomUser
 
@@ -67,6 +68,33 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     )
                     await sync_to_async(room.delete)()
 
+        elif action == 'retrieve_chat_details':
+            chat_room_users = await sync_to_async(list)(ChatRoomUser.objects.filter(chatroom_id=group_id))
+            data = []
+            data.append({
+                'userid': chatroom.creator_id,
+                'uid': await sync_to_async(lambda: chatroom.creator.username)(),
+                'username': await sync_to_async(lambda: chatroom.creator.first_name)(),
+                'message': "creator"
+            })
+            for user in chat_room_users:
+                if user.user_id != chatroom.creator_id:
+                    user_uid = await sync_to_async(lambda: user.user.username)()
+                    user_firstname = await sync_to_async(lambda: user.user.first_name)()
+                    data.append({
+                        'userid': user.user_id,
+                        'uid': user_uid,
+                        'username': user_firstname,
+                        'message': "member"
+                    })
+            await self.send(json.dumps({
+                    "type": "send_message",
+                    "action": "chat_details",
+                    "group" : group_id,
+                    "message": data
+                })
+            )
+
         elif action == 'send':
             message = text_data_json["message"]
             new_message = Message(user=user,chatroom=chatroom,content= message)
@@ -106,25 +134,22 @@ class ChatConsumer(AsyncWebsocketConsumer):
                             }
                     }
                 )
-        elif action == 'retrieve_chat_details':
-            chat_room = await sync_to_async(list)(ChatRoom.objects.filter(chatroom_id=group_id).first)()
-            chat_room_users = await sync_to_async(list)(ChatRoomUser.objects.filter(chatroom_id=group_id))
-            data = []
-            for user in chat_room_users:
-                user_firstname = await sync_to_async(lambda: chat_room_users.first_name)()
-                content = message.content
-                message_id = message.id
-                data.append({
-                    'username': user_firstname,
-                    'message': content
-                })
-            await self.send(json.dumps({
+
+        elif action == 'delete':
+            messageid = text_data_json["messageid"]
+            message_retrieved = await sync_to_async((Message.objects.filter(id=messageid).first))()
+            await self.channel_layer.group_send(
+                group_id,
+                {
                     "type": "send_message",
-                    "action": "chat_details",
+                    "action": "delete",
                     "group" : group_id,
-                    "message": data
-                })
+                        "message": {
+                            "id": message_retrieved.id
+                        }
+                }
             )
+            await sync_to_async(message_retrieved.delete)()
 
         elif action == 'retrieve_chat_history':
             history = await sync_to_async(list)(Message.objects.filter(chatroom_id=group_id).order_by('timestamp'))
@@ -146,21 +171,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     "message": data
                 })
             )
-        elif action == 'delete':
-            messageid = text_data_json["messageid"]
-            message_retrieved = await sync_to_async((Message.objects.filter(id=messageid).first))()
-            await self.channel_layer.group_send(
-                group_id,
-                {
-                    "type": "send_message",
-                    "action": "delete",
-                    "group" : group_id,
-                        "message": {
-                            "id": message_retrieved.id
-                        }
-                }
-            )
-            await sync_to_async(message_retrieved.delete)()
 
     async def send_message(self , event) : 
         action = event["action"]
