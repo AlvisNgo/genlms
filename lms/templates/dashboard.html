@@ -263,7 +263,7 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Events</h3>
+                        <h3 class="card-title">Upcoming Events</h3>
                         <div class="card-tools">
                             <button type="button" class="btn btn-tool" data-card-widget="collapse">
                                 <i class="fas fa-minus"></i>
@@ -276,48 +276,21 @@
                     <!-- /.card-header -->
                     <div class="card-body p-0">
                         <ul class="products-list product-list-in-card pl-2 pr-2">
+                            {% for event in upcoming_events %}
                             <li class="item">
                                 <div class="product-img">
                                     <img src="{% static 'adminlte/dist/img/default-150x150.png' %}" alt="Product Image" class="img-size-50">
                                 </div>
                                 <div class="product-info">
-                                    <a href="javascript:void(0)" class="product-title">Event 1</a>
-                                    <span class="product-description"> Event 1 description </span>
+                                    <a href="javascript:void(0)" class="product-title">{{ event.title }}</a>
+                                    <span class="product-description">{{ event.description }}</span>
+                                    <span class="product-description">{{ event.start_date }} to {{ event.end_date }}</span>
                                 </div>
                             </li>
-                            <!-- /.item -->
-                            <li class="item">
-                                <div class="product-img">
-                                    <img src="{% static 'adminlte/dist/img/default-150x150.png' %}" alt="Product Image" class="img-size-50">
-                                </div>
-                                <div class="product-info">
-                                    <a href="javascript:void(0)" class="product-title">Event 2</a>
-                                    <span class="product-description"> Event 2 description </span>
-                                </div>
-                            </li>
-                            <!-- /.item -->
-                            <li class="item">
-                                <div class="product-img">
-                                    <img src="{% static 'adminlte/dist/img/default-150x150.png' %}" alt="Product Image" class="img-size-50">
-                                </div>
-                                <div class="product-info">
-                                    <a href="javascript:void(0)" class="product-title"> Event 3</a>
-                                    <span class="product-description"> Event 3 description </span>
-                                </div>
-                            </li>
-                            <!-- /.item -->
-                            <li class="item">
-                                <div class="product-img">
-                                    <img src="{% static 'adminlte/dist/img/default-150x150.png' %}" alt="Product Image" class="img-size-50">
-                                </div>
-                                <div class="product-info">
-                                    <a href="javascript:void(0)" class="product-title">Event 4</a>
-                                    <span class="product-description"> Event 4 description </span>
-                                </div>
-                            </li>
-                            <!-- /.item -->
+                            {% endfor %}
                         </ul>
                     </div>
+
                     <!-- /.card-body -->
                     <div class="card-footer text-center">
                         <a href="javascript:void(0)" class="uppercase">View All Events</a>
