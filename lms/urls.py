@@ -27,6 +27,9 @@ urlpatterns = [
 
      # Calender
      path('calendar/', views_calender.calendar_view, name='calendar'),
+     path('calendar/events/', views_calender.get_events, name='get_events'),
+     path('calendar/add/', views_calender.add_event, name='add_event'),
+     path('calendar/delete/<int:event_id>/', views_calender.delete_event, name='delete_event'),
 
      # Paths for threads and posts under the discussion board
      path("student/course/discussion_board/thread/<int:thread_id>/",
