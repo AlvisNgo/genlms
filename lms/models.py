@@ -108,3 +108,14 @@ class CourseAnnouncement(models.Model):
 
     def __str__(self):
         return f"Announcement by {self.owner.user.username} in {self.course}"
+
+class Event(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    start_date = models.DateField()
+    end_date = models.DateField()
+    color = models.CharField(max_length=7)  # To store the color hex code
+
+    def __str__(self):
+        return self.title
