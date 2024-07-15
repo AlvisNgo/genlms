@@ -138,7 +138,7 @@
                         <!--/.direct-chat-messages-->
                         <!-- Contacts are loaded here -->
                         <div class="direct-chat-contacts">
-                            <ul class="contacts-list">
+                            <ul class="contacts-list" id="id_contacts_list">
                                 <li>
                                     <button class="group-button"onclick="openForm()">New Chat</button>
                                 </li>
@@ -252,7 +252,7 @@
 </section>
 <div id="formPopup" class="popup">
     <div class="popup-content">
-        <form id="dynamicForm">
+        <div id="dynamicForm">
             <div>
                 <label for="name">Chat Name:</label><br>
                 <input type="text" id="cname" name="cname">
@@ -266,11 +266,11 @@
                 <br>
                 <button id="popupadd" type="button" onclick="addUser(0,0)">Add Users</button>
                 <br><br>
-                <button id="popupsubmit" type="submit">Submit</button>
+                <button id="popupsubmit"onclick="submitForm()">Submit</button>
                 <br><br>
                 <button type="button" onclick="closeForm()"> Cancel</button>
             </div>
-        </form>
+        </div>
     </div>
 </div>
 <!-- /.content -->
@@ -286,6 +286,62 @@
         console.log("An unexpected error has occured.");
     };
 
+    chatSocket.onmessage = function (e) {
+        const data = JSON.parse(e.data);
+        console.log(data)
+        if (roomid === data.group){
+            chatbox = document.querySelector("#id_chat_item_container");
+            if (data.action == "message"){
+                var div = document.createElement("div");
+                div.id = data.message.id
+                createMessage(div,data.message)
+                chatbox.appendChild(div);
+            };
+            if (data.action == "edit"){
+                const elementToEdit = document.getElementById(data.message.id);
+                createMessage(elementToEdit,data.message);
+            };
+            if ( data.action == "chat_history"){
+                chatbox.innerHTML = "";
+                data.message.forEach(function(message) {
+                    var div = document.createElement("div");
+                    div.id = message.id;
+                    createMessage(div,message);
+                    chatbox.appendChild(div);
+                    });
+            };
+            if (data.action == "chat_details" ){
+                creatorid = data.message[0].userid.toString();
+                data.message.forEach(function(message) {
+                    document.getElementById('nameInput').value = message.uid;
+                    addUser(message.userid,creatorid);
+                })
+                if(creatorid != "{{request.user.id}}"){
+                    document.getElementById("nameInput").style.display = 'none';
+                    document.getElementById("popupsubmit").style.display = 'none';
+                    document.getElementById("popupadd").style.display = 'none';
+                }
+                else{
+                    document.getElementById("popupsubmit").innerHTML = "Save"
+                }
+                openForm()
+            }
+            if ( data.action == "delete"){
+                const elementToRemove = document.getElementById(data.message.id);
+                if (elementToRemove) {
+                    elementToRemove.parentNode.removeChild(elementToRemove);
+                }
+            };
+        }
+        if (data.action == "new_chat"){
+            createGroup(data);
+            chatSocket.send(JSON.stringify({ group:data.group, action:"join", username : "{{request.user.first_name}}"}));
+        };
+        if (data.action == "leave"){
+            removeGroup(data.group);
+        };
+    };
+    // --------------------------------------------------------------------
     document.querySelector("#id_message_send_input").focus();
 
     document.querySelector("#id_message_send_input").onkeyup = function (e) {
@@ -310,115 +366,10 @@
             document.querySelector("#id_message_send_button").innerHTML = "Send";
             document.querySelector("#id_message_send_input").value = "";
         }
-    };
-
-    function deleteMessage(postid) {
-        chatSocket.send(JSON.stringify({ group:roomid, action:'delete', messageid:postid, username : "{{request.user.first_name}}"}));
-    }
-    function editMessage(messageid){
-        if (!document.querySelector("#id_message_send_button").getAttribute('data-message-id')){
-            const messageElement = document.getElementById(messageid);
-            const message = messageElement.querySelector('span').textContent.split(': ')[1].trim();
-            const buttons = messageElement.querySelectorAll('button');
-            buttons.forEach(button => button.remove());
-            document.querySelector("#id_message_send_input").value = message;
-            document.querySelector("#id_message_send_button").innerHTML = "Save";
-            document.querySelector("#id_message_send_button").setAttribute('data-message-id', messageid);
-        }
         else{
-            console.log("edit already in progress")
-        }
-    }
-    function leaveGroup(groupid) {
-        removeGroup(groupid)
-        chatSocket.send(JSON.stringify({ group:groupid, action:'leave', username : "{{request.user.first_name}}"}));
-    }
-    function destroyGroup(groupid) {
-        removeGroup(groupid);
-        chatSocket.send(JSON.stringify({ group:groupid, action:'destroy', username : "{{request.user.first_name}}"}));
-    }
-    function viewGroup(groupid){
-        chatSocket.send(JSON.stringify({ group:groupid, action:'retrieve_chat_details', username : "{{request.user.first_name}}"}));
-    }
-
-    function removeGroup(groupid){
-        const elementToRemove = document.querySelector(`[data-room='${groupid}']`);
-            if (elementToRemove) {
-                elementToRemove.parentNode.removeChild(elementToRemove);
-                if (roomid == groupid){
-                    document.querySelector('#chat_title').innerHTML = "Chat Messenger";
-                    document.querySelector("#id_chat_item_container").innerHTML = "<span>No Chat Selected</span>"
-                }
-            }
-    }
-    
-    chatSocket.onmessage = function (e) {
-        const data = JSON.parse(e.data);
-        console.log(data);
-        if (roomid === data.group){
-            chatbox = document.querySelector("#id_chat_item_container");
-            if (data.action == "message"){
-                var div = document.createElement("div");
-                div.id = data.message.id
-                createMessage(div,data.message)
-                chatbox.appendChild(div);
-            };
-            if (data.action == "edit"){
-                const elementToEdit = document.getElementById(data.message.id);
-                createMessage(elementToEdit,data.message);
-            };
-            if ( data.action == "chat_history"){
-                chatbox.innerHTML = "";
-                data.message.forEach(function(message) {
-                    var div = document.createElement("div");
-                    div.id = message.id;
-                    createMessage(div,message);
-                    chatbox.appendChild(div);
-                    });
-            };
-            if (data.action == "chat_details" ){
-                openForm()
-                creatorid = data.message[0].userid.toString();
-                data.message.forEach(function(message) {
-                    document.getElementById('nameInput').value = message.uid;
-                    addUser(message.userid,creatorid);
-                })
-                console.log(creatorid)
-                console.log("{{request.user.id}}")
-                if(creatorid != "{{request.user.id}}"){
-                    console.log("in form")
-                    document.getElementById("nameInput").style.display = 'none';
-                    document.getElementById("popupsubmit").style.display = 'none';
-                    document.getElementById("popupadd").style.display = 'none';
-                }
-            }
-            if ( data.action == "delete"){
-                const elementToRemove = document.getElementById(data.message.id);
-                if (elementToRemove) {
-                    elementToRemove.parentNode.removeChild(elementToRemove);
-                }
-            };
-        }
-        else{
-            if (data.action == "leave"){
-                removeGroup(data.group);
-            };
+            alert("Check that you are in a chatroom and input is not blank.")
         }
     };
-
-    function createMessage(element,message){
-        element.innerHTML = `
-            <span>${message.username} : ${message.message}</span>
-            ${"{{request.user.first_name}}" === message.username ? `
-                <button type="button" class="btn btn-tool" onclick="deleteMessage(${message.id})">
-                    <i class="fas fa-times"></i>
-                </button>
-                <button type="button" class="btn btn-tool" onclick="editMessage(${message.id})">
-                    edit
-                </button>
-            ` : ''}
-        `;
-    }
 
     const contactItems = document.querySelectorAll('.contacts-list-item');
     contactItems.forEach(item => {
@@ -443,6 +394,78 @@
         });
     });
 
+    // --------------------------------------------------------------------
+    function deleteMessage(postid) {
+        chatSocket.send(JSON.stringify({ group:roomid, action:'delete', messageid:postid, username : "{{request.user.first_name}}"}));
+    }
+    function editMessage(messageid){
+        if (!document.querySelector("#id_message_send_button").getAttribute('data-message-id')){
+            const messageElement = document.getElementById(messageid);
+            const message = messageElement.querySelector('span').textContent.split(': ')[1].trim();
+            const buttons = messageElement.querySelectorAll('button');
+            buttons.forEach(button => button.remove());
+            document.querySelector("#id_message_send_input").value = message;
+            document.querySelector("#id_message_send_button").innerHTML = "Save";
+            document.querySelector("#id_message_send_button").setAttribute('data-message-id', messageid);
+        }
+        else{
+            alert("Already in edit")
+        }
+    }
+    function leaveGroup(groupid) {
+        removeGroup(groupid)
+        chatSocket.send(JSON.stringify({ group:groupid, action:'leave', username : "{{request.user.first_name}}"}));
+    }
+    function destroyGroup(groupid) {
+        removeGroup(groupid);
+        chatSocket.send(JSON.stringify({ group:groupid, action:'destroy', username : "{{request.user.first_name}}"}));
+    }
+    function viewGroup(groupid){
+        chatSocket.send(JSON.stringify({ group:groupid, action:'retrieve_chat_details', username : "{{request.user.first_name}}"}));
+    }
+
+    function createGroup(data){
+        container = document.getElementById('id_contacts_list');
+        var li = document.createElement("li");
+        li.className ="contacts-list-item";
+        li.setAttribute("data-room",data.group)
+        li.innerHTML =`
+        <div class="contacts-list-info">
+            <span class="contacts-list-name">${data.message.group_name}</span>
+            ${data.message.creator == "{{request.user.id}}" ? 
+                `<button class="group-button" onclick="viewGroup('${data.group}')">Edit</button>
+                <button class="destroy-button" onclick="destroyGroup('${data.group}')">Delete</button>` :
+                `<button class="group-button" onclick="viewGroup('${data.group}')">View</button>
+                <button class="leave-button" onclick="leaveGroup('${data.group}')">Leave</button>`}
+        </div>
+        `
+        container.append(li)
+    }
+    function removeGroup(groupid){
+        const elementToRemove = document.querySelector(`[data-room='${groupid}']`);
+            if (elementToRemove) {
+                elementToRemove.parentNode.removeChild(elementToRemove);
+                if (roomid == groupid){
+                    document.querySelector('#chat_title').innerHTML = "Chat Messenger";
+                    document.querySelector("#id_chat_item_container").innerHTML = "<span>No Chat Selected</span>"
+                }
+            }
+    }
+
+    function createMessage(element,message){
+        element.innerHTML = `
+            <span>${message.username} : ${message.message}</span>
+            ${"{{request.user.first_name}}" === message.username ? `
+                <button type="button" class="btn btn-tool" onclick="deleteMessage(${message.id})">
+                    <i class="fas fa-times"></i>
+                </button>
+                <button type="button" class="btn btn-tool" onclick="editMessage(${message.id})">
+                    edit
+                </button>
+            ` : ''}
+        `;
+    }
+
     function openForm(){
         document.getElementById('formPopup').style.display = 'flex';
     };
@@ -450,11 +473,38 @@
         console.log("closed form")
         document.getElementById("nameInput").style.display = "";
         document.getElementById("popupsubmit").style.display = "";
+        document.getElementById("popupsubmit").innerHTML = "Submit"
         document.getElementById("popupadd").style.display = "";
         document.getElementById('cname').value = "";
         document.getElementById('formPopup').style.display = 'none';
         document.getElementById('nameList').innerHTML = "";
+        
+        roomid = ""
     };
+    function submitForm(){
+        let members = [];
+        groupname = document.getElementById('cname').value;
+        document.getElementById('nameList').querySelectorAll('.name-item').forEach(item => {
+            let span = item.querySelector('span');
+            if (span) {
+                members.push(span.textContent);
+        }
+        });
+        if (members.length >=1 && groupname != ""){
+            if (document.getElementById("popupsubmit").innerHTML == "Submit"){
+                chatSocket.send(JSON.stringify({ group:roomid, groupname:groupname ,action:'create',username : "{{request.user.first_name}}", members:members}))
+            }
+            else if (document.getElementById("popupsubmit").innerHTML == "Save"){
+                chatSocket.send(JSON.stringify({ group:roomid, groupname:groupname ,action:'edit_group',username : "{{request.user.first_name}}", members:members}))
+            }
+            else{
+                alert("Please input a chatroom name and have at least one member")
+            }
+        };
+        members =[]
+        closeForm()
+    };
+
     
     function addUser(id,creatorid) {
         const nameList = document.getElementById('nameList');

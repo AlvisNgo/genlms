@@ -111,7 +111,7 @@ class CourseAnnouncement(models.Model):
     
 class ChatRoom(models.Model):
 
-    name = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=100)
     creator = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
