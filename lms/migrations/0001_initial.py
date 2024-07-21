@@ -51,6 +51,20 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
+            name='CourseContent',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('title', models.CharField(max_length=255)),
+                ('description', models.TextField()),
+                ('content', models.TextField()),
+                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('updated_at', models.DateTimeField(auto_now=True)),
+                ('deleted_at', models.DateTimeField(blank=True, default=None, null=True)),
+                ('course', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='lms.course')),
+                ('owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='lms.admin')),
+            ],
+        ),
+        migrations.CreateModel(
             name='EnrolledCourse',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
