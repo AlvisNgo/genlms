@@ -52,5 +52,6 @@ urlpatterns = [
      path("api/generative", api_generative.generate, name="generative"),
 
      # Course Admin
-     path("student/course/<int:id>/admin/students_list", views_course_admin.student_list, name="student_list")
+     path("student/course/<int:id>/admin/student_list", views_course_admin.student_list, name="student_list"),
+     path("student/course/<int:id>/admin/admin_list", views_course_admin.admin_list, name="admin_list"),
 ]

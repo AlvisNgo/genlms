@@ -19,7 +19,7 @@
                     <li class="breadcrumb-item">
                         <a href="{% url 'course' course_info.course_id %}">{{ course_info.course_name }} [AY2023/24 Trimester 3]</a>
                     </li>
-                    <li class="breadcrumb-item active">Students</li>
+                    <li class="breadcrumb-item active">Admins</li>
             </ol>
             </div>
         </div>
@@ -33,14 +33,14 @@
                 <div class="card card-primary">
                     <form action="{{ request.path }}" method="post">
                         <div class="card-header">
-                            <h3 class="card-title">Student List</h3>
+                            <h3 class="card-title">Admin List</h3>
                         </div>
                         <!-- /.card-header -->
 
                         <div class="card-body">
                             <ol>
-                                {% for student in students %}
-                                <li>{{student.first_name}} - {{student.email}}</li>
+                                {% for admin in admins %}
+                                <li>{{admin}}</li>
                                 {% endfor %}
                             </ol>
                         </div>
