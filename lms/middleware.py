@@ -16,7 +16,7 @@ class CheckAdminMiddleware(MiddlewareMixin):
         request.is_admin = Admin.objects.filter(user_id=user.id).exists()
 
         # Get unread count
-        request.unread_event_count = Event.objects.filter(to=request.user, read=False).count()
+        request.unread_event_count = Event.objects.filter(to=user.id, read=False).count()
 
 def profile_picture_context_processor(request):
     return {
