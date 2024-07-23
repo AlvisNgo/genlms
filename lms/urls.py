@@ -1,6 +1,9 @@
 # lms/urls.py
 from django.urls import path
-from .views import views_login, views_announcement, views_course, views_discussion, views_profile, api_generative, views_calender, views_assignment
+from .views import views_login, views_announcement, views_course, views_discussion, views_profile, api_generative, views_calender
+from .views.views_course import upload_assignment
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
      path("", views_login.login, name="login"),
@@ -14,7 +17,6 @@ urlpatterns = [
      path("student/course/<int:id>/grade", views_course.grades, name="grades"),
      path("student/course/<int:id>/feedback", views_course.feedback, name="feedback"),
      path('course/<int:course_id>/upload-assignment/', upload_assignment, name='upload_assignment'),
-
 
      # Course
      path("student/course/<int:id>",
@@ -32,10 +34,7 @@ urlpatterns = [
      path('calendar/events/', views_calender.get_events, name='get_events'),
      path('calendar/add/', views_calender.add_event, name='add_event'),
      path('calendar/delete/<int:event_id>/', views_calender.delete_event, name='delete_event'),
-     
-     #Assignment
-     path("assignments/<int:course_id>/", views_assignment.assignment_page, name="assignment_page"),
-     path("assignments/<int:course_id>/submit/<int:assignment_id>/", views_assignment.assignment_submit, name="assignment_submit"),
+
 
      # Paths for threads and posts under the discussion board
      path("student/course/discussion_board/thread/<int:thread_id>/",
@@ -62,3 +61,6 @@ urlpatterns = [
      # Generative AI API
      path("api/generative", api_generative.generate, name="generative")
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
