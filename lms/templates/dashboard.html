@@ -7,7 +7,7 @@
     .popup {
         display: none;
         position: fixed;
-        z-index: 6;
+        z-index: 10;
         left: 0;
         top: 0;
         width: 100%;
@@ -44,11 +44,6 @@
         border: none;
         border-radius: 5px;
         cursor: pointer;
-    }
-
-    .popup-content #popupadd {
-        background-color: #00aaff;
-        color: white;
     }
 
     .popup-content #popupsubmit {
@@ -484,7 +479,7 @@
     <div class="popup-content">
         <div id="dynamicForm">
             <div>
-                <label for="cname">Group Name:</label><br>
+                <label for="cname">Chat Name:</label><br>
                 <input type="text" id="cname" name="cname">
             </div>
             <div>
@@ -492,10 +487,6 @@
                 <input type="text" id="nameInput" name="name" onkeyup="checkEnter(event)">
             </div>
             <div id="nameList" class="user-list"></div>
-            {% comment %} <div>
-                <br>
-                <button id="popupadd" type="button" onclick="addUser(0, '{{request.user.id}}')">Add Users</button>
-            </div> {% endcomment %}
             <br>
             <div id="buttonContainer" class="button-container">
                 <button id="popupsubmit" onclick="submitForm()">Submit</button>
@@ -558,15 +549,10 @@
                     addUser(message.userid, creatorid);
                 });
                 if (creatorid != "{{request.user.id}}") {
-                    const nameInput = document.getElementById("nameInput");
-                    if (nameInput) nameInput.style.display = 'none';
-                    const popupSubmit = document.getElementById("popupsubmit");
-                    if (popupSubmit) popupSubmit.style.display = 'none';
-                    const popupAdd = document.getElementById("popupadd");
-                    if (popupAdd) popupAdd.style.display = 'none';
+                    document.getElementById("nameInput").style.display = 'none';
+                    document.getElementById("popupsubmit").style.display = 'none';
                 } else {
-                    const popupSubmit = document.getElementById("popupsubmit");
-                    if (popupSubmit) popupSubmit.innerHTML = "Save";
+                    document.getElementById("popupsubmit").innerHTML = "Save";
                 }
                 openForm("edit");
             }
@@ -740,12 +726,8 @@
 
     function closeForm() {
         console.log("closed form");
-        const popupSubmit = document.getElementById("popupsubmit");
-        if (popupSubmit) popupSubmit.style.display = "";
-        const popupAdd = document.getElementById("popupadd");
-        if (popupAdd) popupAdd.style.display = "";
-        const nameInput = document.getElementById("nameInput");
-        if (nameInput) nameInput.style.display = "";
+        document.getElementById("popupsubmit").style.display = "";
+        document.getElementById("nameInput").style.display = "";
         document.getElementById("popupsubmit").innerHTML = "Submit";
         document.getElementById('cname').value = "";
         document.getElementById('cname').removeAttribute("disabled");
