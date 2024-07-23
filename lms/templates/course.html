@@ -1,5 +1,5 @@
 {% extends "base-student.html" %}
-{% block title %}Student Dashboard{% endblock %}
+{% block title %}Student Dashboard{% endblock %} 
 {% load static %}
 {% load markdownify %}
 {% block content-wrapper %}
@@ -14,10 +14,10 @@
 
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
-          <li class="breadcrumb-item">
-            <a href="{% url 'dashboard' %}">Dashboard</a>
-          </li>
-          <li class="breadcrumb-item active">{{ course_info.course_name }} [AY2023/24 Trimester 3]</li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'dashboard' %}">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item active">{{ course_info.course_name }} [AY2023/24 Trimester 3]</li>
         </ol>
       </div>
     </div>
@@ -53,13 +53,14 @@
                 </a>
                 <p><em>Last updated on: {{ announce.updated_at }}</em></p>
                 <div class="latest-anouncement">
-                  {{ announce.content|markdownify }} 
+                  {{ announce.content|markdownify }}
+
                   {% if is_admin %}
                   </br>
                   </br>
                   <a href="{% url 'announcement_edit' course_info.course_id announce.id %}" class="btn btn-primary">Edit</a>
                   <a href="{% url 'announcement_delete' course_info.course_id announce.id %}" class="btn btn-danger">Delete</a>
-                  {% endif %}              
+                  {% endif %}
                   <hr class="solid" color="9C9C9C">
                 </div>
               {% endfor %}
@@ -71,8 +72,7 @@
           <div class="card-footer">
             {% if is_admin %}
             <a href="{% url 'announcement_add' course_info.course_id %}" class="btn btn-primary">Add Announcement</a>
-            {% else %}
-            {% endif %}          
+            {% endif %}
           </div>
         </div>
 
@@ -87,11 +87,26 @@
           </div>
         </div>
 
-        <!-- Link to Assignment Page -->
         <div class="card">
           <div class="card-body">
             <h4>Assignments</h4>
-            <a href="{% url 'assignment_page' course_info.course_id %}" class="btn btn-primary mt-3">Go to Assignment Page</a>
+            <a href="{% url 'upload_assignment' course_info.course_id %}" class="btn btn-primary">Upload Assignment</a>
+            <ul>
+              {% for assignment in course_info.assignment_set.all %}
+                <li>
+                  <p>Deadline: {{ assignment.deadline }}</p>
+                  {% if assignment.submitted %}
+                    <p>Status: Submitted on {{ assignment.uploaded_at }}</p>
+                  {% else %}
+                    {% if not assignment.is_past_deadline %}
+                      <p>You can still submit your assignment.</p>
+                    {% else %}
+                      <p>The deadline has passed. You cannot submit the assignment.</p>
+                    {% endif %}
+                  {% endif %}
+                </li>
+              {% endfor %}
+            </ul>
           </div>
         </div>
 
