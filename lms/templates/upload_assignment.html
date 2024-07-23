@@ -1,0 +1,157 @@
+{% extends "base-student.html" %}
+{% block title %}Student Dashboard{% endblock %} 
+{% load static %}
+{% load markdownify %}
+{% block content-wrapper %}
+
+<!-- Header -->
+<div class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1 class="m-0">{{ course_info.course_name }} [AY2023/24 Trimester 3]</h1>
+      </div>
+
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item">
+                <a href="{% url 'dashboard' %}">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item active">{{ course_info.course_name }} [AY2023/24 Trimester 3]</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Body -->
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- LEFT CARDS-->
+      <div class="col-12 col-sm-6 col-md-8">
+        <div class="card">
+          <div class="card-body">
+            <h4>Module Description</h4>
+            <p class="mt-0 mb-0">{{ course_info.description }}</p>
+            <p class="mt-0 mb-0 text-justify">
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore,
+              alias voluptate est assumenda autem eligendi dolorem ea at
+              sapiente, cum minima incidunt! Obcaecati ullam sapiente fugiat
+              voluptatem quia consequuntur dolores.
+            </p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <h4>Announcement</h4>
+            {% if courseAnnouncement_info %}
+              {% for announce in courseAnnouncement_info %}
+                <a href="{% url 'announcement_view' course_info.course_id announce.id %}">
+                  <h3>{{ announce.title }}</h3>
+                </a>
+                <p><em>Last updated on: {{ announce.updated_at }}</em></p>
+                <div class="latest-anouncement">
+                  {{ announce.content|markdownify }}
+
+                  {% if is_admin %}
+                  </br>
+                  </br>
+                  <a href="{% url 'announcement_edit' course_info.course_id announce.id %}" class="btn btn-primary">Edit</a>
+                  <a href="{% url 'announcement_delete' course_info.course_id announce.id %}" class="btn btn-danger">Delete</a>
+                  {% endif %}
+                  <hr class="solid" color="9C9C9C">
+                </div>
+              {% endfor %}
+            {% else %}
+              <p>No Announcements</p>
+            {% endif %}
+          </div>
+
+          <div class="card-footer">
+            {% if is_admin %}
+            <a href="{% url 'announcement_add' course_info.course_id %}" class="btn btn-primary">Add Announcement</a>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <h4>Module Content</h4>
+            <p class="mt-0 mb-0 text-justify">
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam
+              quam at dolorem. Qui modi laborum iste animi, odit ex debitis iure
+              molestias veritatis tempore doloremque eius cum id. Facere, enim.
+            </p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <h4>Assignments</h4>
+            <a href="{% url 'upload_assignment' course_info.course_id %}" class="btn btn-primary">Upload Assignment</a>
+            <ul>
+              {% for assignment in course_info.assignment_set.all %}
+                <li>
+                  <p>Deadline: {{ assignment.deadline }}</p>
+                  {% if assignment.submitted %}
+                    <p>Status: Submitted on {{ assignment.uploaded_at }}</p>
+                  {% else %}
+                    {% if not assignment.is_past_deadline %}
+                      <p>You can still submit your assignment.</p>
+                    {% else %}
+                      <p>The deadline has passed. You cannot submit the assignment.</p>
+                    {% endif %}
+                  {% endif %}
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT CARDS-->
+      <div class="col-6 col-md-4">
+        <div class="card">
+          <div class="card-body">
+            <h4>Quick Access</h4>
+            <div class="nav-scroller py-1">
+              <nav class="nav">
+                <ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link p-2 text-muted" href="#">Content</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link p-2 text-muted" href="{% url 'discussion_board' course_info.course_id %}">Discussion Forums</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link p-2 text-muted" href="{% url 'grades' course_info.course_id %}">My Grades</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link p-2 text-muted" href="{% url 'feedback' course_info.course_id %}">Email / Feedback</a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <h4>Task / Assignments Due</h4>
+            <p class="mt-0 mb-0 text-justify">
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus
+              asperiores dignissimos quos non minus quibusdam dolorum
+              reprehenderit ullam pariatur, aperiam ipsam accusamus, cum culpa
+              quaerat illo qui praesentium laudantium inventore.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
