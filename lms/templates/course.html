@@ -90,23 +90,12 @@
         <div class="card">
           <div class="card-body">
             <h4>Assignments</h4>
-            <a href="{% url 'upload_assignment' course_info.course_id %}" class="btn btn-primary">Upload Assignment</a>
-            <ul>
-              {% for assignment in course_info.assignment_set.all %}
-                <li>
-                  <p>Deadline: {{ assignment.deadline }}</p>
-                  {% if assignment.submitted %}
-                    <p>Status: Submitted on {{ assignment.uploaded_at }}</p>
-                  {% else %}
-                    {% if not assignment.is_past_deadline %}
-                      <p>You can still submit your assignment.</p>
-                    {% else %}
-                      <p>The deadline has passed. You cannot submit the assignment.</p>
-                    {% endif %}
-                  {% endif %}
-                </li>
-              {% endfor %}
-            </ul>
+          </div>
+
+          <div class="card-footer">
+            {% if is_admin %}
+            <a href="{% url 'assignment_add' course_info.course_id %}" class="btn btn-primary">Create Assignment</a>
+            {% endif %}
           </div>
         </div>
 

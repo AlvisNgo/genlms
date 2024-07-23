@@ -127,8 +127,7 @@ class Event(models.Model):
     def __str__(self):
         return self.title
 
-
-class Assignment(models.Model):
+class AssignmentSubmission(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     student = models.ForeignKey(User, on_delete=models.CASCADE)
     file = models.FileField(upload_to='assignments/', blank=True, null=True)

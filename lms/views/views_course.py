@@ -1,7 +1,7 @@
 from django.http import Http404
 from django.shortcuts import get_object_or_404, render
 from django.db.models import Count
-from lms.models import Course, CourseAnnouncement, EnrolledCourse, Thread, CourseAdmin, Admin, Assignment 
+from lms.models import Course, CourseAnnouncement, EnrolledCourse, Thread, CourseAdmin, Admin, AssignmentSubmission 
 from ..forms import AssignmentUploadForm
 from django.http import HttpResponse
 from datetime import timedelta
@@ -63,7 +63,7 @@ def feedback(request, id):
 
 def upload_assignment(request, course_id):
     course = get_object_or_404(Course, course_id=course_id)
-    assignment, created = Assignment.objects.get_or_create(
+    assignment, created = AssignmentSubmission.objects.get_or_create(
         course=course,
         student=request.user,
         defaults={'deadline': timezone.now() + timedelta(days=30)}  # Set a default deadline

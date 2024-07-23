@@ -1,6 +1,6 @@
 # lms/urls.py
 from django.urls import path
-from .views import views_login, views_announcement, views_course, views_discussion, views_profile, api_generative, views_calender
+from .views import views_login, views_announcement, views_course, views_discussion, views_profile, api_generative, views_calender, views_assignment
 from .views.views_course import upload_assignment
 from django.conf import settings
 from django.conf.urls.static import static
@@ -57,6 +57,9 @@ urlpatterns = [
      path("student/course/<int:id>/announcement_edit/<int:announcement_id>", views_announcement.announcement_edit, name="announcement_edit"),
      path("student/course/<int:id>/announcement_delete/<int:announcement_id>", views_announcement.announcement_delete, name="announcement_delete"),
      path("student/course/<int:id>/announcement_view/<int:announcement_id>", views_announcement.announcement_view, name="announcement_view"),
+
+     # Assignments
+     path("student/course/<int:id>/assignment_add", views_assignment.assignment_add, name="assignment_add"),
 
      # Generative AI API
      path("api/generative", api_generative.generate, name="generative")
