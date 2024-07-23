@@ -1,7 +1,7 @@
 from django.shortcuts import redirect
 from django.utils.deprecation import MiddlewareMixin
 
-from lms.models import Admin, Profile
+from lms.models import Admin, Event, Profile
 
 class CheckAdminMiddleware(MiddlewareMixin):
     def process_request(self, request):
@@ -14,6 +14,9 @@ class CheckAdminMiddleware(MiddlewareMixin):
         # Set admin and is_admin attribute in request
         request.admin = Admin.objects.filter(user_id=user.id).first()
         request.is_admin = Admin.objects.filter(user_id=user.id).exists()
+
+        # Get unread count
+        request.unread_event_count = Event.objects.filter(to=request.user, read=False).count()
 
 def profile_picture_context_processor(request):
     return {

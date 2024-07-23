@@ -5,6 +5,8 @@ from django.db.models import Count
 from lms.models import Course, EnrolledCourse, Post, Thread, CourseAdmin
 from django.http import JsonResponse, HttpResponseForbidden
 
+from lms.utils import add_event
+
 
 def discussion_board(request, id):
     course_info = get_object_or_404(Course, pk=id)
@@ -74,6 +76,8 @@ def create_post(request, thread_id):
             post.thread = thread
             post.user = request.user
             post.save()
+
+            add_event(thread.user, "Someone replied to your thread.", f"New Discussion Board Reply - {thread.course.course_name}")
             return redirect('view_thread', thread_id=thread.id)
     else:
         form = PostForm()
