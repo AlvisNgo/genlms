@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 from django.shortcuts import redirect, render
 from django.contrib.auth import logout
+from django.utils import timezone
 from django.db.models import Count
 from allauth.socialaccount.models import SocialAccount
 from lms.models import Admin, CourseAdmin, EnrolledCourse
@@ -29,8 +30,7 @@ def student_dashboard(request):
     context = {}
 
     # Get avatar
-    social_account = SocialAccount.objects.filter(
-        user=user, provider='microsoft').first()
+    social_account = SocialAccount.objects.filter(user=user, provider='microsoft').first()
     if social_account:
         extra_data = social_account.extra_data
         avatar_url = extra_data.get('photo', {}).get('url')
@@ -41,13 +41,22 @@ def student_dashboard(request):
 
     # Get enrolled course if student, else get assigned course (CourseAdmin)
     if (not request.is_admin):
-        my_courses = EnrolledCourse.objects.filter(
-            user_id=uid).select_related('course')
-        context['my_courses'] = my_courses
+        my_courses = EnrolledCourse.objects.filter(user_id=uid).select_related('course')
     else:
         admin_info = Admin.objects.get(user_id=uid)
-        my_courses = CourseAdmin.objects.filter(
-            admin_id=admin_info.admin_id).select_related('course')
-        context['my_courses'] = my_courses
-    print(context)
+        my_courses = CourseAdmin.objects.filter(admin_id=admin_info.admin_id).select_related('course')
+    
+    ongoing_courses = []
+    previous_courses = []
+
+    for enrolled_course in my_courses:
+        course = enrolled_course.course
+        if course.start_date <= timezone.now().date() <= course.end_date:
+            ongoing_courses.append(enrolled_course)
+        else:
+            previous_courses.append(enrolled_course)
+    
+    context['ongoing_courses'] = ongoing_courses
+    context['previous_courses'] = previous_courses
+    
     return render(request, 'dashboard.html', context)

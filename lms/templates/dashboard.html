@@ -59,22 +59,43 @@
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
+                        <h2>On-Going Course</h2>
                         <div class="row">
-                            {% for course in my_courses %}
+                            {% for enrolled_course in ongoing_courses %}
                             <div class="col-12 col-sm-6 col-md-4">
-								<div class="small-box bg-info">
-									<div class="inner">
-									  <h4>{{ course.course }}</h4>
-									  <p>{{ course.course.start_date }} to {{ course.course.end_date }}</p>
-									</div>
-									<div class="icon">
-									  <i class="fas fa-shopping-cart"></i>
-									</div>
-									<a href="{% url 'course' course.course_id %}" class="small-box-footer">
-									  View Course <i class="fas fa-arrow-circle-right"></i>
-									</a>
-								</div>								  
-							</div>
+                                <div class="small-box bg-info">
+                                    <div class="inner">
+                                        <h4>{{ enrolled_course.course }}</h4>
+                                        <p>{{ enrolled_course.course.start_date }} to {{ enrolled_course.course.end_date }}</p>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="fas fa-shopping-cart"></i>
+                                    </div>
+                                    <a href="{% url 'course' enrolled_course.course_id %}" class="small-box-footer">
+                                        View Course <i class="fas fa-arrow-circle-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <h2>Previous Course</h2>
+                        <div class="row">
+                            {% for enrolled_course in previous_courses %}
+                            <div class="col-12 col-sm-6 col-md-4">
+                                <div class="small-box bg-secondary">
+                                    <div class="inner">
+                                        <h4>{{ enrolled_course.course }}</h4>
+                                        <p>{{ enrolled_course.course.start_date }} to {{ enrolled_course.course.end_date }}</p>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="fas fa-history"></i>
+                                    </div>
+                                    <a href="{% url 'course' enrolled_course.course_id %}" class="small-box-footer">
+                                        View Course <i class="fas fa-arrow-circle-right"></i>
+                                    </a>
+                                </div>
+                            </div>
                             {% endfor %}
                         </div>
                         <!-- /.row -->
