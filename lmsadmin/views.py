@@ -8,9 +8,22 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.urls import reverse
 from .forms import CSVUploadForm
+from lms.models import Admin, Course
 
 def index(request):
-	return render(request, 'admin_index.html')
+	# Check if user is superadmin
+	if not request.user.is_superuser:
+		return HttpResponseRedirect(reverse('admin:index'))
+
+	total_user_count = User.objects.count()
+	total_admin_count = Admin.objects.count()
+	total_course_count = Course.objects.count()
+
+	return render(request, 'admin_index.html',  {
+		"total_user_count": total_user_count,
+		"total_admin_count": total_admin_count,
+		"total_course_count": total_course_count
+	})
 
 def add_users(request):
 	# Check if user is superadmin
@@ -76,6 +89,10 @@ def add_users(request):
 	return render(request, 'admin_add_users.html', {'form': form})
 
 def import_valid_rows(request):
+	# Check if user is superadmin
+	if not request.user.is_superuser:
+		return HttpResponseRedirect(reverse('admin:index'))
+
 	if request.method == 'POST':
 		valid_rows = request.session.get('valid_rows', [])
 		if 'proceed' in request.POST:
