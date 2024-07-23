@@ -29,7 +29,7 @@
             <div class="col-md-12">
                 <div class="card card-primary">
                     <div class="card-header">
-                        <h3 class="card-title">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</h3>
+                        <h3 class="card-title">Latest Events</h3>
                     </div>
                     <!-- /.card-header -->
 
@@ -38,6 +38,10 @@
                             {% for event in page_obj %}
                             <li>[{{event.created_at}}] <a href="{{event.link}}">{{event.title}}</a></li>
                             {% endfor %}
+
+                            {% if not page_obj.object_list %}
+                            <p>No events. Hooray!</p>
+                            {% endif %}
                         </ul>
                     </div>
                     <!-- /.card-body -->
