@@ -7,7 +7,7 @@
     .popup {
     display: none;
     position: fixed;
-    z-index: 1;
+    z-index: 100000;
     left: 0;
     top: 0;
     width: 100%;
@@ -334,8 +334,11 @@
             };
         }
         if (data.action == "new_chat"){
+            if(data.message.member == "{{request.user.id}}")
+        {
             createGroup(data);
             chatSocket.send(JSON.stringify({ group:data.group, action:"join", username : "{{request.user.first_name}}"}));
+        }
         };
         if (data.action == "leave"){
             removeGroup(data.group);

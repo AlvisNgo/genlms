@@ -25,14 +25,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 self.channel_name
             )
     async def receive(self, text_data):
-        try:
-            sender_channel = event.get("sender_channel")
-            if sender_channel == self.channel_name:
-                return  # Ignore the message if it's from the same instance
-        except Exception as e:
-            print(e)
         text_data_json = json.loads(text_data)
-        print(text_data_json)
         action = text_data_json["action"]
         group_id = text_data_json["group"]
         try:
@@ -64,7 +57,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
             new_chatroom = ChatRoom(name= groupname,creator_id=user.id)
             await sync_to_async(new_chatroom.save)()
             new_chatroom =  await sync_to_async(ChatRoom.objects.filter(name = groupname,creator_id=user.id).order_by('-created_at').first)()
-            print(new_chatroom.id)
             members = text_data_json["members"]
             for member in members:
                 if (member != self.user.first_name ):
@@ -72,8 +64,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                         member_check = await sync_to_async(User.objects.filter(username=str(member)).first)()
                         new_chatroom_user = ChatRoomUser(chatroom= new_chatroom ,user=member_check)
                         await sync_to_async(new_chatroom_user.save)()
-                        print(self.groups)
-                        new_user_group = "user_" +str(new_chatroom_user.id)
+                        new_user_group = "user_" +str(new_chatroom_user.user_id)
                         await self.channel_layer.group_add(
                             new_user_group,
                             self.channel_name
@@ -86,6 +77,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                             "group" : new_chatroom.id,
                                 "message": {
                                     "creator":user.id,
+                                    "member": str(new_chatroom_user.user_id),
                                     "group_name":new_chatroom.name,
                                 },
                             "sender_channel": self.channel_name
