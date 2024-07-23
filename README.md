@@ -21,7 +21,14 @@ pip install -r requirements.txt
 # Setting up
 ## Create Database
 Using command prompt or any GUI application, please create a new database with `genlms` as it name. Make sure you can login to the database.
-After that, please run `python manage.py migrate` to create all the necessary tables.
+After that, please run the following to create all the necessary tables.
+
+```
+python
+python manage.py makemigrations
+python manage.py migrate
+```
+
 ## Loading of dummy data
 We will need to load dummy data into the database. Please use those command line by line.
 ```
