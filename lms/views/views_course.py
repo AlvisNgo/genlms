@@ -1,7 +1,11 @@
 from django.http import Http404
 from django.shortcuts import get_object_or_404, render
 from django.db.models import Count
-from lms.models import Course, CourseAnnouncement, EnrolledCourse, Thread, CourseAdmin, Admin
+from lms.models import Course, CourseAnnouncement, EnrolledCourse, Thread, CourseAdmin, Admin, Assignment 
+from ..forms import AssignmentUploadForm
+from django.http import HttpResponse
+from datetime import timedelta
+from django.utils import timezone
 
 def student_course_info(request, id):
     # Check if they have access to this course
@@ -58,25 +62,43 @@ def feedback(request, id):
     return render(request, 'feedback.html', context)
 
 def upload_assignment(request, course_id):
-    course = Course.objects.get(course_id=course_id)
+    course = get_object_or_404(Course, course_id=course_id)
     assignment, created = Assignment.objects.get_or_create(
         course=course,
         student=request.user,
-        defaults={'deadline': timezone.now() + timedelta(days=7)}  # Set a default deadline
+        defaults={'deadline': timezone.now() + timedelta(days=30)}  # Set a default deadline
     )
 
+    success_message = None
+    form = AssignmentUploadForm(instance=assignment)
+
     if request.method == 'POST':
-        form = AssignmentUploadForm(request.POST, request.FILES, instance=assignment)
-        if form.is_valid():
-            if assignment.is_past_deadline():
-                return HttpResponse("Submission deadline has passed. You cannot submit the assignment.")
-            assignment = form.save(commit=False)
-            assignment.submitted = True
+        if 'remove_file' in request.POST:
+            assignment.file.delete()
+            assignment.submitted = False
             assignment.save()
-            return redirect('course_detail', course_id=course_id)
-    else:
-        form = AssignmentUploadForm(instance=assignment)
+            success_message = "File has been removed."
+        else:
+            form = AssignmentUploadForm(request.POST, request.FILES, instance=assignment)
+            if form.is_valid():
+                if assignment.is_past_deadline():
+                    return HttpResponse("Submission deadline has passed. You cannot submit the assignment.")
+                if 'file' in request.FILES and request.FILES['file']:
+                    if assignment.file and assignment.file.name != request.FILES['file'].name:
+                        assignment.file.delete(save=False)  # Delete the old file if a new file is uploaded
+                    assignment.file = request.FILES['file']
+                    assignment.submitted = True
+                    assignment.uploaded_at = timezone.now()
+                    assignment.save()
+                    success_message = "Submission Successful"
+                else:
+                    success_message = "No file has been uploaded."
+            else:
+                success_message = "Form is not valid."
 
-    return render(request, 'upload_assignment.html', {'form': form, 'course': course, 'assignment': assignment})
-
-    
+    return render(request, 'upload_assignment.html', {
+        'form': form,
+        'course': course,
+        'assignment': assignment,
+        'success_message': success_message
+    })

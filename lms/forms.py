@@ -1,9 +1,12 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Profile
-from lms.models import Thread, Post, Assignment
+from .models import Profile, Assignment
+from lms.models import Thread, Post
 
-
+class AssignmentUploadForm(forms.ModelForm):
+    class Meta:
+        model = Assignment
+        fields = ['file']
 class ThreadForm(forms.ModelForm):
     tags = forms.CharField(max_length=200, required=False,
                            widget=forms.TextInput(attrs={'class': 'form-control'}))
@@ -71,7 +74,3 @@ class ProfileForm(forms.ModelForm):
             profile.save()
         return profile
 
-class AssignmentForm(forms.ModelForm):
-    class Meta:
-        model = Assignment
-        fields = ['name', 'file', 'submitted']
