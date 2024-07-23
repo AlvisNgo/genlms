@@ -5,3 +5,11 @@ function markAsSeen(contentId) {
         
     });
 }
+
+function markAsSeen_announce(announceId) {
+    fetch("/analytics/announcement_seen/" + announceId)
+    .then(response => response.json())
+    .then(data => {
+        
+    });
+}

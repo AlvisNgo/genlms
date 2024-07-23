@@ -22,7 +22,8 @@ def student_course_info(request, id):
     is_admin = Admin.objects.filter(user_id=uid).exists()
     total_students = EnrolledCourse.objects.filter(course=course_info).count()
     total_seen = CourseContent.objects.filter(course=course_info).annotate(seen_count=Count('is_seen'))
-    
+    total_seen_announce = CourseAnnouncement.objects.filter(course=course_info).annotate(seen_count=Count('is_seen'))
+
     context = {
         'course_info': course_info,
         'courseAnnouncement_info': courseAnnouncement_info,
@@ -30,6 +31,7 @@ def student_course_info(request, id):
         'is_admin': is_admin,
         'total_students': total_students,
         'total_seen': total_seen,
+        'total_seen_announce':total_seen_announce,
     }
     
     print(context)

@@ -50,7 +50,7 @@
             <hr class="solid" color="9C9C9C">
             {% if courseAnnouncement_info%}
               {% for announce in courseAnnouncement_info%}
-                <a href="{%url 'announcement_view' course_info.course_id announce.id %}">
+                <a href="{%url 'announcement_view' course_info.course_id announce.id %}" onclick="markAsSeen_announce({{ announce.id }})">
                   <h3>{{ announce.title }}</h3>
                 </a>
                 <p><em>Last updated on: {{ announce.updated_at }}</em></p>
@@ -62,6 +62,11 @@
                   <a href="{% url 'announcement_delete' course_info.course_id announce.id %}" class="btn btn-outline-danger">Delete</a>
                   {% endif %}           
                 </div>
+                {% if request.is_admin %}
+                  <div class="card-footer">
+                    Seen: {{ announce.total_seen }} out of {{ total_students }} students
+                  </div>
+                  {% endif %}
               {% endfor %}
 
             {% else %}
