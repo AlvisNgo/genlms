@@ -78,7 +78,9 @@ def create_post(request, thread_id):
             post.user = request.user
             post.save()
 
-            add_event(thread.user, "Someone replied to your thread.", f"New Discussion Board Reply - {thread.course.course_name}", reverse('view_thread', args=[thread.id]))
+            if (thread.user != request.user):
+                add_event(thread.user, f"{request.user.first_name} replied to your thread.", f"New Discussion Board Reply - {thread.course.course_name}", reverse('view_thread', args=[thread.id]))
+            
             return redirect('view_thread', thread_id=thread.id)
     else:
         form = PostForm()
