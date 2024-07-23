@@ -1,7 +1,7 @@
-from .models import Event
+from .models import Notification
 
 def add_event(to: int, title: str, description: str, link: str):
-    event = Event(
+    event = Notification(
         to=to,
         title=title,
         description=description,

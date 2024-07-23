@@ -3,7 +3,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.deprecation import MiddlewareMixin
 
-from lms.models import Admin, Event, Profile
+from lms.models import Admin, Notification, Profile
 
 class CheckAdminMiddleware(MiddlewareMixin):
     def process_request(self, request):
@@ -22,7 +22,7 @@ class CheckAdminMiddleware(MiddlewareMixin):
         request.is_admin = Admin.objects.filter(user_id=user.id).exists()
 
         # Get unread count
-        request.unread_event_count = Event.objects.filter(to=user.id, read=False).count()
+        request.unread_event_count = Notification.objects.filter(to=user.id, read=False).count()
 
 def profile_picture_context_processor(request):
     return {

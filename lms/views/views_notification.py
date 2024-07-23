@@ -4,10 +4,10 @@ from django.utils.html import escape
 from django.http import JsonResponse
 from django.core.paginator import Paginator
 import json
-from lms.models import Event
+from lms.models import Notification
 
 def view_all_events(request):
-    events = Event.objects.filter(to=request.user).order_by('-created_at')
+    events = Notification.objects.filter(to=request.user).order_by('-created_at')
 
     # Mark all events as read on viewing
     events.update(read=True)
@@ -29,11 +29,11 @@ def get_unread(request):
         if not user.is_authenticated:
             return JsonResponse({"success": False, "message": "Not authenticated!"})
         
-        unread_events = Event.objects.filter(to=request.user, read=False)
+        unread_events = Notification.objects.filter(to=request.user, read=False)
         unread_events_list = list(unread_events.values('id', 'title', 'description', 'link', 'created_at'))
 
         if len(unread_events) < 5:
-            read_events = Event.objects.filter(to=request.user, read=True).order_by('-created_at')[:5-len(unread_events)]
+            read_events = Notification.objects.filter(to=request.user, read=True).order_by('-created_at')[:5-len(unread_events)]
             read_events_list = list(read_events.values('id', 'title', 'description', 'link', 'created_at'))
         else:
             read_events_list = []

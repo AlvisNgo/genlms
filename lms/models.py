@@ -122,7 +122,7 @@ class CourseContent(models.Model):
     def __str__(self):
         return f"Added by {self.owner.user.username} in {self.course}"
 
-class Event(models.Model):
+class Notification(models.Model):
     to = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     description = models.TextField()
