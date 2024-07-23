@@ -58,7 +58,7 @@
                                                 <td>{{ submission.student.username }}</td>
                                                 <td>
                                                     {% if submission.file %}
-                                                        <a href="{{ submission.file.url }}">{{ submission.file.name }}</a>
+                                                        <a href="{{ submission.sas_url }}" target="_blank">{{ submission.file.name }}</a>
                                                     {% else %}
                                                         No file submitted
                                                     {% endif %}

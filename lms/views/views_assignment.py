@@ -5,6 +5,7 @@ from django.db.models import Max
 from django.utils import timezone
 from lms.forms_assignment import AssignmentForm, AssignmentSubmissionForm
 from lms.models import Admin, Assignment, AssignmentSubmission, Course, CourseAdmin, EnrolledCourse
+from lms.utils import generate_sas_url
 
 def assignment_add(request, id):
     context = {}
@@ -53,7 +54,10 @@ def assignment_view(request, course_id, assignment_id):
 
 
     # Get previous submissions for the current user and assignment
-    previous_submissions = AssignmentSubmission.objects.filter(assignment=assignment_info, student=request.user).order_by('-uploaded_at') 
+    previous_submissions = AssignmentSubmission.objects.filter(assignment=assignment_info, student=request.user).order_by('-uploaded_at')
+    for submission in previous_submissions:
+        if submission.file:
+            submission.sas_url = generate_sas_url(submission.file.name)
 
     # Handle form submission
     if request.method == 'POST':
@@ -81,12 +85,15 @@ def view_submission(request, course_id, assignment_id):
     assignment_info = get_object_or_404(Assignment, pk=assignment_id)
 
     # Get the latest submission for each student
-    latest_submissions = AssignmentSubmission.objects.filter(
-        assignment=assignment_info
-    ).values('student').annotate(latest_submission_id=Max('id'))
+    latest_submissions = AssignmentSubmission.objects.filter(assignment=assignment_info).values('student').annotate(latest_submission_id=Max('id'))
 
     # Retrieve the actual submission objects
     submissions = AssignmentSubmission.objects.filter(id__in=[entry['latest_submission_id'] for entry in latest_submissions])
+
+    # Generate SAS URLs for submissions
+    for submission in submissions:
+        if submission.file:
+            submission.sas_url = generate_sas_url(submission.file.name)
 
     context['course_info'] = course_info
     context['assignment_info'] = assignment_info

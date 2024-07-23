@@ -87,7 +87,7 @@
                                 <ul>
                                     {% for submission in previous_submissions %}
                                         <li>
-                                            <a href="{{ submission.file.url }}">{{ submission.file.name }}</a> - Uploaded at {{ submission.uploaded_at }}
+                                            <a href="{{ submission.sas_url }}" target="_blank">{{ submission.file.name }}</a> - Uploaded at {{ submission.uploaded_at }}
                                         </li>
                                     {% empty %}
                                         <li>No previous submissions.</li>
