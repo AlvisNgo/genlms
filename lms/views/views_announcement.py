@@ -2,7 +2,8 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from lms.course_annoucement import AnnouncementForm, AnnouncementEditForm
-from lms.models import Admin, Course, CourseAnnouncement
+from lms.models import Admin, Course, CourseAnnouncement, EnrolledCourse
+from lms.utils import add_notification
 
 def announcement_add(request, id):
     context = {}
@@ -23,6 +24,13 @@ def announcement_add(request, id):
 
             new_announcement = CourseAnnouncement(course=course_info, owner=admin_info, title=title, content=content)
             new_announcement.save()
+
+            # Get all students from this course
+            enrolled_courses = EnrolledCourse.objects.filter(course=course_info)
+            students = [enrollment.user for enrollment in enrolled_courses]
+            
+            for student in students:
+                add_notification(student, title, f"New Announcement - {course_info.course_name}", reverse('announcement_view', args=[course_info.course_id, new_announcement.id]))
 
             return redirect(reverse('course', args=[id]))
     else:
