@@ -2,14 +2,21 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from lms.forms import PostForm, ThreadForm, ReplyPostForm
 from django.db.models import Count
-from lms.models import Course, EnrolledCourse, Post, Thread
-from django.http import JsonResponse
+from lms.models import Course, EnrolledCourse, Post, Thread, CourseAdmin
+from django.http import JsonResponse, HttpResponseForbidden
 
 
 def discussion_board(request, id):
-    enrolled_course = get_object_or_404(EnrolledCourse, pk=id)
-    course_info = get_object_or_404(Course, pk=enrolled_course.course_id)
+    course_info = get_object_or_404(Course, pk=id)
     sort_option = request.GET.get('sort', 'likes')  # Sorting option
+
+    # Validate that user has access to this course
+    if request.is_admin:
+        if not CourseAdmin.objects.filter(admin=request.admin, course_id=id).exists():
+            return HttpResponseForbidden("Not allowed to visit this discussion board.")
+    else:
+        if not EnrolledCourse.objects.filter(user=request.user, course_id=id).exists():
+            return HttpResponseForbidden("Not allowed to visit this discussion board.")
 
     if sort_option == 'name':
         threads = Thread.objects.filter(course=course_info).annotate(
