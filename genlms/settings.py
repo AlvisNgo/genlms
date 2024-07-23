@@ -176,6 +176,10 @@ MARKDOWNIFY = {
    }
 }
 
+# Azure Blob Storage
+DEFAULT_FILE_STORAGE = 'storages.backends.azure_storage.AzureStorage'
+AZURE_ACCOUNT_NAME = 'genlmsstorage'  # replace with your Azure account name
+AZURE_ACCOUNT_KEY = 'V7oWxPVFLy4FrU1gIZaCD2S/J+jgoZKgQvXXtr/i7wT8Y6TEaTeL1ELWHJkp9Mauf8OLRBSjnN8++AStUt3ejg=='    # replace with your Azure account key
+AZURE_CONTAINER = 'genlmsblob'   # replace with your container name
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = f'https://{AZURE_ACCOUNT_NAME}.blob.core.windows.net/{AZURE_CONTAINER}/'
