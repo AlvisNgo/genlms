@@ -12,10 +12,6 @@ urlpatterns = [
      # Course
      path("student/course/<int:id>", views_course.student_course_info, name="course"),
 
-     # Course
-     path("student/course/<int:id>",
-          views_course.student_course_info, name="course"),
-
      # Profile
      path("student/dashboard/profile/",
           views_profile.profile_view, name="profile"),
@@ -46,7 +42,9 @@ urlpatterns = [
      path("student/course/<int:id>/announcement_view/<int:announcement_id>", views_announcement.announcement_view, name="announcement_view"),
 
      # Content
-     path("student/course/<int:id>/content_add", views_content.content_add, name="content_add"), 
+     path("student/course/<int:id>/content_add", views_content.content_add, name="content_add"),
+     path("student/course/<int:id>/content_edit/<int:content_id>", views_content.content_edit, name="content_edit"), 
+     path("student/course/<int:id>/content_delete/<int:content_id>", views_content.content_delete, name="content_delete"), 
 
      # Generative AI API
      path("api/generative", api_generative.generate, name="generative")

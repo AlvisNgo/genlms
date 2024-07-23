@@ -91,8 +91,11 @@
                     </button>
                     {% if is_admin%}
                       <div class="float-right content-buttons">
-                        <a href="" class="btn btn-outline-primary">Edit</a>
-                        <a href="" class="btn btn-outline-danger">Delete</a>
+                        <a href="{% url 'content_edit' course_info.course_id content.id %}" class="btn btn-outline-secondary">Edit</a>
+                        <form action="{% url 'content_delete' course_info.course_id content.id %}" method="post">
+                          {% csrf_token %}
+                          <input type="submit" class="btn btn-outline-danger" value="Delete"/>
+                        </form>
                       </div>
                     {% endif %}
                     <p class="mt-0 mb-0 text-justify">{{ content.description }}</p>

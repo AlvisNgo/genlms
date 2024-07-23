@@ -103,3 +103,48 @@ class ContentAddForm(forms.Form):
         }),
         required=False, label='Upload Files'
     )
+
+class ContentEditForm(forms.ModelForm):
+    class Meta:
+        model = CourseContent
+        fields = ['title', 'description']
+    
+    title = forms.CharField(
+        max_length=200,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'id': 'title',
+            'placeholder': 'Title (Eg. Week 1 - OS Fundamentals)'
+        }),
+        label='Title',
+    )
+    
+    description = forms.CharField(
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'id': 'description',
+            'rows': 10,
+            'placeholder': 'Content description...'
+        }),
+        label='Description'
+    )
+
+    content = forms.FileField(
+        widget=forms.ClearableFileInput(attrs={
+            'id': 'content',
+            'type':'file',
+            'accept': '.png, .jpeg, .pdf, .doc, .docx, .txt',
+            'upload_to':'content',
+            'style': 'display: none;',
+        }),
+        required=False, label='Upload Files'
+    )
+    def __init__(self, *args, **kwargs):
+        title_value = kwargs.pop('title_value', None)
+        description_value = kwargs.pop('description_value', None)
+
+        super().__init__(*args, **kwargs)
+        if title_value:
+            self.fields['title'].initial = title_value
+        if description_value:
+            self.fields['description'].initial = description_value
