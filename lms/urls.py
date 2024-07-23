@@ -1,6 +1,6 @@
 # lms/urls.py
 from django.urls import path
-from .views import views_login, views_announcement, views_content,views_course, views_discussion, views_profile, api_generative, views_calender, views_course_admin, views_event
+from .views import views_login, views_announcement, views_content,views_course, views_discussion, views_notification, views_profile, api_generative, views_calender, views_course_admin
 
 urlpatterns = [
      path("", views_login.login, name="login"),
@@ -56,6 +56,6 @@ urlpatterns = [
      path("student/course/<int:id>/admin/admin_list", views_course_admin.admin_list, name="admin_list"),
 
      # Events
-     path("api/unread_events", views_event.get_unread, name="api_unread_events"),
-     path("events", views_event.view_all_events, name="events"),
+     path("api/unread_events", views_notification.get_unread, name="api_unread_events"),
+     path("events", views_notification.view_all_events, name="events"),
 ]
