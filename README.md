@@ -24,7 +24,6 @@ Using command prompt or any GUI application, please create a new database with `
 After that, please run the following to create all the necessary tables.
 
 ```
-python
 python manage.py makemigrations
 python manage.py migrate
 ```
