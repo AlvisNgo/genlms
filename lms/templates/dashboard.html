@@ -497,13 +497,6 @@
 </div>
 
 
-
-
-
-
-
-
-<!-- /.content -->
 <script>
     let roomid = "";
     // create a chat socket link
@@ -517,21 +510,24 @@
         console.log("An unexpected error has occurred.");
     };
 
+    // retrieving message from server
     chatSocket.onmessage = function (e) {
         const data = JSON.parse(e.data);
-        console.log(data);
         if (roomid === data.group) {
             const chatbox = document.querySelector("#id_chat_item_container");
+            // new message
             if (data.action == "message") {
                 const div = document.createElement("div");
                 div.id = data.message.id;
                 createMessage(div, data.message);
                 chatbox.appendChild(div);
             }
+            // edit existing message
             if (data.action == "edit") {
                 const elementToEdit = document.getElementById(data.message.id);
                 createMessage(elementToEdit, data.message);
             }
+            // populate chatroom with messages
             if (data.action == "chat_history") {
                 chatbox.innerHTML = "";
                 data.message.forEach(function (message) {
@@ -541,10 +537,10 @@
                     chatbox.appendChild(div);
                 });
             }
+            // populate chatroom members
             if (data.action == "chat_details") {
                 const creatorid = data.message[0].userid.toString();
                 data.message.forEach(function (message) {
-                    console.log(data);
                     document.getElementById('nameInput').value = message.uid;
                     addUser(message.userid, creatorid);
                 });
@@ -556,6 +552,7 @@
                 }
                 openForm("edit");
             }
+            // delete message
             if (data.action == "delete") {
                 const elementToRemove = document.getElementById(data.message.id);
                 if (elementToRemove) {
@@ -563,17 +560,22 @@
                 }
             }
         }
+
+        // creating new chatroom
         if (data.action == "new_chat") {
             if (data.message.member == "{{request.user.id}}") {
                 createGroup(data);
                 chatSocket.send(JSON.stringify({ group: data.group, action: "join", username: "{{request.user.first_name}}" }));
             }
         }
+        // leaving chatroom
         if (data.action == "leave") {
-            removeGroup(data.group);
+            if (data.message.member == "{{request.user.id}}"|| data.message.member == "all") {
+                removeGroup(data.group);
+            }
         }
     };
-
+    // checking for user pressing enter to send message
     document.querySelector("#id_message_send_input").focus();
 
     document.querySelector("#id_message_send_input").onkeyup = function (e) {
@@ -582,18 +584,22 @@
         }
     };
 
+    // if submit in message box is clicked
     document.querySelector("#id_message_send_button").onclick = function (e) {
         const inputbutton = document.querySelector("#id_message_send_button");
         const messageInput = document.querySelector("#id_message_send_input").value;
 
         if (roomid != "" && messageInput != "") {
+            // sends new message to server side
             if (inputbutton.innerHTML == "Send") {
                 chatSocket.send(JSON.stringify({ group: roomid, action: 'send', message: messageInput, username: "{{request.user.first_name}}" }));
+            // sends edited message to server side
             } else if (inputbutton.innerHTML == "Save") {
                 const messageid = inputbutton.getAttribute('data-message-id');
                 chatSocket.send(JSON.stringify({ group: roomid, action: 'edit', messageid: messageid, message: messageInput, username: "{{request.user.first_name}}" }));
                 inputbutton.removeAttribute('data-message-id');
             }
+            // revert back to normal
             inputbutton.innerHTML = "Send";
             document.querySelector("#id_message_send_input").value = "";
         } else {
@@ -601,18 +607,20 @@
         }
     };
 
+    // add listener to chatroom list
     const contactItems = document.querySelectorAll('.contacts-list-item');
     contactItems.forEach(item => {
         item.addEventListener('click', () => {
             roomlistener(item);
         });
     });
+
+    // chatroom list functions
     function roomlistener(item){
         roomid = item.getAttribute('data-room');
             roomname = item.getElementsByClassName('contacts-list-name')[0].innerText;
             if (event.target.classList.contains('destroy-button') || event.target.classList.contains('leave-button')) {}
             else if(event.target.classList.contains('group-button')){
-                console.log(roomname)
                 document.getElementById("cname").value = roomname
             }
             else{
@@ -627,10 +635,7 @@
             document.getElementById('directChat').classList.remove('direct-chat-contacts-open');
     }
 
-    function deleteMessage(postid) {
-        chatSocket.send(JSON.stringify({ group: roomid, action: 'delete', messageid: postid, username: "{{request.user.first_name}}" }));
-    }
-
+    // change html for editing
     function editMessage(messageid) {
         if (!document.querySelector("#id_message_send_button").getAttribute('data-message-id')) {
             const messageElement = document.getElementById(messageid);
@@ -645,20 +650,29 @@
         }
     }
 
+    // send delete message to server side
+    function deleteMessage(postid) {
+        chatSocket.send(JSON.stringify({ group: roomid, action: 'delete', messageid: postid, username: "{{request.user.first_name}}" }));
+    }
+
+    // send leave group message to server side
     function leaveGroup(groupid) {
         removeGroup(groupid);
         chatSocket.send(JSON.stringify({ group: groupid, action: 'leave', username: "{{request.user.first_name}}" }));
     }
 
+    // send destroy group message to server side 
     function destroyGroup(groupid) {
         removeGroup(groupid);
         chatSocket.send(JSON.stringify({ group: groupid, action: 'destroy', username: "{{request.user.first_name}}" }));
     }
 
+    // send retrieve chatroom details to server side 
     function viewGroup(groupid) {
         chatSocket.send(JSON.stringify({ group: groupid, action: 'retrieve_chat_details', username: "{{request.user.first_name}}" }));
     }
 
+    // update html with new chatroom
     function createGroup(data){
         container = document.getElementById('id_contacts_list');
         var li = document.createElement("li");
@@ -685,7 +699,7 @@
         container.append(li);
     }
     
-
+   // remove a chatroom from html 
     function removeGroup(groupid) {
         const elementToRemove = document.querySelector(`[data-room='${groupid}']`);
         if (elementToRemove) {
@@ -696,7 +710,8 @@
             }
         }
     }
-
+    
+    // create message in html
     function createMessage(element, message) {
         element.innerHTML = `
             <span>${message.username} : ${message.message}</span>
@@ -711,6 +726,7 @@
         `;
     }
 
+    // opening pop up form for chatroom CRUD
     function openForm(action) {
         if (action == "new") {
             document.getElementById('nameInput').value = "{{request.user.username}}";
@@ -724,8 +740,8 @@
         document.getElementById('formPopup').style.display = 'flex';
     }
 
+    // closing pop up form
     function closeForm() {
-        console.log("closed form");
         document.getElementById("popupsubmit").style.display = "";
         document.getElementById("nameInput").style.display = "";
         document.getElementById("popupsubmit").innerHTML = "Submit";
@@ -736,6 +752,7 @@
         roomid = "";
     }
 
+    // sending form details to serverside
     function submitForm(){
         let members = [];
         groupname = document.getElementById('cname').value;
@@ -760,6 +777,7 @@
         closeForm()
     };
 
+    // adding users in pop up form
     function addUser(id, creatorid) {
         const nameList = document.getElementById('nameList');
         const nameItem = document.createElement('div');
@@ -783,6 +801,7 @@
         }
     }
 
+    // allows user to use enter to input users 
     function checkEnter(event) {
         if (event.key === 'Enter') {
             addUser(0, '{{request.user.id}}');
