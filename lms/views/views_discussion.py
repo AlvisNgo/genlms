@@ -97,6 +97,10 @@ def reply_post(request, post_id):
             post.thread = parent_post.thread
             post.user = request.user
             post.save()
+            
+            if (parent_post.user != request.user):
+                add_event(parent_post.user, f"{request.user.first_name} replied to your post in {post.thread.title}.", f"New Discussion Board Reply - {parent_post.thread.course.course_name}", reverse('view_thread', args=[parent_post.thread.id]))
+            
             return redirect('view_thread', thread_id=parent_post.thread.id)
     else:
         form = ReplyPostForm()
