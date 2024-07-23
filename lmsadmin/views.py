@@ -6,12 +6,13 @@ from django.core.exceptions import ValidationError
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.urls import reverse
 from .forms import CSVUploadForm
 
 def index(request):
 	# Check if user is superadmin
 	if not request.user.is_superuser:
-		return HttpResponseForbidden("You do not have permission to access this page.")
+		return HttpResponseRedirect(reverse('admin:index'))
 
 	if request.method == 'POST':
 		form = CSVUploadForm(request.POST, request.FILES)
