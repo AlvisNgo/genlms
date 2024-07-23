@@ -86,7 +86,7 @@
               <div id="accordion">
                 <div class="card">
                   <div class="card-header" id="heading-{{ forloop.counter }}">
-                    <button class="btn btn-link dropdown-btn" data-toggle="collapse" data-target="#collapse-{{ forloop.counter }}" aria-expanded="true" aria-controls="collapseOne">
+                    <button class="btn btn-link dropdown-btn" data-toggle="collapse" data-target="#collapse-{{ forloop.counter }}" aria-expanded="true" aria-controls="collapseOne" onclick="markAsSeen({{ content.id }})">
                       {{ content.title }}
                     </button>
                     {% if is_admin%}
@@ -147,9 +147,43 @@
             </p>
           </div>
         </div>
+        {% if is_admin%}
+        <div class="card">
+          <div class="card-body">
+            <h4>Analytics</h4>
+            {% if courseContent_info%}
+            <p class="mt-0 mb-0 text-justify">
+              
+              {% for content in courseContent_info %}
+              <p class="mt-0 mb-0 text-justify">
+                {{ content.title }}
+              </p>
+
+              <p class="mt-0 mb-0 text-justify" >
+                <span id="num-seen-{{ content.id }}">{{content.seen_count}} / {{ total_students}}</span>
+              </p>
+              {% endfor %}
+            </p>
+            {% else %}
+              <p class="mt-0 mb-0 text-justify">No content at the moment</p>
+            {% endif %}
+            
+          </div>
+        </div>
+        {% endif %}
       </div>
     </div>
   </div>
 </section>
-
+<script>
+  function markAsSeen(contentId) {
+    fetch("{% url 'mark_as_seen' course_info.course_id 0 %}".replace('0', contentId));
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('num-seen-' + contentId).innerText = data.seen;
+    });
+    //url = "student/course/"+ courseId + "/mark_as_seen/" + contentId+ "/"
+    //fetch(url)
+  }
+</script>
 {% endblock %}

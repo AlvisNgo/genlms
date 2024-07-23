@@ -15,6 +15,8 @@ urlpatterns = [
      # Course
      path("student/course/<int:id>",
           views_course.student_course_info, name="course"),
+     path("student/course/<int:id>/mark_as_seen/<int:content_id>/",
+          views_course.mark_as_seen, name="mark_as_seen"),
 
      # Profile
      path("student/dashboard/profile/",
@@ -47,6 +49,7 @@ urlpatterns = [
 
      # Content
      path("student/course/<int:id>/content_add", views_content.content_add, name="content_add"), 
+
 
      # Generative AI API
      path("api/generative", api_generative.generate, name="generative")

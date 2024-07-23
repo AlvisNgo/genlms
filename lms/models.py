@@ -118,6 +118,11 @@ class CourseContent(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     deleted_at = models.DateTimeField(null=True, blank=True, default=None)
-
+    is_seen = models.ManyToManyField(
+        User, related_name='seen_content', blank=True)
+    
+    def total_seen(self):
+        return self.is_seen.count()
+    
     def __str__(self):
         return f"Added by {self.owner.user.username} in {self.course}"
