@@ -497,13 +497,6 @@
 </div>
 
 
-
-
-
-
-
-
-<!-- /.content -->
 <script>
     let roomid = "";
     // create a chat socket link
@@ -519,7 +512,6 @@
 
     chatSocket.onmessage = function (e) {
         const data = JSON.parse(e.data);
-        console.log(data);
         if (roomid === data.group) {
             const chatbox = document.querySelector("#id_chat_item_container");
             if (data.action == "message") {
@@ -544,7 +536,6 @@
             if (data.action == "chat_details") {
                 const creatorid = data.message[0].userid.toString();
                 data.message.forEach(function (message) {
-                    console.log(data);
                     document.getElementById('nameInput').value = message.uid;
                     addUser(message.userid, creatorid);
                 });
@@ -570,7 +561,9 @@
             }
         }
         if (data.action == "leave") {
-            removeGroup(data.group);
+            if (data.message.member == "{{request.user.id}}") {
+                removeGroup(data.group);
+            }
         }
     };
 
@@ -607,12 +600,12 @@
             roomlistener(item);
         });
     });
+
     function roomlistener(item){
         roomid = item.getAttribute('data-room');
             roomname = item.getElementsByClassName('contacts-list-name')[0].innerText;
             if (event.target.classList.contains('destroy-button') || event.target.classList.contains('leave-button')) {}
             else if(event.target.classList.contains('group-button')){
-                console.log(roomname)
                 document.getElementById("cname").value = roomname
             }
             else{
@@ -725,7 +718,6 @@
     }
 
     function closeForm() {
-        console.log("closed form");
         document.getElementById("popupsubmit").style.display = "";
         document.getElementById("nameInput").style.display = "";
         document.getElementById("popupsubmit").innerHTML = "Submit";
