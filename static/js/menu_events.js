@@ -13,7 +13,7 @@ $("#menu-notification").click(() => {
                     $("#menu-notification-header").text(response.unread_events.length + " New Notifications");
                 }
                 else {
-                    $("#menu-notification-header").text((response.unread_events.length + response.read_events.length) + " New Notifications")
+                    $("#menu-notification-header").text("No New Notification")
                 }
                 
                 response.unread_events.forEach(event => {
