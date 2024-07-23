@@ -158,7 +158,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         elif action == 'destroy':
             for group in self.groups :
                 if (group_id == group):
-                    room =  await sync_to_async(ChatRoom.objects.filter(creator=user).first)()
+                    room =  await sync_to_async(ChatRoom.objects.filter(creator=user,id=group_id).first)()
                     self.groups.remove(group)
                     await self.channel_layer.group_send(
                         group_id,
