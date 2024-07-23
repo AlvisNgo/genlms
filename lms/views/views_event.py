@@ -1,12 +1,25 @@
 import json
+from django.shortcuts import render
 from django.utils.html import escape
 from django.http import JsonResponse
-from dotenv import load_dotenv
+from django.core.paginator import Paginator
 import json
 from lms.models import Event
 
-# Load dotenv
-load_dotenv()
+def view_all_events(request):
+    events = Event.objects.filter(to=request.user).order_by('-created_at')
+
+    # Mark all events as read on viewing
+    events.update(read=True)
+
+    # Set up pagination
+    paginator = Paginator(events, 10)  # Show 10 events per page
+    page_number = request.GET.get('page')  # Get the current page number from the query parameters
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'events.html', {
+        "page_obj": page_obj
+    })
 
 # /api/unread_events
 def get_unread(request):
