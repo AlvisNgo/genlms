@@ -6,12 +6,22 @@ $("#menu-notification").click(() => {
         url: '/api/unread_events', // Replace with your API endpoint
         method: 'GET',
         success: function(response) {
-            if (response.success && response.events) {
-                $("#menu-notification-number").text(response.events.length);
-                $("#menu-notification-header").text(response.events.length + " Notifications");
+            if (response.success) {
+                if (response.unread_events.length > 0) {
+                    $("#menu-notification-number").text(response.unread_events.length);
+                    $("#menu-notification-header").text(response.unread_events.length + " New Notifications");
+                }
+                else {
+                    $("#menu-notification-number").text(0);
+                    $("#menu-notification-header").text((response.unread_events.length + response.read_events.length) + " New Notifications")
+                }
+                
+                response.unread_events.forEach(event => {
+                    $("#menu-notification-box .dropdown-divider").last().before(addEvent(event, true));
+                });
 
-                response.events.forEach(event => {
-                    $("#menu-notification-box .dropdown-divider").last().before(addEvent(event));
+                response.read_events.forEach(event => {
+                    $("#menu-notification-box .dropdown-divider").last().before(addEvent(event, false));
                 });
             }
         },
@@ -34,12 +44,12 @@ function timeAgo(dateString) {
 }
 
 // Function to add an event to the dropdown
-function addEvent(event) {
+function addEvent(event, new_event) {
     return `
     <div class="ajax-event-notification">
         <div class="dropdown-divider"></div>
         <a href="${event.link}" class="dropdown-item">
-            <p>${event.title}</p>
+            <p>${new_event ? "*" : ""} ${event.title}</p>
             <p class="text-xs">(${event.description})</p>
             <span class="float-right text-muted text-sm">${timeAgo(event.created_at)}</span>
             <br>
