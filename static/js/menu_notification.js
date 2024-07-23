@@ -3,7 +3,7 @@ $("#menu-notification").click(() => {
     $("#menu-notification-header").text("Loading unread events ...");
 
     $.ajax({
-        url: '/api/unread_events', // Replace with your API endpoint
+        url: '/api/get_notification', // Replace with your API endpoint
         method: 'GET',
         success: function(response) {
             if (response.success) {

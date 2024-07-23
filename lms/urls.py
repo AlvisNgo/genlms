@@ -56,6 +56,6 @@ urlpatterns = [
      path("student/course/<int:id>/admin/admin_list", views_course_admin.admin_list, name="admin_list"),
 
      # Notifications
-     path("api/unread_events", views_notification.get_unread, name="api_unread_events"),
+     path("api/get_notification", views_notification.get_unread, name="api_get_notification"),
      path("events", views_notification.view_all_events, name="events"),
 ]

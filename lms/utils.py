@@ -1,12 +1,12 @@
 from .models import Notification
 
-def add_event(to: int, title: str, description: str, link: str):
-    event = Notification(
+def add_notification(to: int, title: str, description: str, link: str):
+    notification = Notification(
         to=to,
         title=title,
         description=description,
         link=link
     )
-    event.save()
+    notification.save()
     
-    return event
+    return notification

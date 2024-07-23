@@ -21,7 +21,7 @@ def view_all_events(request):
         "page_obj": page_obj
     })
 
-# /api/unread_events
+# /api/get_notification
 def get_unread(request):
     if request.method == "GET":
         # Make sure user is logged in
