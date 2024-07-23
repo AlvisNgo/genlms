@@ -1,0 +1,74 @@
+{% extends "base-lmsadmin.html" %}
+{% block title %}LMS Admin Portal{% endblock %}
+
+<h1>Test</h1>
+
+{% block content-wrapper %}
+{% load static %}
+
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Import Users (Confirmation)</h1>
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+
+{% if messages %}
+    <ul>
+        {% for message in messages %}
+            <li class="{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Import Users (Confirmation)</h3>
+                    </div>
+                    <!-- /.card-header -->
+
+                    <div class="card-body">
+                        <h2>Errors Occurred During Import</h2>
+                        <ul>
+                            {% for line_number, row, error in errors %}
+                                <li>Line {{line_number}} - { {{ row.email }} } - {{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% if valid_count > 0 %}
+                            <p>There are {{ valid_count }} valid rows ready for import.</p>
+                            
+                        {% else %}
+                            <p>No valid rows to import.</p>
+                        {% endif %}
+                    </div>
+                    <!-- /.card-body -->
+
+                    <div class="card-footer">
+                        <form method="post" action="{% url 'import_valid_rows' %}">
+                            {% csrf_token %}
+                            {% if valid_count > 0 %}
+                            <button type="submit" name="proceed" class="btn btn-primary" >Proceed with Import</button>
+                            {% endif %}
+                            <button type="submit" name="cancel" class="btn btn-primary" >Restart</button>
+                        </form> 
+                    </div>
+                    <!-- /.card-footer -->
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

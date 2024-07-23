@@ -10,6 +10,9 @@ from django.urls import reverse
 from .forms import CSVUploadForm
 
 def index(request):
+	return render(request, 'admin_index.html')
+
+def add_users(request):
 	# Check if user is superadmin
 	if not request.user.is_superuser:
 		return HttpResponseRedirect(reverse('admin:index'))
@@ -61,7 +64,7 @@ def index(request):
 			
 			if errors or valid_rows:
 				request.session['valid_rows'] = valid_rows
-				return render(request, 'index_confirm.html', {
+				return render(request, 'admin_add_users_confirm.html', {
 					'errors': errors,
 					'valid_count': len(valid_rows)
 				})
@@ -70,7 +73,7 @@ def index(request):
 	else:
 		form = CSVUploadForm()
 
-	return render(request, 'index.html', {'form': form})
+	return render(request, 'admin_add_users.html', {'form': form})
 
 def import_valid_rows(request):
 	if request.method == 'POST':
@@ -85,11 +88,11 @@ def import_valid_rows(request):
 						email=row['email']
 					)
 				del request.session['valid_rows']
-				messages.success(request, "Valid users imported successfully.")
+				messages.success(request, f"{len(valid_rows)} users imported successfully.")
 			else:
 				messages.warning(request, "No valid rows to import.")
 		else:
 			del request.session['valid_rows']
-		return redirect('index')
+		return redirect('admin_add_users')
 	else:
-		return redirect('index')
+		return redirect('admin_add_users')
