@@ -1,6 +1,6 @@
 # lms/urls.py
 from django.urls import path
-from .views import views_login, views_announcement, views_content,views_course, views_discussion, views_profile, api_generative, views_calender
+from .views import views_login, views_announcement, views_content,views_course, views_discussion, views_profile, api_generative, views_calender, views_analytics
 
 urlpatterns = [
      path("", views_login.login, name="login"),
@@ -15,8 +15,6 @@ urlpatterns = [
      # Course
      path("student/course/<int:id>",
           views_course.student_course_info, name="course"),
-     path("student/course/<int:id>/mark_as_seen/<int:content_id>/",
-          views_course.mark_as_seen, name="mark_as_seen"),
 
      # Profile
      path("student/dashboard/profile/",
@@ -52,5 +50,8 @@ urlpatterns = [
 
 
      # Generative AI API
-     path("api/generative", api_generative.generate, name="generative")
+     path("api/generative", api_generative.generate, name="generative"),
+
+     # Analytics
+     path("analytics/content_seen/<int:content_id>", views_analytics.mark_as_seen, name="mark_as_seen"),
 ]

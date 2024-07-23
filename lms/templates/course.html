@@ -103,6 +103,12 @@
                       <p class="mt-0 mb-0 text-justify">{{ content.content }}</p>
                     </div>
                   </div>
+
+                  {% if request.is_admin %}
+                  <div class="card-footer">
+                    Seen: {{ content.total_seen }} out of {{ total_students }} students
+                  </div>
+                  {% endif %}
                 </div>
               </div>
               {% endfor %}
@@ -147,43 +153,9 @@
             </p>
           </div>
         </div>
-        {% if is_admin%}
-        <div class="card">
-          <div class="card-body">
-            <h4>Analytics</h4>
-            {% if courseContent_info%}
-            <p class="mt-0 mb-0 text-justify">
-              
-              {% for content in courseContent_info %}
-              <p class="mt-0 mb-0 text-justify">
-                {{ content.title }}
-              </p>
-
-              <p class="mt-0 mb-0 text-justify" >
-                <span id="num-seen-{{ content.id }}">{{content.seen_count}} / {{ total_students}}</span>
-              </p>
-              {% endfor %}
-            </p>
-            {% else %}
-              <p class="mt-0 mb-0 text-justify">No content at the moment</p>
-            {% endif %}
-            
-          </div>
-        </div>
-        {% endif %}
       </div>
     </div>
   </div>
 </section>
-<script>
-  function markAsSeen(contentId) {
-    fetch("{% url 'mark_as_seen' course_info.course_id 0 %}".replace('0', contentId));
-    .then(response => response.json())
-    .then(data => {
-        document.getElementById('num-seen-' + contentId).innerText = data.seen;
-    });
-    //url = "student/course/"+ courseId + "/mark_as_seen/" + contentId+ "/"
-    //fetch(url)
-  }
-</script>
+<script src="{% static 'js/mark-as-seen.js' %}"></script>
 {% endblock %}

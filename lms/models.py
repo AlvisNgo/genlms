@@ -118,8 +118,7 @@ class CourseContent(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     deleted_at = models.DateTimeField(null=True, blank=True, default=None)
-    is_seen = models.ManyToManyField(
-        User, related_name='seen_content', blank=True)
+    is_seen = models.ManyToManyField(User, related_name='seen_content', blank=True)
     
     def total_seen(self):
         return self.is_seen.count()

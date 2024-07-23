@@ -1,4 +1,4 @@
-from django.http import Http404
+from django.http import Http404, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render
 from django.db.models import Count
 from lms.models import Course, CourseAnnouncement, EnrolledCourse, Thread, CourseAdmin, Admin, CourseContent
@@ -21,15 +21,8 @@ def student_course_info(request, id):
     uid = request.user.id
     is_admin = Admin.objects.filter(user_id=uid).exists()
     total_students = EnrolledCourse.objects.filter(course=course_info).count()
+    total_seen = CourseContent.objects.filter(course=course_info).annotate(seen_count=Count('is_seen'))
     
-    total_seen = CourseContent.objects.filter(course=course_info).annotate(
-        seen_count=Count('is_seen'))
-    '''
-    total_seen_dict = dict()
-    for info in courseContent_info:
-        total_seen_dict[info.id] = CourseContent.objects.filter(id=info.id).annotate(
-        seen_count=Count('is_seen'))
-'''
     context = {
         'course_info': course_info,
         'courseAnnouncement_info': courseAnnouncement_info,
@@ -41,18 +34,3 @@ def student_course_info(request, id):
     
     print(context)
     return render(request, 'course.html', context)
-
-def mark_as_seen(request, id, content_id):
-    if (not request.is_admin):
-        #check if user enrolled in course
-        
-        if EnrolledCourse.objects.filter(user_id=request.user.id, course_id=id).exists(): 
-            
-            content = get_object_or_404(CourseContent, pk=content_id)
-            if request.user in content.is_seen.all():
-                pass
-            else:
-                content.is_seen.add(request.user)
-                
-                
-    return JsonResponse({'is_seen': content.total_seen()})
