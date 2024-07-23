@@ -1,4 +1,6 @@
+from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
+from django.urls import reverse
 from django.utils.deprecation import MiddlewareMixin
 
 from lms.models import Admin, Event, Profile
@@ -10,6 +12,10 @@ class CheckAdminMiddleware(MiddlewareMixin):
         # If not authenticated, redirect to root (unless we're already in root)
         if request.path.startswith('/student') and not user.is_authenticated:
             return redirect("/")
+        
+        # If user is superadmin
+        if request.path.startswith('/student') and user.is_superuser:
+            return HttpResponseRedirect(reverse('admin_index'))
 
         # Set admin and is_admin attribute in request
         request.admin = Admin.objects.filter(user_id=user.id).first()
