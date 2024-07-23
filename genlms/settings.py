@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'daphne',
     'django.contrib.staticfiles',
     'allauth',
     'allauth.account',
@@ -47,6 +48,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.microsoft',
     'markdownify',
     'lms',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -80,6 +82,7 @@ TEMPLATES = [
     },
 ]
 
+ASGI_APPLICATION = 'genlms.asgi.application'
 WSGI_APPLICATION = 'genlms.wsgi.application'
 
 
@@ -177,4 +180,10 @@ MARKDOWNIFY = {
         "WHITELIST_ATTRS": ['href', 'src', 'alt', 'target'],
         "WHITELIST_PROTOCOLS": ['http', 'https']
    }
+}
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
 }
