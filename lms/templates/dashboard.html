@@ -509,10 +509,10 @@
             else if (document.getElementById("popupsubmit").innerHTML == "Save"){
                 chatSocket.send(JSON.stringify({ group:roomid, groupname:groupname ,action:'edit_group',username : "{{request.user.first_name}}", members:members}))
             }
-            else{
+        }
+        else{
                 alert("Please input a chatroom name and have at least one member")
             }
-        };
         members =[]
         closeForm()
     };
