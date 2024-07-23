@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.microsoft',
     'markdownify',
     'lms',
+    'lmsadmin',
 ]
 
 MIDDLEWARE = [
