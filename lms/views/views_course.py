@@ -19,6 +19,7 @@ def student_course_info(request, id):
     courseContent_info = CourseContent.objects.filter(course=course_info, deleted_at__isnull=True).order_by('-created_at')
     uid = request.user.id
     is_admin = Admin.objects.filter(user_id=uid).exists()
+    print(course_info.end_date)
     context = {
         'course_info': course_info,
         'courseAnnouncement_info': courseAnnouncement_info,
