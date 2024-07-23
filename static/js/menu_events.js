@@ -38,7 +38,7 @@ function addEvent(event) {
     return `
     <div class="ajax-event-notification">
         <div class="dropdown-divider"></div>
-        <a href="#" class="dropdown-item">
+        <a href="${event.link}" class="dropdown-item">
             <p>${event.title}</p>
             <p class="text-xs">(${event.description})</p>
             <span class="float-right text-muted text-sm">${timeAgo(event.created_at)}</span>

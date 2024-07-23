@@ -1,5 +1,6 @@
 # lms/views/views_discussion.py
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from lms.forms import PostForm, ThreadForm, ReplyPostForm
 from django.db.models import Count
 from lms.models import Course, EnrolledCourse, Post, Thread, CourseAdmin
@@ -77,7 +78,7 @@ def create_post(request, thread_id):
             post.user = request.user
             post.save()
 
-            add_event(thread.user, "Someone replied to your thread.", f"New Discussion Board Reply - {thread.course.course_name}")
+            add_event(thread.user, "Someone replied to your thread.", f"New Discussion Board Reply - {thread.course.course_name}", reverse('view_thread', args=[thread.id]))
             return redirect('view_thread', thread_id=thread.id)
     else:
         form = PostForm()

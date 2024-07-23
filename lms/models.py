@@ -128,6 +128,7 @@ class Event(models.Model):
     description = models.TextField()
     created_at = models.DateTimeField(default=timezone.now)
     read = models.BooleanField(default=False)
+    link = models.URLField(blank=True)
 
     def __str__(self):
         return f"{self.title} - {self.description}"

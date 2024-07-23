@@ -17,7 +17,7 @@ def get_unread(request):
             return JsonResponse({"success": False, "message": "Not authenticated!"})
         
         unread_events = Event.objects.filter(to=request.user, read=False)
-        events_list = list(unread_events.values('id', 'title', 'description', 'created_at'))
+        events_list = list(unread_events.values('id', 'title', 'description', 'link', 'created_at'))
         
         return JsonResponse({"success": True, "events": events_list}, safe=False, content_type='application/json')
     else:
