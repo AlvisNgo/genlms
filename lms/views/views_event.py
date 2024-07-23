@@ -25,6 +25,9 @@ def get_unread(request):
         else:
             read_events_list = []
         
+        # Upon AJAX call, mark all events as read
+        unread_events.update(read=True)
+        
         return JsonResponse({"success": True, "unread_events": unread_events_list, "read_events": read_events_list}, safe=False, content_type='application/json')
     else:
         return JsonResponse({"success": False})

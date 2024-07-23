@@ -7,12 +7,12 @@ $("#menu-notification").click(() => {
         method: 'GET',
         success: function(response) {
             if (response.success) {
+                $("#menu-notification-number").text(0); // set to zero, since events are already read
+                
                 if (response.unread_events.length > 0) {
-                    $("#menu-notification-number").text(response.unread_events.length);
                     $("#menu-notification-header").text(response.unread_events.length + " New Notifications");
                 }
                 else {
-                    $("#menu-notification-number").text(0);
                     $("#menu-notification-header").text((response.unread_events.length + response.read_events.length) + " New Notifications")
                 }
                 
