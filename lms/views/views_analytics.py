@@ -13,10 +13,8 @@ def mark_as_seen(request, content_id):
     if not EnrolledCourse.objects.filter(user_id=request.user.id, course_id=content.course).exists():
         return HttpResponseForbidden("You are not enrolled in this course.")
     
-    # Toggle 'seen' status
-    if request.user in content.is_seen.all():
-        content.is_seen.remove(request.user)
-    else:
+    # Mark content as seen - not toggle (disallow unread)
+    if not request.user in content.is_seen.all():
         content.is_seen.add(request.user)
     
     return JsonResponse({'is_seen': content.total_seen()})
