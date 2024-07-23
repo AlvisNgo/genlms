@@ -13,6 +13,12 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.username
 
+@receiver(post_save, sender=User)
+def create_or_update_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+    instance.profile.save()
+
 
 class Course(models.Model):
     course_id = models.AutoField(primary_key=True)
@@ -129,3 +135,18 @@ class Event(models.Model):
 
     def __str__(self):
         return self.title
+
+class Assignment(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    student = models.ForeignKey(User, on_delete=models.CASCADE)
+    file = models.FileField(upload_to='assignments/', blank=True, null=True)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    deadline = models.DateTimeField()
+    submitted = models.BooleanField(default=False)
+
+    def is_past_deadline(self):
+        return timezone.now() > self.deadline
+
+    def __str__(self):
+        return f"{self.course.course_name} - {self.student.username} - {self.uploaded_at}"
+
