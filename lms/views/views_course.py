@@ -57,5 +57,26 @@ def feedback(request, id):
     print(context)  # Debugging statement to verify context
     return render(request, 'feedback.html', context)
 
+def upload_assignment(request, course_id):
+    course = Course.objects.get(course_id=course_id)
+    assignment, created = Assignment.objects.get_or_create(
+        course=course,
+        student=request.user,
+        defaults={'deadline': timezone.now() + timedelta(days=7)}  # Set a default deadline
+    )
+
+    if request.method == 'POST':
+        form = AssignmentUploadForm(request.POST, request.FILES, instance=assignment)
+        if form.is_valid():
+            if assignment.is_past_deadline():
+                return HttpResponse("Submission deadline has passed. You cannot submit the assignment.")
+            assignment = form.save(commit=False)
+            assignment.submitted = True
+            assignment.save()
+            return redirect('course_detail', course_id=course_id)
+    else:
+        form = AssignmentUploadForm(instance=assignment)
+
+    return render(request, 'upload_assignment.html', {'form': form, 'course': course, 'assignment': assignment})
 
     
