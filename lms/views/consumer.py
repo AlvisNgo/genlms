@@ -27,7 +27,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         action = text_data_json["action"]
-        group_id = text_data_json["group"]
+        group_id = str(text_data_json["group"])
         try:
             chatroom = await sync_to_async(ChatRoom.objects.filter(id=group_id).first)()
         except:
@@ -38,7 +38,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             if (group_id != group for group in self.groups):
                 self.groups.append(group_id)
                 await self.channel_layer.group_add(
-                    str(group_id),
+                    group_id,
                     self.channel_name
                 )
 

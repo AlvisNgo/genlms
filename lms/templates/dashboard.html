@@ -140,7 +140,7 @@
                         <div class="direct-chat-contacts">
                             <ul class="contacts-list" id="id_contacts_list">
                                 <li>
-                                    <button class="group-button"onclick="openForm()">New Chat</button>
+                                    <button class="group-button"onclick="openForm('new')">New Chat</button>
                                 </li>
                                 {% for chat in chats %}
                                 <li class="contacts-list-item" data-room="{{chat.id}}">
@@ -264,7 +264,7 @@
             <div id="nameList"></div>
             <div>
                 <br>
-                <button id="popupadd" type="button" onclick="addUser(0,0)">Add Users</button>
+                <button id="popupadd" type="button" onclick="addUser(0,'{{request.user.id}}')">Add Users</button>
                 <br><br>
                 <button id="popupsubmit"onclick="submitForm()">Submit</button>
                 <br><br>
@@ -313,6 +313,7 @@
             if (data.action == "chat_details" ){
                 creatorid = data.message[0].userid.toString();
                 data.message.forEach(function(message) {
+                    console.log(data)
                     document.getElementById('nameInput').value = message.uid;
                     addUser(message.userid,creatorid);
                 })
@@ -324,7 +325,7 @@
                 else{
                     document.getElementById("popupsubmit").innerHTML = "Save"
                 }
-                openForm()
+                openForm("edit");
             }
             if ( data.action == "delete"){
                 const elementToRemove = document.getElementById(data.message.id);
@@ -469,7 +470,11 @@
         `;
     }
 
-    function openForm(){
+    function openForm(action){
+        if (action == "new"){
+            document.getElementById('nameInput').value = "{{request.user.username}}";
+            addUser("{{request.user.id}}","{{request.user.id}}");
+        }
         document.getElementById('formPopup').style.display = 'flex';
     };
     function closeForm(){
@@ -481,7 +486,6 @@
         document.getElementById('cname').value = "";
         document.getElementById('formPopup').style.display = 'none';
         document.getElementById('nameList').innerHTML = "";
-        
         roomid = ""
     };
     function submitForm(){
@@ -524,6 +528,8 @@
                 nameList.removeChild(nameItem);
             });
             nameItem.appendChild(nameSpan);
+            console.log(id,"{{request.user.id}}")
+            console.log(creatorid,"{{request.user.id}}")
             if ((id != "{{request.user.id}}") && creatorid == "{{request.user.id}}"){
                 nameItem.appendChild(removeBtn);
             }
