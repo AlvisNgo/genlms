@@ -1,8 +1,9 @@
+from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
-from lms.course_annoucement import AnnouncementForm, AnnouncementEditForm
-from lms.models import Admin, Course, CourseAnnouncement
+from lms.forms_assignment import AssignmentForm, AssignmentSubmissionForm
+from lms.models import Admin, Assignment, AssignmentSubmission, Course, CourseAdmin, EnrolledCourse
 
 def assignment_add(request, id):
     context = {}
@@ -15,18 +16,58 @@ def assignment_add(request, id):
     context['course_info'] = course_info
 
     if request.method == 'POST':
-        form = AnnouncementForm(request.POST)
+        form = AssignmentForm(request.POST)
         if form.is_valid():
             # Process the form data
             title = form.cleaned_data['title']
             content = form.cleaned_data['content']
+            due_at = form.cleaned_data['due_at']
 
-            new_announcement = CourseAnnouncement(course=course_info, owner=admin_info, title=title, content=content)
-            new_announcement.save()
+            new_assignment = Assignment(course=course_info, title=title, content=content, due_at=due_at)
+            new_assignment.save()
 
             return redirect(reverse('course', args=[id]))
+        else:
+            return redirect(reverse('assignment_add', args=[id]))
     else:
-        form = AnnouncementForm()
+        form = AssignmentForm()
         context['form'] = form
 
-    return render(request, 'announcement_add.html', context)
+    return render(request, 'assignment_add.html', context)
+
+def assignment_view(request, course_id, assignment_id):
+    context = {}
+
+    # Get course and assignment details
+    course_info = get_object_or_404(Course, pk=course_id)
+    assignment_info = get_object_or_404(Assignment, pk=assignment_id)
+
+    # Only user enrolled in this course can view the course
+    if (request.is_admin):
+        if not CourseAdmin.objects.filter(admin_id=request.admin.admin_id, course_id=course_id).exists():
+            raise Http404("Course does not exist")
+    else:
+        if not EnrolledCourse.objects.filter(user_id=request.user.id, course_id=course_id).exists():
+            raise Http404("Course does not exist")
+
+
+    # Get previous submissions for the current user and assignment
+    previous_submissions = AssignmentSubmission.objects.filter(assignment=assignment_info, student=request.user).order_by('-uploaded_at') 
+
+    # Handle form submission
+    if request.method == 'POST':
+        form = AssignmentSubmissionForm(request.POST, request.FILES)
+        if form.is_valid():
+            submission = form.save(commit=False)
+            submission.assignment = assignment_info
+            submission.student = request.user
+            submission.save()
+    else:
+        form = AssignmentSubmissionForm()
+
+    context['course_info'] = course_info
+    context['assignment_info'] = assignment_info
+    context['form'] = form
+    context['previous_submissions'] = previous_submissions
+
+    return render(request, 'assignment_view.html', context)

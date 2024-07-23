@@ -127,16 +127,20 @@ class Event(models.Model):
     def __str__(self):
         return self.title
 
-class AssignmentSubmission(models.Model):
+class Assignment(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    deleted_at = models.DateTimeField(null=True, blank=True, default=None)
+    due_at = models.DateTimeField()
+
+class AssignmentSubmission(models.Model):
+    assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE)
     student = models.ForeignKey(User, on_delete=models.CASCADE)
     file = models.FileField(upload_to='assignments/', blank=True, null=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
-    deadline = models.DateTimeField()
-    submitted = models.BooleanField(default=False)
-
-    def is_past_deadline(self):
-        return timezone.now() > self.deadline
 
     def __str__(self):
         return f"{self.course.course_name} - {self.student.username} - {self.uploaded_at}"

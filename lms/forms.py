@@ -3,10 +3,6 @@ from django.contrib.auth.models import User
 from .models import Profile, AssignmentSubmission
 from lms.models import Thread, Post
 
-class AssignmentUploadForm(forms.ModelForm):
-    class Meta:
-        model = AssignmentSubmission
-        fields = ['file']
 class ThreadForm(forms.ModelForm):
     tags = forms.CharField(max_length=200, required=False,
                            widget=forms.TextInput(attrs={'class': 'form-control'}))

@@ -90,6 +90,21 @@
         <div class="card">
           <div class="card-body">
             <h4>Assignments</h4>
+
+            {% if assignment_info %}
+              <ol>
+              {% for assignment in assignment_info %}
+                <li>
+                  <a href="{% url 'assignment_view' course_info.course_id assignment.id %}">
+                    {{ assignment.title }}
+                  </a>
+                  <p><em>Due at: {{ assignment.due_at }}</em></p>
+                </li>
+              {% endfor %}
+              </ol>
+            {% else %}
+              <p>No Assignment</p>
+            {% endif %}
           </div>
 
           <div class="card-footer">
