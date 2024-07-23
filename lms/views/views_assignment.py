@@ -1,6 +1,7 @@
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
+from django.db.models import Max
 from django.utils import timezone
 from lms.forms_assignment import AssignmentForm, AssignmentSubmissionForm
 from lms.models import Admin, Assignment, AssignmentSubmission, Course, CourseAdmin, EnrolledCourse
@@ -71,3 +72,24 @@ def assignment_view(request, course_id, assignment_id):
     context['previous_submissions'] = previous_submissions
 
     return render(request, 'assignment_view.html', context)
+
+def view_submission(request, course_id, assignment_id):
+    context = {}
+
+    # Get course and assignment details
+    course_info = get_object_or_404(Course, pk=course_id)
+    assignment_info = get_object_or_404(Assignment, pk=assignment_id)
+
+    # Get the latest submission for each student
+    latest_submissions = AssignmentSubmission.objects.filter(
+        assignment=assignment_info
+    ).values('student').annotate(latest_submission_id=Max('id'))
+
+    # Retrieve the actual submission objects
+    submissions = AssignmentSubmission.objects.filter(id__in=[entry['latest_submission_id'] for entry in latest_submissions])
+
+    context['course_info'] = course_info
+    context['assignment_info'] = assignment_info
+    context['submissions'] = submissions
+
+    return render(request, 'assignment_view_submission.html', context)

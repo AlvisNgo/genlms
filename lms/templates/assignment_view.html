@@ -73,8 +73,8 @@
                                     <button type="submit" class="btn btn-primary">Submit Assignment</button>
                                 </form>
                             </div>
-                            {% endif %}
                         </div>
+                        {% endif %}
 
                         <hr/>
                         
@@ -98,6 +98,12 @@
                         {% endif %}
                     </div>
                     <!-- /.card-body -->
+
+                    {% if request.is_admin %}
+                    <div class="card-footer">
+                        <a href="{% url 'view_submission' 2 assignment_info.id %}" class="btn btn-primary">View Submissions</a>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

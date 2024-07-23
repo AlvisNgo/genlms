@@ -59,6 +59,7 @@ urlpatterns = [
      # Assignments
      path("student/course/<int:id>/assignment_add", views_assignment.assignment_add, name="assignment_add"),
      path("student/course/<int:course_id>/assignment_view/<int:assignment_id>", views_assignment.assignment_view, name="assignment_view"),
+     path("student/course/<int:course_id>/assignment_view_submission/<int:assignment_id>", views_assignment.view_submission, name="view_submission"),
 
      # Generative AI API
      path("api/generative", api_generative.generate, name="generative")
