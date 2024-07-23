@@ -1,5 +1,4 @@
-
-{% extends "base.html" %}
+{% extends "base-student.html" %}
 {% block bodyclass %}hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed{% endblock %}
 
 {% block content %}
@@ -158,8 +157,8 @@
         <div class="sidebar">
             <!-- Sidebar user panel (optional) -->
             <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-                {% if profile.profile_picture %}
-                    <img src="{{ profile.profile_picture.url }}" class="img-circle elevation-2" alt="User Image">
+                {% if profile_picture %}
+                    <img src="{{ profile_picture }}" class="img-circle elevation-2" alt="User Image">
                 {% else %}
                     <img src="{% static 'adminlte/dist/img/default-150x150.png' %}" class="img-circle elevation-2" alt="Default User Image">
                 {% endif %}
@@ -335,7 +334,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('Event clicked:', info.event);  // Debug log
             console.log('Event details:', info.event.extendedProps);
 
-                        // Adjust start date
+            // Adjust start date
             var adjustedStart = new Date(info.event.start);
             adjustedStart.setDate(adjustedStart.getDate() + 1);
 
