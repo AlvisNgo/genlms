@@ -1,6 +1,6 @@
 # lms/urls.py
 from django.urls import path
-from .views import views_login, views_announcement, views_course, views_discussion, views_profile, api_generative, views_calender
+from .views import views_login, views_announcement, views_content,views_course, views_discussion, views_profile, api_generative, views_calender
 
 urlpatterns = [
      path("", views_login.login, name="login"),
@@ -11,15 +11,10 @@ urlpatterns = [
      
      # Course
      path("student/course/<int:id>", views_course.student_course_info, name="course"),
-     path("student/course/<int:id>/grade", views_course.grades, name="grades"),
-     path("student/course/<int:id>/feedback", views_course.feedback, name="feedback"),
 
      # Course
      path("student/course/<int:id>",
           views_course.student_course_info, name="course"),
-     path("student/course/<int:id>/grade", views_course.grades, name="grades"),
-     path("student/course/<int:id>/feedback",
-          views_course.feedback, name="feedback"),
 
      # Profile
      path("student/dashboard/profile/",
@@ -49,6 +44,9 @@ urlpatterns = [
      path("student/course/<int:id>/announcement_edit/<int:announcement_id>", views_announcement.announcement_edit, name="announcement_edit"),
      path("student/course/<int:id>/announcement_delete/<int:announcement_id>", views_announcement.announcement_delete, name="announcement_delete"),
      path("student/course/<int:id>/announcement_view/<int:announcement_id>", views_announcement.announcement_view, name="announcement_view"),
+
+     # Content
+     path("student/course/<int:id>/content_add", views_content.content_add, name="content_add"), 
 
      # Generative AI API
      path("api/generative", api_generative.generate, name="generative")

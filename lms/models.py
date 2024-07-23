@@ -109,6 +109,19 @@ class CourseAnnouncement(models.Model):
     def __str__(self):
         return f"Announcement by {self.owner.user.username} in {self.course}"
     
+class CourseContent(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    owner = models.ForeignKey(Admin, on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    content = models.FileField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    deleted_at = models.DateTimeField(null=True, blank=True, default=None)
+
+    def __str__(self):
+        return f"Added by {self.owner.user.username} in {self.course}"
+    
 class ChatRoom(models.Model):
 
     name = models.CharField(max_length=100)

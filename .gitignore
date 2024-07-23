@@ -88,3 +88,5 @@ db.sqlite3
 
 ### Custom for this web project
 !/static/**
+media/*
+static/profile_pictures/*

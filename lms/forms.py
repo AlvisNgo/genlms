@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from .models import Profile
-from lms.models import Thread, Post
+from lms.models import Thread, Post, CourseContent
 
 
 class ThreadForm(forms.ModelForm):
@@ -37,18 +37,18 @@ class ReplyPostForm(forms.ModelForm):
 
 
 class ProfileForm(forms.ModelForm):
-    first_name = forms.CharField(max_length=30, required=False, widget=forms.TextInput(attrs={'readonly': 'readonly'}))
-    last_name = forms.CharField(max_length=30, required=False, widget=forms.TextInput(attrs={'readonly': 'readonly'}))
-    email = forms.EmailField(required=False, widget=forms.TextInput(attrs={'readonly': 'readonly'}))
+    first_name = forms.CharField(max_length=30, required=False, widget=forms.TextInput(attrs={'readonly': 'readonly', 'class': 'form-control'}))
+    last_name = forms.CharField(max_length=30, required=False, widget=forms.TextInput(attrs={'readonly': 'readonly', 'class': 'form-control'}))
+    email = forms.EmailField(required=False, widget=forms.TextInput(attrs={'readonly': 'readonly', 'class': 'form-control'}))
     profile_picture = forms.ImageField(required=False)
-    phone = forms.CharField(max_length=15, required=False)
+    phone = forms.CharField(max_length=15, required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
     gender = forms.ChoiceField(choices=[
         ('male', 'Male'),
         ('female', 'Female'),
         ('other', 'Other'),
         ('prefer_not_to_say', 'Prefer not to say')
     ], required=False)
-    description = forms.CharField(widget=forms.Textarea, required=False)
+    description = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}), required=False)
 
     class Meta:
         model = Profile
@@ -70,3 +70,36 @@ class ProfileForm(forms.ModelForm):
             user.save()
             profile.save()
         return profile
+
+
+class ContentAddForm(forms.Form):
+    title = forms.CharField(
+        max_length=200,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'id': 'title',
+            'placeholder': 'Title (Eg. Week 1 - OS Fundamentals)'
+        }),
+        label='Title'
+    )
+    
+    description = forms.CharField(
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'id': 'description',
+            'rows': 10,
+            'placeholder': 'Content description...'
+        }),
+        label='Description'
+    )
+
+    content = forms.FileField(
+        widget=forms.ClearableFileInput(attrs={
+            'id': 'content',
+            'type':'file',
+            'accept': '.png, .jpeg, .pdf, .doc, .docx, .txt',
+            'upload_to':'content',
+            'style': 'display: none;',
+        }),
+        required=False, label='Upload Files'
+    )
