@@ -378,7 +378,11 @@
     const contactItems = document.querySelectorAll('.contacts-list-item');
     contactItems.forEach(item => {
         item.addEventListener('click', () => {
-            roomid = item.getAttribute('data-room');
+            roomlistener(item);
+        });
+    });
+    function roomlistener(item){
+        roomid = item.getAttribute('data-room');
             roomname = item.getElementsByClassName('contacts-list-name')[0].innerText;
             if (event.target.classList.contains('destroy-button') || event.target.classList.contains('leave-button')) {}
             else if(event.target.classList.contains('group-button')){
@@ -395,9 +399,7 @@
                 chatSocket.send(JSON.stringify({ group:roomid, action:'retrieve_chat_history', username : "{{request.user.first_name}}"}));
             }
             document.getElementById('directChat').classList.remove('direct-chat-contacts-open');
-        });
-    });
-
+    }
     // --------------------------------------------------------------------
     function deleteMessage(postid) {
         chatSocket.send(JSON.stringify({ group:roomid, action:'delete', messageid:postid, username : "{{request.user.first_name}}"}));
@@ -444,6 +446,9 @@
         </div>
         `
         container.append(li)
+        li.addEventListener('click', () => {
+            roomlistener(li);
+        });
     }
     function removeGroup(groupid){
         const elementToRemove = document.querySelector(`[data-room='${groupid}']`);
