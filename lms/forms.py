@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from .models import Profile
-from lms.models import Thread, Post
+from lms.models import Thread, Post, Assignment
 
 
 class ThreadForm(forms.ModelForm):
@@ -70,3 +70,8 @@ class ProfileForm(forms.ModelForm):
             user.save()
             profile.save()
         return profile
+
+class AssignmentForm(forms.ModelForm):
+    class Meta:
+        model = Assignment
+        fields = ['name', 'file', 'submitted']

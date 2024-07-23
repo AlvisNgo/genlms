@@ -1,5 +1,5 @@
 {% extends "base-student.html" %}
-{% block title %}Student Dashboard{% endblock %} 
+{% block title %}Student Dashboard{% endblock %}
 {% load static %}
 {% load markdownify %}
 {% block content-wrapper %}
@@ -14,10 +14,10 @@
 
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item">
-                <a href="{% url 'dashboard' %}">Dashboard</a>
-            </li>
-            <li class="breadcrumb-item active">{{ course_info.course_name }} [AY2023/24 Trimester 3]</li>
+          <li class="breadcrumb-item">
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+          </li>
+          <li class="breadcrumb-item active">{{ course_info.course_name }} [AY2023/24 Trimester 3]</li>
         </ol>
       </div>
     </div>
@@ -46,16 +46,15 @@
         <div class="card">
           <div class="card-body">
             <h4>Announcement</h4>
-            {% if courseAnnouncement_info%}
-              {% for announce in courseAnnouncement_info%}
-                <a href="{%url 'announcement_view' course_info.course_id announce.id %}">
+            {% if courseAnnouncement_info %}
+              {% for announce in courseAnnouncement_info %}
+                <a href="{% url 'announcement_view' course_info.course_id announce.id %}">
                   <h3>{{ announce.title }}</h3>
                 </a>
                 <p><em>Last updated on: {{ announce.updated_at }}</em></p>
                 <div class="latest-anouncement">
                   {{ announce.content|markdownify }} 
-                  
-                  {% if is_admin%}
+                  {% if is_admin %}
                   </br>
                   </br>
                   <a href="{% url 'announcement_edit' course_info.course_id announce.id %}" class="btn btn-primary">Edit</a>
@@ -64,14 +63,13 @@
                   <hr class="solid" color="9C9C9C">
                 </div>
               {% endfor %}
-
             {% else %}
-              <p>No Anouncements</p>
+              <p>No Announcements</p>
             {% endif %}
           </div>
 
           <div class="card-footer">
-            {% if is_admin%}
+            {% if is_admin %}
             <a href="{% url 'announcement_add' course_info.course_id %}" class="btn btn-primary">Add Announcement</a>
             {% else %}
             {% endif %}          
@@ -88,6 +86,15 @@
             </p>
           </div>
         </div>
+
+        <!-- Link to Assignment Page -->
+        <div class="card">
+          <div class="card-body">
+            <h4>Assignments</h4>
+            <a href="{% url 'assignment_page' course_info.course_id %}" class="btn btn-primary mt-3">Go to Assignment Page</a>
+          </div>
+        </div>
+
       </div>
 
       <!-- RIGHT CARDS-->
@@ -108,8 +115,7 @@
                     <a class="nav-link p-2 text-muted" href="{% url 'grades' course_info.course_id %}">My Grades</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link p-2 text-muted" href="{% url 'feedback' course_info.course_id %}"
-                      >Email / Feedback</a>
+                    <a class="nav-link p-2 text-muted" href="{% url 'feedback' course_info.course_id %}">Email / Feedback</a>
                   </li>
                 </ul>
               </nav>

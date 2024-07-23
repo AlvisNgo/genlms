@@ -22,6 +22,16 @@ class Course(models.Model):
     def __str__(self):
         return self.course_name
 
+class Assignment(models.Model):
+    student = models.ForeignKey(User, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    name = models.CharField(max_length=200)  # Add this field to represent the assignment name
+    file = models.FileField(upload_to='assignments/', null=True, blank=True)
+    submitted = models.BooleanField(default=False)  # Field to track submission status
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
 
 # Composite key in Django referenced from https://stackoverflow.com/a/65005218
 class EnrolledCourse(models.Model):
