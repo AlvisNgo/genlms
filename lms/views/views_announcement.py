@@ -1,3 +1,4 @@
+from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
@@ -123,17 +124,15 @@ def announcement_view(request, id, announcement_id):
     # Get enrolled course corresponding course id, then get course details
     course_info = get_object_or_404(Course, pk=id)
     announcement_info = get_object_or_404(CourseAnnouncement,pk=announcement_id)
+
+    if announcement_info.deleted_at is not None:
+        raise Http404("Announcement does not exist.")
     
     context['course_info'] = course_info
     context['announcement_info'] = announcement_info
 
-    print(request.method)
     if request.method == 'POST':
-
         return redirect(reverse('course', args=[id]))
-    
-    # Debugging purpose
-    print(context)
 
     return render(request, 'announcement_view.html', context)
     
