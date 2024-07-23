@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+from django.utils import timezone
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -19,7 +21,6 @@ def create_or_update_user_profile(sender, instance, created, **kwargs):
         Profile.objects.create(user=instance)
     instance.profile.save()
 
-
 class Course(models.Model):
     course_id = models.AutoField(primary_key=True)
     course_name = models.CharField(max_length=255)
@@ -28,16 +29,6 @@ class Course(models.Model):
     def __str__(self):
         return self.course_name
 
-class Assignment(models.Model):
-    student = models.ForeignKey(User, on_delete=models.CASCADE)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    name = models.CharField(max_length=200)  # Add this field to represent the assignment name
-    file = models.FileField(upload_to='assignments/', null=True, blank=True)
-    submitted = models.BooleanField(default=False)  # Field to track submission status
-    uploaded_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.name
 
 # Composite key in Django referenced from https://stackoverflow.com/a/65005218
 class EnrolledCourse(models.Model):
@@ -136,6 +127,7 @@ class Event(models.Model):
     def __str__(self):
         return self.title
 
+
 class Assignment(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     student = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -149,4 +141,3 @@ class Assignment(models.Model):
 
     def __str__(self):
         return f"{self.course.course_name} - {self.student.username} - {self.uploaded_at}"
-
