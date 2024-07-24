@@ -38,7 +38,7 @@ function generateWithAI(confirmButtonText = "Generate", defaultValue = "Generate
         if (result.isConfirmed) {
             Swal.fire({
                 title: "Success!",
-                html: "Announcement generated.<br/>Please proof-read before publishing.",
+                html: "Content generated.<br/>Please proof-read before publishing.",
                 icon: "success"
             });
 
@@ -46,4 +46,52 @@ function generateWithAI(confirmButtonText = "Generate", defaultValue = "Generate
             textarea.value = result.value.response;
         }
     });
+}
+
+function generateTLDR(type, id) {
+    const url = `/api/generate_tldr?type=${type}&id=${id}`;
+    
+    Swal.fire({
+        title: 'Loading...',
+        text: 'Please wait while we generate the TL;DR',
+        icon: 'info',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    title: 'TL;DR',
+                    html: data.tldr,
+                    icon: 'info',
+                    confirmButtonText: 'Got it!'
+                });
+            } else {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Failed to generate TL;DR',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        })
+        .catch(error => {
+            console.error('There has been a problem with your fetch operation:', error);
+            Swal.fire({
+                title: 'Error',
+                text: 'There was a problem with the request',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        });
 }

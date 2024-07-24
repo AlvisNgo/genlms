@@ -62,7 +62,8 @@ urlpatterns = [
      path("student/course/<int:course_id>/assignment_view_submission/<int:assignment_id>", views_assignment.view_submission, name="view_submission"),
 
      # Generative AI API
-     path("api/generative", api_generative.generate, name="generative")
+     path("api/generative", api_generative.generate, name="generative"),
+     path("api/generate_tldr", api_generative.generate_tldr, name="generative")
 ]
 
 if settings.DEBUG:

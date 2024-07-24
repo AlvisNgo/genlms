@@ -55,9 +55,9 @@
                 <div class="latest-anouncement">
                   {{ announce.content|markdownify }}
 
+                  </br>
+                  <button class="btn btn-secondary" onClick="generateTLDR('announce', {{ announce.id }});">TLDR</button>
                   {% if is_admin %}
-                  </br>
-                  </br>
                   <a href="{% url 'announcement_edit' course_info.course_id announce.id %}" class="btn btn-primary">Edit</a>
                   <a href="{% url 'announcement_delete' course_info.course_id announce.id %}" class="btn btn-danger">Delete</a>
                   {% endif %}
