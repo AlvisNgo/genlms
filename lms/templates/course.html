@@ -99,7 +99,7 @@
                     {% if is_admin%}
                       <div class="float-right content-buttons">
                         <a href="{% url 'content_edit' course_info.course_id content.id %}" class="btn btn-outline-secondary">Edit</a>
-                        <form action="{% url 'content_delete' course_info.course_id content.id %}" method="post">
+                        <form class="content" action="{% url 'content_delete' course_info.course_id content.id %}" method="post">
                           {% csrf_token %}
                           <input type="submit" class="btn btn-outline-danger" value="Delete"/>
                         </form>
@@ -111,14 +111,12 @@
                   <div id="collapse-{{ forloop.counter }}" class="collapse" aria-labelledby="heading-{{ forloop.counter }}" data-parent="#accordion">
                     <div class="card-body">
                     {% if content.content%}
-                      <a href="{{ content.content.sas_url }}" target="_blank" class="btn btn-outline-primary float-center">
-                        <h3>
-                          {{ content.content.name }}
-                        </h3>                        
+                      <a href="{{ content.content.sas_url }}" target="_blank" class="btn btn-outline-primary">
+                        <div>{{ content.content.name }}</div>                        
                       </a>
                       {% else %}
                       <p>No content available</p>
-                      {% endif %}
+                    {% endif %}
                     </div>
                   </div>
 
