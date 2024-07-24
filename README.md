@@ -8,6 +8,7 @@ DB_HOST=localhost
 DB_PORT=3307
 MS_ID=453401de-e447-4f96-a572-b99b143eb466
 MS_SECRET=1Ef8Q~od4sISM~ZYv7aiQhqxsrunJQdU87Uvtdhs
+GEMINI_API=AIzaSyD1Z3ZYC54EhE9LcBji8maH0fM7CW33iFU
 ```
 
 Edit the environment as necessary. For example, if your MySQL server is running on port 3306, change it to 3306.
