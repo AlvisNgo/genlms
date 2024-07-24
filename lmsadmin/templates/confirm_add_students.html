@@ -1,0 +1,59 @@
+{% extends "base-lmsadmin.html" %}
+{% block title %}Confirm Add Students{% endblock %}
+
+{% block content-wrapper %}
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Confirm Add Students to {{ course.course_name }}</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Confirmation</h3>
+                    </div>
+                    <div class="card-body">
+                        <p>Number of valid entries: {{ valid_entries|length }}</p>
+                        <p>Invalid entries:</p>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Email</th>
+                                    <th>Reason</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for entry in invalid_entries %}
+                                <tr>
+                                    <td>{{ entry.email }}</td>
+                                    <td>{{ entry.reason }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="2" class="text-center">None</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer">
+                        <form method="post" action="{% url 'confirm_add_students' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-primary" {% if valid_entries|length == 0 %}disabled{% endif %}>Confirm</button>
+                            <a href="{% url 'admin_add_student_to_course' course.course_id %}" class="btn btn-secondary">Cancel</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

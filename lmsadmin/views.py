@@ -136,3 +136,67 @@ def enrolled_students(request, course_id):
         'course': course,
         'enrolled_students': enrolled_students
     })
+
+# Add students to course
+def add_students(request, course_id):
+    course = get_object_or_404(Course, pk=course_id)
+
+    if request.method == 'POST':
+        csv_file = request.FILES.get('csv_file')
+        
+        if not csv_file.name.endswith('.csv'):
+            messages.error(request, 'The file is not a CSV file.')
+            return redirect('admin_add_student_to_course', course_id=course_id)
+
+        # Process the CSV file
+        valid_entries = []
+        invalid_entries = []
+
+        try:
+            csv_reader = csv.reader(csv_file.read().decode('utf-8').splitlines())
+            for row in csv_reader:
+                email = row[0].strip()
+                user = User.objects.filter(email=email).first()
+                if user:
+                    if EnrolledCourse.objects.filter(user=user, course=course).exists():
+                        invalid_entries.append({'email': email, 'reason': 'Already enrolled'})
+                    else:
+                        valid_entries.append(email)
+                else:
+                    invalid_entries.append({'email': email, 'reason': 'User does not exist'})
+        except Exception as e:
+            messages.error(request, f'Error processing file: {str(e)}')
+            return redirect('admin_add_student_to_course', course_id=course_id)
+
+        if valid_entries or invalid_entries:
+            # Save the entries to the session
+            request.session['valid_entries'] = valid_entries
+            request.session['invalid_entries'] = invalid_entries
+            request.session['course_id'] = course_id
+            return render(request, 'confirm_add_students.html', {
+                'course': course,
+                'valid_entries': valid_entries,
+                'invalid_entries': invalid_entries,
+            })
+        else:
+            messages.error(request, 'No valid entries found.')
+            return redirect('admin_add_student_to_course', course_id=course_id)
+    
+    return render(request, 'upload_csv.html', {'course': course})
+
+def confirm_add_students(request):
+    course_id = request.session.get('course_id')
+    valid_entries = request.session.get('valid_entries', [])
+    
+    if request.method == 'POST':
+        course = get_object_or_404(Course, pk=course_id)
+        for email in valid_entries:
+            user = User.objects.get(email=email)
+            EnrolledCourse.objects.get_or_create(user=user, course=course)
+		
+        messages.success(request, f'{valid_entries} students added to {course.course_name} successfully.')
+        return redirect('admin_enrolled_students', course_id)
+    
+    return render(request, 'confirm_add_students.html', {
+        'valid_entries': valid_entries
+    })
