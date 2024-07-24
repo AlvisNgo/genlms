@@ -1,6 +1,8 @@
 # lms/urls.py
 from django.urls import path
-from .views import views_login, views_announcement, views_content,views_course, views_discussion, views_profile, api_generative, views_calender
+from .views import views_login, views_announcement, views_content,views_course, views_discussion, views_profile, api_generative, views_calender, views_analytics
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
      path("", views_login.login, name="login"),
@@ -40,12 +42,19 @@ urlpatterns = [
      path("student/course/<int:id>/announcement_edit/<int:announcement_id>", views_announcement.announcement_edit, name="announcement_edit"),
      path("student/course/<int:id>/announcement_delete/<int:announcement_id>", views_announcement.announcement_delete, name="announcement_delete"),
      path("student/course/<int:id>/announcement_view/<int:announcement_id>", views_announcement.announcement_view, name="announcement_view"),
-
+     
      # Content
      path("student/course/<int:id>/content_add", views_content.content_add, name="content_add"),
      path("student/course/<int:id>/content_edit/<int:content_id>", views_content.content_edit, name="content_edit"), 
      path("student/course/<int:id>/content_delete/<int:content_id>", views_content.content_delete, name="content_delete"), 
+     path("media/<str:content_name>/", views_content.content_download, name="content_download"), 
+
 
      # Generative AI API
-     path("api/generative", api_generative.generate, name="generative")
-]
+     path("api/generative", api_generative.generate, name="generative"),
+
+     # Analytics
+     path("analytics/content_seen/<int:content_id>", views_analytics.mark_as_seen, name="mark_as_seen"),
+     path("analytics/announcement_seen/<int:announce_id>", views_analytics.mark_as_seen_announce, name="mark_as_seen_announce"),
+
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

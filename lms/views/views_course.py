@@ -1,7 +1,9 @@
-from django.http import Http404
+from django.http import Http404, HttpResponseForbidden, JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.db.models import Count
 from lms.models import Course, CourseAnnouncement, EnrolledCourse, Thread, CourseAdmin, Admin, CourseContent
+import mimetypes
+
 
 def student_course_info(request, id):
     # Check if they have access to this course
@@ -19,12 +21,21 @@ def student_course_info(request, id):
     courseContent_info = CourseContent.objects.filter(course=course_info, deleted_at__isnull=True).order_by('-created_at')
     uid = request.user.id
     is_admin = Admin.objects.filter(user_id=uid).exists()
+    total_students = EnrolledCourse.objects.filter(course=course_info).count()
+    total_seen = CourseContent.objects.filter(course=course_info).annotate(seen_count=Count('is_seen'))
+    total_seen_announce = CourseAnnouncement.objects.filter(course=course_info).annotate(seen_count=Count('is_seen'))
+
     context = {
         'course_info': course_info,
         'courseAnnouncement_info': courseAnnouncement_info,
         'courseContent_info': courseContent_info,
         'is_admin': is_admin,
+        'total_students': total_students,
+        'total_seen': total_seen,
+        'total_seen_announce':total_seen_announce,
     }
     
     print(context)
     return render(request, 'course.html', context)
+
+

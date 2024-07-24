@@ -1,9 +1,13 @@
-from django.http import JsonResponse
+import os
+import mimetypes
+from django.http import JsonResponse, Http404,HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
-from lms.models import Course, CourseContent, Admin
+from lms.models import Course, CourseContent, Admin, EnrolledCourse
 from lms.forms import ContentAddForm, ContentEditForm
+from django.conf import settings
+
 
 def content_add(request, id):
     context = {}
@@ -79,3 +83,12 @@ def content_edit(request, id, content_id):
         context['form'] = form
     
     return render(request, 'content_edit.html', context)
+
+def content_download(request, content_name):        
+    #file path that stores content file
+    file_path = os.path.join(settings.MEDIA_ROOT, content_name)
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="application/force-download")
+            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+            return response
