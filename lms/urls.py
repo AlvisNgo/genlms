@@ -60,7 +60,7 @@ urlpatterns = [
 
      # Generative
      path("api/generative", api_generative.generate, name="generative"),
-     path("api/generate_tldr", api_generative.generate_tldr, name="generative")
+     path("api/generate_tldr", api_generative.generate_tldr, name="generative"),
 
      # Analytics
      path("analytics/content_seen/<int:content_id>", views_analytics.mark_as_seen, name="mark_as_seen"),
