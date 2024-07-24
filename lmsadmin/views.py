@@ -230,3 +230,19 @@ def list_users(request):
         'page_obj': page_obj,
         'sort_by': sort_by  # Pass the current sort parameter to the template
     })
+
+def list_admins(request):
+    sort_by = request.GET.get('sort', 'admin_id')  # Default sorting by admin_id
+    if sort_by not in ['admin_id', 'user__first_name', 'user__email']:
+        sort_by = 'admin_id'  # Fallback to default sorting if invalid
+
+    admins_list = Admin.objects.select_related('user').order_by(sort_by)
+
+    paginator = Paginator(admins_list, 10)  # Show 10 admins per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'admin_list_admins.html', {
+        'page_obj': page_obj,
+        'sort_by': sort_by
+    })
