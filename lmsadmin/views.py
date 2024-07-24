@@ -4,11 +4,12 @@ from django.contrib.auth.models import User
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from django.urls import reverse
 from .forms import CSVUploadForm
-from lms.models import Admin, Course
+from lms.models import Admin, Course, CourseAdmin, EnrolledCourse
+from django.core.paginator import Paginator
 
 def index(request):
 	# Check if user is superadmin
@@ -25,6 +26,7 @@ def index(request):
 		"total_course_count": total_course_count
 	})
 
+# Add new students
 def add_users(request):
 	# Check if user is superadmin
 	if not request.user.is_superuser:
@@ -79,7 +81,8 @@ def add_users(request):
 				request.session['valid_rows'] = valid_rows
 				return render(request, 'admin_add_users_confirm.html', {
 					'errors': errors,
-					'valid_count': len(valid_rows)
+					'error_count': len(errors),
+					'valid_count': len(valid_rows),
 				})
 			else:
 				return HttpResponse("No valid rows to import.")
@@ -113,3 +116,133 @@ def import_valid_rows(request):
 		return redirect('admin_add_users')
 	else:
 		return redirect('admin_add_users')
+
+# View all courses
+def course_list(request):
+    courses = Course.objects.all()
+    course_data = []
+    
+    for course in courses:
+        num_enrolled_users = EnrolledCourse.objects.filter(course=course).count()
+        num_course_admins = CourseAdmin.objects.filter(course=course).count()
+        course_data.append((course, num_enrolled_users, num_course_admins))
+    
+    return render(request, 'admin_course_list.html', {'course_data': course_data})
+
+def enrolled_students(request, course_id):
+    course = get_object_or_404(Course, pk=course_id)
+    enrolled_students = EnrolledCourse.objects.filter(course=course).select_related('user')
+    
+    return render(request, 'admin_course_students.html', {
+        'course': course,
+        'enrolled_students': enrolled_students
+    })
+
+# Add students to course
+def add_students(request, course_id):
+    course = get_object_or_404(Course, pk=course_id)
+
+    if request.method == 'POST':
+        csv_file = request.FILES.get('csv_file')
+        
+        if not csv_file.name.endswith('.csv'):
+            messages.error(request, 'The file is not a CSV file.')
+            return redirect('admin_add_student_to_course', course_id=course_id)
+
+        # Process the CSV file
+        valid_entries = []
+        invalid_entries = []
+
+        try:
+            csv_reader = csv.reader(csv_file.read().decode('utf-8').splitlines())
+            for row in csv_reader:
+                email = row[0].strip()
+                user = User.objects.filter(email=email).first()
+                if user:
+                    if EnrolledCourse.objects.filter(user=user, course=course).exists():
+                        invalid_entries.append({'email': email, 'reason': 'Already enrolled'})
+                    else:
+                        valid_entries.append(email)
+                else:
+                    invalid_entries.append({'email': email, 'reason': 'User does not exist'})
+        except Exception as e:
+            messages.error(request, f'Error processing file: {str(e)}')
+            return redirect('admin_add_student_to_course', course_id=course_id)
+
+        if valid_entries or invalid_entries:
+            # Save the entries to the session
+            request.session['valid_entries'] = valid_entries
+            request.session['invalid_entries'] = invalid_entries
+            request.session['course_id'] = course_id
+            return render(request, 'confirm_add_students.html', {
+                'course': course,
+                'valid_entries': valid_entries,
+                'invalid_entries': invalid_entries,
+            })
+        else:
+            messages.error(request, 'No valid entries found.')
+            return redirect('admin_add_student_to_course', course_id=course_id)
+    
+    return render(request, 'admin_course_add_students.html', {'course': course})
+
+def confirm_add_students(request):
+    course_id = request.session.get('course_id')
+    valid_entries = request.session.get('valid_entries', [])
+    
+    if request.method == 'POST':
+        course = get_object_or_404(Course, pk=course_id)
+        for email in valid_entries:
+            user = User.objects.get(email=email)
+            EnrolledCourse.objects.get_or_create(user=user, course=course)
+		
+        messages.success(request, f'{valid_entries} students added to {course.course_name} successfully.')
+        return redirect('admin_enrolled_students', course_id)
+    
+    return render(request, 'confirm_add_students.html', {
+        'valid_entries': valid_entries
+    })
+
+def remove_student(request, course_id, user_id):
+    course = get_object_or_404(Course, pk=course_id)
+    user = get_object_or_404(User, pk=user_id)
+    
+    try:
+        enrollment = EnrolledCourse.objects.get(course=course, user=user)
+        enrollment.delete()
+        messages.success(request, f'Student {user.email} removed successfully.')
+    except EnrolledCourse.DoesNotExist:
+        messages.error(request, 'Enrollment not found.')
+
+    return redirect('admin_enrolled_students', course_id=course_id)
+
+def list_users(request):
+    sort_by = request.GET.get('sort', 'id')  # Default sorting by ID
+    if sort_by not in ['id', 'first_name', 'email']:
+        sort_by = 'id'  # Fallback to default sorting if invalid
+
+    users_list = User.objects.filter(is_superuser=False).order_by(sort_by)  # Exclude superusers and sort
+
+    paginator = Paginator(users_list, 10)  # Show 10 users per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'admin_list_users.html', {
+        'page_obj': page_obj,
+        'sort_by': sort_by  # Pass the current sort parameter to the template
+    })
+
+def list_admins(request):
+    sort_by = request.GET.get('sort', 'admin_id')  # Default sorting by admin_id
+    if sort_by not in ['admin_id', 'user__first_name', 'user__email']:
+        sort_by = 'admin_id'  # Fallback to default sorting if invalid
+
+    admins_list = Admin.objects.select_related('user').order_by(sort_by)
+
+    paginator = Paginator(admins_list, 10)  # Show 10 admins per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'admin_list_admins.html', {
+        'page_obj': page_obj,
+        'sort_by': sort_by
+    })

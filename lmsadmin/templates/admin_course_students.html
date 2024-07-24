@@ -1,0 +1,72 @@
+{% extends "base-lmsadmin.html" %}
+{% block title %}Enrolled Students{% endblock %}
+
+{% block content-wrapper %}
+{% load static %}
+
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Enrolled Students for {{ course.course_name }}</h1>
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">List of Enrolled Students</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for enrollment in enrolled_students %}
+                                <tr>
+                                    <td>{{ enrollment.user.id }}</td>
+                                    <td>{{ enrollment.user.get_full_name }}</td>
+                                    <td>{{ enrollment.user.email }}</td>
+                                    <td>
+                                        <a href="{% url 'remove_student' course.course_id enrollment.user.id %}" class="btn btn-danger btn-sm">Remove</a>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center">No students enrolled</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+
+                    <div class="card-footer">
+                        <a href="{% url 'admin_add_student_to_course' course.course_id %}" class="btn btn-primary">Add Students</a>
+                    </div>
+                    <!-- /.card-footer -->
+                </div>
+                <!-- /.card -->
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends "base-lmsadmin.html" %}
+{% block title %}Course List{% endblock %}
+
+{% block content-wrapper %}
+{% load static %}
+
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Courses</h1>
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Course List</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
+                                    <th>Students</th>
+                                    <th>Educators</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for course, num_enrolled_users, num_course_admins in course_data %}
+                                <tr>
+                                    <td>{{ course.course_id }}</td>
+                                    <td>{{ course.course_name }}</td>
+                                    <td>{{ course.description }}</td>
+                                    <td>{{ course.start_date }}</td>
+                                    <td>{{ course.end_date }}</td>
+                                    <td><a href="{% url 'admin_enrolled_students' course.course_id %}">{{ num_enrolled_users }}</a></td>
+                                    <td>{{ num_course_admins }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center">No courses available</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends "base-lmsadmin.html" %}
+{% block title %}List of Admins{% endblock %}
+
+{% block content-wrapper %}
+{% load static %}
+
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">List of Admins</h1>
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Admins</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th><a href="?sort=admin_id{% if page_obj.paginator.num_pages > 1 %}&page={{ page_obj.number }}{% endif %}">ID</a></th>
+                                    <th><a href="?sort=user__first_name{% if page_obj.paginator.num_pages > 1 %}&page={{ page_obj.number }}{% endif %}">Name</a></th>
+                                    <th><a href="?sort=user__email{% if page_obj.paginator.num_pages > 1 %}&page={{ page_obj.number }}{% endif %}">Email</a></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for admin in page_obj %}
+                                <tr>
+                                    <td>{{ admin.admin_id }}</td>
+                                    <td>{{ admin.user.get_full_name }}</td>
+                                    <td>{{ admin.user.email }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="3" class="text-center">No admins found</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+
+                    <div class="card-footer">
+                        <div class="pagination">
+                            <span class="step-links">
+                                {% if page_obj.has_previous %}
+                                    <a href="?page=1{% if sort_by %}&sort={{ sort_by }}{% endif %}">&laquo; first</a>
+                                    <a href="?page={{ page_obj.previous_page_number }}{% if sort_by %}&sort={{ sort_by }}{% endif %}">previous</a>
+                                {% endif %}
+
+                                <span class="current">
+                                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                                </span>
+
+                                {% if page_obj.has_next %}
+                                    <a href="?page={{ page_obj.next_page_number }}{% if sort_by %}&sort={{ sort_by }}{% endif %}">next</a>
+                                    <a href="?page={{ page_obj.paginator.num_pages }}{% if sort_by %}&sort={{ sort_by }}{% endif %}">last &raquo;</a>
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    <!-- /.card-footer -->
+                </div>
+                <!-- /.card -->
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
