@@ -1,9 +1,8 @@
-from django.http import Http404, HttpResponseForbidden, JsonResponse, HttpResponse
+from django.http import Http404
 from django.shortcuts import get_object_or_404, render
 from django.db.models import Count
-from lms.models import Course, CourseAnnouncement, EnrolledCourse, Thread, CourseAdmin, Admin, CourseContent
-import mimetypes
-
+from lms.models import Assignment, Course, CourseAnnouncement, EnrolledCourse, CourseAdmin, Admin, CourseContent
+from lms.utils import generate_sas_url
 
 def student_course_info(request, id):
     # Check if they have access to this course
@@ -17,6 +16,7 @@ def student_course_info(request, id):
     # Get enrolled course corresponding course id, then get course details
     course_info = get_object_or_404(Course, pk=id)
     
+    assignment_info = Assignment.objects.filter(course=course_info, deleted_at__isnull=True).order_by('-created_at')
     courseAnnouncement_info = CourseAnnouncement.objects.filter(course=course_info, deleted_at__isnull=True).order_by('-created_at')
     courseContent_info = CourseContent.objects.filter(course=course_info, deleted_at__isnull=True).order_by('-created_at')
     uid = request.user.id
@@ -25,8 +25,15 @@ def student_course_info(request, id):
     total_seen = CourseContent.objects.filter(course=course_info).annotate(seen_count=Count('is_seen'))
     total_seen_announce = CourseAnnouncement.objects.filter(course=course_info).annotate(seen_count=Count('is_seen'))
 
+    for content in courseContent_info:
+        if content.content:
+            content.content.sas_url = generate_sas_url(content.content.name)
+
+    print(courseContent_info[0].content.sas_url)
+
     context = {
         'course_info': course_info,
+        'assignment_info': assignment_info,
         'courseAnnouncement_info': courseAnnouncement_info,
         'courseContent_info': courseContent_info,
         'is_admin': is_admin,
@@ -34,8 +41,5 @@ def student_course_info(request, id):
         'total_seen': total_seen,
         'total_seen_announce':total_seen_announce,
     }
-    
-    print(context)
+
     return render(request, 'course.html', context)
-
-

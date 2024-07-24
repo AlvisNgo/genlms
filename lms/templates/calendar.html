@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base-student.html" %}
 {% block bodyclass %}hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed{% endblock %}
 
 {% block content %}
@@ -148,7 +148,7 @@
     <!-- /.navbar -->
     <!-- Main Sidebar Container -->
     <aside class="main-sidebar sidebar-light-primary elevation-4">
-    	<!-- Brand Logo -->
+        <!-- Brand Logo -->
         <a href="{% url 'dashboard' %}" class="brand-link">
             <img src="{% static 'adminlte/dist/img/AdminLTELogo.png' %}" alt="GenLMS Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
             <span class="brand-text font-weight-light">GenLMS</span>
@@ -157,8 +157,8 @@
         <div class="sidebar">
             <!-- Sidebar user panel (optional) -->
             <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-                {% if profile.profile_picture %}
-                    <img src="{{ profile.profile_picture.url }}" class="img-circle elevation-2" alt="User Image">
+                {% if profile_picture %}
+                    <img src="{{ profile_picture }}" class="img-circle elevation-2" alt="User Image">
                 {% else %}
                     <img src="{% static 'adminlte/dist/img/default-150x150.png' %}" class="img-circle elevation-2" alt="Default User Image">
                 {% endif %}
@@ -187,6 +187,60 @@
             <div id='calendar'></div>
         </div>
     </div>
+    <!-- Event Modal -->
+    <div id="eventModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Event</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="eventForm">
+                        <div class="form-group">
+                            <label for="eventTitle">Event Title</label>
+                            <input type="text" class="form-control" id="eventTitle" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="eventDescription">Event Description</label>
+                            <textarea class="form-control" id="eventDescription" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="eventEnd">End Date</label>
+                            <input type="date" class="form-control" id="eventEnd" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="eventColor">Color</label>
+                            <input type="color" class="form-control" id="eventColor" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- View Event Modal -->
+    <div id="viewEventModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Event Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h5 id="viewEventTitle"></h5>
+                    <p id="viewEventDescription"></p>
+                    <p id="viewEventDates"></p>
+                    <button id="deleteEvent" class="btn btn-danger">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- /.content-wrapper -->
     <!-- Control Sidebar -->
     <aside class="control-sidebar control-sidebar-light">
@@ -204,12 +258,141 @@
 <!-- FullCalendar initialization script -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM fully loaded and parsed');
+
     var calendarEl = document.getElementById('calendar');
+    console.log('Calendar element:', calendarEl);
+
     var calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth'
+        initialView: 'dayGridMonth',
+        events: function(fetchInfo, successCallback, failureCallback) {
+            $.ajax({
+                url: '/calendar/events/',  // Load events from this URL
+                method: 'GET',
+                success: function(response) {
+                    // Adjust the end dates here
+                    var events = response.map(event => {
+                        var endDate = new Date(event.end);
+                        endDate.setDate(endDate.getDate() + 1);  // Increment end date by one day
+                        return {
+                            ...event,
+                            end: endDate.toISOString().split('T')[0]  // Adjusted end date
+                        };
+                    });
+                    console.log('Adjusted events:', events);
+                    successCallback(events);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching events:', error);
+                    failureCallback(error);
+                }
+            });
+        },
+        dateClick: function(info) {
+            console.log('Date clicked:', info.dateStr);
+            $('#eventForm')[0].reset();
+            $('#eventModal').modal('show');
+            $('#eventForm').off('submit').on('submit', function(e) {
+                e.preventDefault();
+                var title = $('#eventTitle').val();
+                var description = $('#eventDescription').val();
+                var endDate = $('#eventEnd').val();  // Use end date directly
+                var color = $('#eventColor').val();
+                if (title && description && endDate && color) {
+                    $.ajax({
+                        url: '/calendar/add/',
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': getCookie('csrftoken')
+                        },
+                        data: JSON.stringify({
+                            title: title,
+                            description: description,
+                            start: info.dateStr,
+                            end: endDate,
+                            color: color
+                        }),
+                        contentType: 'application/json',
+                        success: function(response) {
+                            console.log('Add Event Response:', response);
+                            if (response.status === 'Event created successfully') {
+                                calendar.refetchEvents();
+                                console.log('Events refetched');
+                                $('#eventModal').modal('hide');
+                            } else {
+                                alert('Failed to create event.');
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('AJAX error:', error);
+                        }
+                    });
+                }
+            });
+        },
+        eventClick: function(info) {
+            console.log('Event clicked:', info.event);  // Debug log
+            console.log('Event details:', info.event.extendedProps);
+
+            // Adjust start date
+            var adjustedStart = new Date(info.event.start);
+            adjustedStart.setDate(adjustedStart.getDate() + 1);
+
+            // Adjust end date
+            var adjustedEnd = new Date(info.event.end);
+            {#adjustedEnd.setDate(adjustedEnd.getDate() + 1);#}
+
+            $('#viewEventTitle').text(info.event.title);
+            $('#viewEventDescription').text(info.event.extendedProps.description || 'No description');
+            $('#viewEventDates').text(adjustedStart.toISOString().split('T')[0] + ' to ' + adjustedEnd.toISOString().split('T')[0]);
+            $('#viewEventModal').modal('show');
+
+            $('#deleteEvent').off('click').on('click', function() {
+                if (confirm('Are you sure you want to delete this event?')) {
+                    $.ajax({
+                        url: '/calendar/delete/' + info.event.id + '/',
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRFToken': getCookie('csrftoken')
+                        },
+                        success: function(response) {
+                            console.log('Delete Event Response:', response);
+                            if (response.status === 'Event deleted successfully') {
+                                info.event.remove();
+                                $('#viewEventModal').modal('hide');
+                            } else {
+                                alert('Failed to delete event.');
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('AJAX error:', error);
+                        }
+                    });
+                }
+            });
+        }
     });
+
+    console.log('FullCalendar instance created:', calendar);
     calendar.render();
+    console.log('FullCalendar rendered');
 });
+
+// Function to get the CSRF token from the cookie
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
 </script>
 
 {% endblock %}

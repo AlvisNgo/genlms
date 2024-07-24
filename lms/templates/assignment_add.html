@@ -1,0 +1,86 @@
+{% extends "base-student.html" %}
+{% block title %}Add Announcement{% endblock %}
+{% block content-wrapper %}
+{% load static %}
+
+
+<!-- Header -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">{{ course_info.course_name }} [AY2023/24 Trimester 3]</h1>
+            </div>
+    
+            <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item">
+                        <a href="{% url 'dashboard' %}">Dashboard</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="{% url 'course' course_info.course_id %}">{{ course_info.course_name }} [AY2023/24 Trimester 3]</a>
+                    </li>
+                    <li class="breadcrumb-item active">Add New Assignment</li>
+            </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <form action="{{ request.path }}" method="post">
+                        <div class="card-header">
+                            <h3 class="card-title">Add New Assignment</h3>
+                        </div>
+                        <!-- /.card-header -->
+
+                        <div class="card-body">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <!-- text input -->
+                                        <div class="form-group">
+                                            <label for="title">Assignment Title</label>
+                                            {{ form.title }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <!-- textarea -->
+                                        <div class="form-group">
+                                            <label for="content">Content <a href="#" onClick="generateWithAI('Generate Annoucemnent', 'I\'m a Prof. Help me write an annoucement for an assignment regarding OS File System structure. 30% weightage, due in 3 weeks.', 'content');">[Generate with AI]</a></label>
+                                            {{ form.content }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <label for="content">Due At</label>
+                                        <input type="datetime-local" name="due_at" class="form-control">
+                                    </div>
+                                </div>
+                        </div>
+                        <!-- /.card-body -->
+
+                        <div class="card-footer">
+                            <input type="submit" class="btn btn-primary" value="Submit" />
+                        </div>
+                        <!-- /.card-footer -->
+                    </form>
+                    <!-- /.form -->
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    const csrfToken = "{{ csrf_token }}";
+</script>
+
+{% endblock %}

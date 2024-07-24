@@ -1,8 +1,8 @@
 from django import forms
 from django.contrib.auth.models import User
 from .models import Profile
+from lms.models import Thread, Post
 from lms.models import Thread, Post, CourseContent
-
 
 class ThreadForm(forms.ModelForm):
     tags = forms.CharField(max_length=200, required=False,
@@ -15,8 +15,6 @@ class ThreadForm(forms.ModelForm):
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'content': forms.Textarea(attrs={'class': 'form-control', 'id': 'content'}),
         }
-        
-
 
 class PostForm(forms.ModelForm):
     class Meta:
@@ -70,7 +68,6 @@ class ProfileForm(forms.ModelForm):
             user.save()
             profile.save()
         return profile
-
 
 class ContentAddForm(forms.Form):
     title = forms.CharField(

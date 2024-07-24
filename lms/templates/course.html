@@ -68,7 +68,6 @@
                   </div>
                   {% endif %}
               {% endfor %}
-
             {% else %}
               <p>No announcements at the moment. Check back later!</p>
             {% endif %}
@@ -109,9 +108,9 @@
                   <div id="collapse-{{ forloop.counter }}" class="collapse" aria-labelledby="heading-{{ forloop.counter }}" data-parent="#accordion">
                     <div class="card-body">
                     {% if content.content%}
-                      <a href="{% url 'content_download' content.content %}" class="btn btn-outline-primary float-center">
+                      <a href="{{ content.content.sas_url }}" target="_blank" class="btn btn-outline-primary float-center">
                         <h3>
-                          {{ content.content }}
+                          {{ content.content.name }}
                         </h3>                        
                       </a>
                       {% else %}
@@ -133,6 +132,34 @@
             {% endif %}
           </div>
         </div>
+
+        <div class="card">
+          <div class="card-body">
+            <h4>Assignments</h4>
+
+            {% if assignment_info %}
+              <ol>
+              {% for assignment in assignment_info %}
+                <li>
+                  <a href="{% url 'assignment_view' course_info.course_id assignment.id %}">
+                    {{ assignment.title }}
+                  </a>
+                  <p><em>Due at: {{ assignment.due_at }}</em></p>
+                </li>
+              {% endfor %}
+              </ol>
+            {% else %}
+              <p>No Assignment</p>
+            {% endif %}
+          </div>
+
+          <div class="card-footer">
+            {% if is_admin %}
+            <a href="{% url 'assignment_add' course_info.course_id %}" class="btn btn-primary">Create Assignment</a>
+            {% endif %}
+          </div>
+        </div>
+
       </div>
 
       <!-- RIGHT CARDS-->
@@ -148,9 +175,6 @@
                   </li>
                   <li class="nav-item">
                     <a class="nav-link p-2 text-muted" href="{% url 'discussion_board' course_info.course_id %}">Discussion Forums</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link p-2 text-muted" href="">Analytics</a>
                   </li>
                 </ul>
               </nav>

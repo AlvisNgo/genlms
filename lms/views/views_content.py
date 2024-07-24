@@ -8,7 +8,6 @@ from lms.models import Course, CourseContent, Admin, EnrolledCourse
 from lms.forms import ContentAddForm, ContentEditForm
 from django.conf import settings
 
-
 def content_add(request, id):
     context = {}
     admin_info = get_object_or_404(Admin, user_id=request.user.id)
