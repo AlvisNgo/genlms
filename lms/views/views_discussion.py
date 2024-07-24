@@ -46,7 +46,7 @@ def discussion_board(request, id):
 
 def thread_view(request, thread_id):
     thread = get_object_or_404(Thread, pk=thread_id)
-    posts = Post.objects.filter(thread=thread).annotate(
+    posts = Post.objects.filter(thread=thread,deleted_at__isnull=True).annotate(
         like_count=Count('likes')).order_by('-like_count').select_related('user')
     course_info = get_object_or_404(Course, pk=thread.course.course_id)
     context = {'thread': thread, 'posts': posts, 'course_info': course_info}
@@ -70,13 +70,9 @@ def thread_create(request, course_id):
 
 def thread_edit(request, thread_id):
     thread = get_object_or_404(Thread, pk=thread_id)
-
-    dynamic_title_value = thread.title
-    dynamic_content_value = thread.content
     if request.method == 'POST':
         form = ThreadForm(request.POST)
         if form.is_valid():
-            # Process the form data
             title = form.cleaned_data['title']
             content = form.cleaned_data['content']
             thread.title = title
@@ -84,8 +80,6 @@ def thread_edit(request, thread_id):
             thread.updated_at = timezone.now()
             thread.save()
             return redirect('discussion_board', id=thread.course_id)
-
-        return redirect(reverse('course', args=[id]))
     else:
         initial_data = {
             'title': thread.title,
@@ -150,6 +144,38 @@ def post_reply(request, post_id):
         form = ReplyPostForm()
     return render(request, 'post_reply.html', {'form': form, 'parent_post': parent_post})
 
+def post_edit(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
+    thread = get_object_or_404(Thread,pk=post.thread_id)
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            content = form.cleaned_data['content']
+            post.content = content
+            post.updated_at = timezone.now()
+            post.save()
+            return redirect('thread_view', thread_id=post.thread_id)
+    else:
+        initial_data = {
+            'content': post.content,
+        }
+        form = PostForm(initial=initial_data, instance=post)
+    context = {
+        'thread': thread,
+        'post': post,
+        'form': form,
+    }
+    return render(request, 'post_edit.html', context)
+
+def post_delete(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
+    thread = get_object_or_404(Thread,pk=post.thread_id)
+    if request.method == 'POST':
+        post.deleted_at = timezone.now()
+        post.save()
+        return redirect('thread_view', thread_id=post.thread_id) 
+    context = {'thread': thread ,'post': post}
+    return render(request, 'post_delete.html', context)
 
 def like_thread(request, thread_id):
     thread = get_object_or_404(Thread, id=thread_id)

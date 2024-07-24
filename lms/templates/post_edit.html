@@ -1,0 +1,21 @@
+{% extends "base-student.html" %}
+{% block title %}Add New Post{% endblock %}
+{% block content-wrapper %}
+<div class="container mt-4">
+    <a href="{% url 'thread_view' post.thread.id %}" class="btn btn-secondary my-3">Back to Thread</a>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="">Edit post on {{ thread.title }}</h3>
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

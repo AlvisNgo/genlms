@@ -1,0 +1,21 @@
+{% extends "base-student.html" %}
+{% block title %}Add New Post{% endblock %}
+{% block content-wrapper %}
+<div class="container mt-4">
+    <a href="{% url 'thread_view' post.thread.id %}" class="btn btn-secondary my-3">Back to Thread</a>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class=""> Delete Post from {{ thread.title }}</h3>
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <input type="submit" method="delete" class="btn btn-danger" value="Confirm Delete" />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

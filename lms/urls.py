@@ -44,6 +44,10 @@ urlpatterns = [
           views_discussion.post_create, name="post_create"),
      path("student/course/discussion_board/post/<int:post_id>/reply",
           views_discussion.post_reply, name="post_reply"),
+     path("student/course/discussion_board/thread/<int:post_id>/post/edit",
+          views_discussion.post_edit, name="post_edit"),
+     path("student/course/discussion_board/thread/<int:post_id>/post/delete",
+          views_discussion.post_delete, name="post_delete"),
      path("student/course/discussion_board/post/<int:post_id>/like",
           views_discussion.like_post, name="like_post"),
 

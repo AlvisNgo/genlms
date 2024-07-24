@@ -1,5 +1,6 @@
 <!-- replies.html -->
 {% for reply in post.post_set.all %}
+    {% if reply.deleted_at == null %}
     <div class="media mt-3 ml-4">
         <img src="path/to/user-pic.png" alt="User Picture" class="rounded-circle mr-3" style="height: 30px;">
         <div class="media-body">
@@ -14,8 +15,17 @@
                 <button class="btn btn-link reply-button" onclick="replyPost({{ reply.id }})">
                     <i class="fas fa-reply"></i> Reply
                 </button>
+                {%if thread.user_id == request.user.id %}
+                <button type="button" class="btn btn-link" onclick="window.location.href='{% url 'post_edit' post.id %}'">
+                    <i class="fas fa-pen"></i> Edit
+                </button>
+                <button type="button" class="btn btn-link" onclick="window.location.href='{% url 'post_delete' post.id %}'">
+                    <i class="fas fa-minus"></i> Delete
+                </button>
+                {% endif %}
             </div>
             {% include 'replies.html' with post=reply %}
         </div>
     </div>
+    {% endif %}
 {% endfor %}

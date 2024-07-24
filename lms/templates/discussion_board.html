@@ -88,10 +88,10 @@
                                     </td>
                                     {%if thread.user_id == request.user.id %}
                                     <td>
-                                        <a href="{% url 'thread_edit' thread.id %}" class="btn btn-primary">Edit</a>
-                                        <a href="{% url 'thread_delete' thread.id %}" class="btn btn-danger">Delete</a>
+                                        <a href="{% url 'thread_edit' thread.id %}" >Edit</a>
+                                        <a href="{% url 'thread_delete' thread.id %}" >Delete</a>
                                     </td>
-                                {% endif %}
+                                    {% endif %}
                                 </tr>
                                 {% endfor %}
                             </tbody>

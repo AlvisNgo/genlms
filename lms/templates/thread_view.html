@@ -68,6 +68,14 @@
                                                     <button class="btn btn-link reply-button" onclick="replyPost({{ post.id }})">
                                                         <i class="fas fa-reply"></i> Reply
                                                     </button>
+                                                    {%if thread.user_id == request.user.id %}
+                                                    <button type="button" class="btn btn-link" onclick="window.location.href='{% url 'post_edit' post.id %}'">
+                                                        <i class="fas fa-pen"></i> Edit
+                                                    </button>
+                                                    <button type="button" class="btn btn-link" onclick="window.location.href='{% url 'post_delete' post.id %}'">
+                                                        <i class="fas fa-minus"></i> Delete
+                                                    </button>
+                                                    {% endif %}
                                                 </div>
                                                 {% include 'replies.html' with post=post %}
                                             </div>
