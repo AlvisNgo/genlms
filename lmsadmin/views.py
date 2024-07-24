@@ -79,7 +79,8 @@ def add_users(request):
 				request.session['valid_rows'] = valid_rows
 				return render(request, 'admin_add_users_confirm.html', {
 					'errors': errors,
-					'valid_count': len(valid_rows)
+					'error_count': len(errors),
+					'valid_count': len(valid_rows),
 				})
 			else:
 				return HttpResponse("No valid rows to import.")

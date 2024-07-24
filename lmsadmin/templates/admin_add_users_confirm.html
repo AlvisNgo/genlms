@@ -40,12 +40,14 @@
                     <!-- /.card-header -->
 
                     <div class="card-body">
+                        {% if error_count > 0 %}
                         <h2>Errors Occurred During Import</h2>
                         <ul>
                             {% for line_number, row, error in errors %}
                                 <li>Line {{line_number}} - { {{ row.email }} } - {{ error }}</li>
                             {% endfor %}
                         </ul>
+                        {% endif %}
                         {% if valid_count > 0 %}
                             <p>There are {{ valid_count }} valid rows ready for import.</p>
                             
@@ -58,10 +60,10 @@
                     <div class="card-footer">
                         <form method="post" action="{% url 'import_valid_rows' %}">
                             {% csrf_token %}
+                            <button type="submit" name="cancel" class="btn btn-secondary" >Restart</button>
                             {% if valid_count > 0 %}
-                            <button type="submit" name="proceed" class="btn btn-primary" >Proceed with Import</button>
+                            <button type="submit" name="proceed" class="btn btn-danger" >Proceed with Import</button>
                             {% endif %}
-                            <button type="submit" name="cancel" class="btn btn-primary" >Restart</button>
                         </form> 
                     </div>
                     <!-- /.card-footer -->
