@@ -1,0 +1,102 @@
+{% extends "base-student.html" %}
+{% block title %}Add Content{% endblock %}
+{% block content-wrapper %}
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/dnd.css'%}" type="text/css" />
+
+<!-- Header -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">{{ course_info.course_name }} [AY2023/24 Trimester 3]</h1>
+            </div>
+            <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'dashboard' %}">Dashboard</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'course' course_info.course_id %}">{{ course_info.course_name }} [AY2023/24 Trimester 3]</a>
+                </li>
+                <li class="breadcrumb-item active">Add Content</li>
+            </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <form id="content-add" action="{{ request.path }}" method="post" enctype="multipart/form-data">
+                        <div class="card-body">
+                            {% csrf_token %}
+                            
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label for="title">Title</label>
+                                        {{ form.title }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label for="description">Content <a href="#" onClick="generateWithAI('Generate Content', 'I\'m a Professor. Help me write a short synopsis on a computing science topic, Operating systems process scheduling.', 'description');">[Generate with AI]</a></label>
+                                        {{ form.description }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <label for="content">Add Files</label></br>
+                                    
+                                    <!-- <input type="file" multiple> -->
+                                    <fieldset class="upload_dropZone text-center p-4">
+                                        {{ form.content }}
+                                        <input type="button" value="Browse..." onclick="document.getElementById('content').click();" class="btn btn-outline-primary" /><br/><br/>
+
+                                        <!-- Show files -->
+                                        <div class="upload_gallery gap-3 mb-0"></div>
+                                        <!-- Logo -->
+                                        <svg class="upload_svg" width="60" height="60" aria-hidden="true">
+                                          <use href="#icon-imageUpload"></use>
+                                        </svg>
+                                        <p class="small">Drop Files<br></p>
+                                        <!-- Dropzone dnd -->
+                                    </fieldset>
+
+                                    <svg style="display:none">
+                                      <defs>
+                                        <symbol id="icon-imageUpload" clip-rule="evenodd" viewBox="0 0 96 96">
+                                          <path d="M47 6a21 21 0 0 0-12.3 3.8c-2.7 2.1-4.4 5-4.7 7.1-5.8 1.2-10.3 5.6-10.3 10.6 0 6 5.8 11 13 11h12.6V22.7l-7.1 6.8c-.4.3-.9.5-1.4.5-1 0-2-.8-2-1.7 0-.4.3-.9.6-1.2l10.3-8.8c.3-.4.8-.6 1.3-.6.6 0 1 .2 1.4.6l10.2 8.8c.4.3.6.8.6 1.2 0 1-.9 1.7-2 1.7-.5 0-1-.2-1.3-.5l-7.2-6.8v15.6h14.4c6.1 0 11.2-4.1 11.2-9.4 0-5-4-8.8-9.5-9.4C63.8 11.8 56 5.8 47 6Zm-1.7 42.7V38.4h3.4v10.3c0 .8-.7 1.5-1.7 1.5s-1.7-.7-1.7-1.5Z M27 49c-4 0-7 2-7 6v29c0 3 3 6 6 6h42c3 0 6-3 6-6V55c0-4-3-6-7-6H28Zm41 3c1 0 3 1 3 3v19l-13-6a2 2 0 0 0-2 0L44 79l-10-5a2 2 0 0 0-2 0l-9 7V55c0-2 2-3 4-3h41Z M40 62c0 2-2 4-5 4s-5-2-5-4 2-4 5-4 5 2 5 4Z"/>
+                                        </symbol>
+                                      </defs>
+                                    </svg>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="card-footer">
+                            <input type="submit" class="btn btn-primary float-right" value="Submit" />
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>const csrfToken = "{{ csrf_token }}";</script>
+<script src="{% static 'js/dragndrop.js' %}" defer></script>
+
+{% endblock %}

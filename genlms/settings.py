@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'daphne',
     'django.contrib.staticfiles',
     'allauth',
     'allauth.account',
@@ -47,6 +48,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.microsoft',
     'markdownify',
     'lms',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -80,6 +82,7 @@ TEMPLATES = [
     },
 ]
 
+ASGI_APPLICATION = 'genlms.asgi.application'
 WSGI_APPLICATION = 'genlms.wsgi.application'
 
 
@@ -138,6 +141,9 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
 
+MEDIA_URL = 'media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
@@ -174,6 +180,12 @@ MARKDOWNIFY = {
         "WHITELIST_ATTRS": ['href', 'src', 'alt', 'target'],
         "WHITELIST_PROTOCOLS": ['http', 'https']
    }
+}
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
 }
 
 # Azure Blob Storage

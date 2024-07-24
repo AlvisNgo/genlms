@@ -1,10 +1,7 @@
 from django.http import Http404
 from django.shortcuts import get_object_or_404, render
 from django.db.models import Count
-from lms.models import Assignment, Course, CourseAnnouncement, EnrolledCourse, Thread, CourseAdmin, Admin 
-from django.http import HttpResponse
-from datetime import timedelta
-from django.utils import timezone
+from lms.models import Assignment, Course, CourseAnnouncement, EnrolledCourse, CourseAdmin, Admin, CourseContent
 
 def student_course_info(request, id):
     # Check if they have access to this course
@@ -20,44 +17,23 @@ def student_course_info(request, id):
     
     assignment_info = Assignment.objects.filter(course=course_info, deleted_at__isnull=True).order_by('-created_at')
     courseAnnouncement_info = CourseAnnouncement.objects.filter(course=course_info, deleted_at__isnull=True).order_by('-created_at')
+    courseContent_info = CourseContent.objects.filter(course=course_info, deleted_at__isnull=True).order_by('-created_at')
     uid = request.user.id
     is_admin = Admin.objects.filter(user_id=uid).exists()
+    total_students = EnrolledCourse.objects.filter(course=course_info).count()
+    total_seen = CourseContent.objects.filter(course=course_info).annotate(seen_count=Count('is_seen'))
+    total_seen_announce = CourseAnnouncement.objects.filter(course=course_info).annotate(seen_count=Count('is_seen'))
+
     context = {
         'course_info': course_info,
         'assignment_info': assignment_info,
         'courseAnnouncement_info': courseAnnouncement_info,
+        'courseContent_info': courseContent_info,
         'is_admin': is_admin,
+        'total_students': total_students,
+        'total_seen': total_seen,
+        'total_seen_announce':total_seen_announce,
     }
     
     print(context)
     return render(request, 'course.html', context)
-
-
-def grades(request, id):
-    enrolled_course = get_object_or_404(EnrolledCourse, pk=id)
-    course_info = get_object_or_404(Course, pk=enrolled_course.course_id)
-    threads = Thread.objects.filter(course=course_info).annotate(
-        post_count=Count('post')).prefetch_related('post_set', 'post_set__user')
-
-    context = {
-        'course_info': course_info,
-        'threads': threads,
-    }
-
-    print(context)  # Debugging statement to verify context
-
-    return render(request, 'grades.html', context)
-
-def feedback(request, id):
-    enrolled_course = get_object_or_404(EnrolledCourse, pk=id)
-    course_info = get_object_or_404(Course, pk=enrolled_course.course_id)
-    threads = Thread.objects.filter(course=course_info).annotate(
-        post_count=Count('post')).prefetch_related('post_set', 'post_set__user')
-
-    context = {
-        'course_info': course_info,
-        'threads': threads,
-    }
-
-    print(context)  # Debugging statement to verify context
-    return render(request, 'feedback.html', context)
