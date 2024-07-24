@@ -112,9 +112,60 @@ class CourseAnnouncement(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     deleted_at = models.DateTimeField(null=True, blank=True, default=None)
+    is_seen = models.ManyToManyField(User, related_name='seen_announcement', blank=True)
+    
+    def total_seen(self):
+        return self.is_seen.count()
 
     def __str__(self):
         return f"Announcement by {self.owner.user.username} in {self.course}"
+    
+class CourseContent(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    owner = models.ForeignKey(Admin, on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    content = models.FileField(upload_to='content/', blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    deleted_at = models.DateTimeField(null=True, blank=True, default=None)
+    is_seen = models.ManyToManyField(User, related_name='seen_content', blank=True)
+    
+    def total_seen(self):
+        return self.is_seen.count()
+    
+    def __str__(self):
+        return f"Added by {self.owner.user.username} in {self.course}"
+    
+class ChatRoom(models.Model):
+
+    name = models.CharField(max_length=100)
+    creator = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+class ChatRoomUser(models.Model):
+    chatroom = models.ForeignKey(ChatRoom,on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    joined_at = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['chatroom', 'user'], name='composite_key_chatroomuser')
+        ]
+    def __str__(self):
+        return f"{self.user.username} in {self.chatroom.name}"
+    
+class Message(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    chatroom = models.ForeignKey(ChatRoom, on_delete=models.CASCADE)
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.user.username}: {self.content[:20]}'
 
 class Event(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

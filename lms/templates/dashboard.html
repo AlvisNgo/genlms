@@ -3,6 +3,252 @@
 
 {% block content-wrapper %}
 {% load static %}
+<style>
+    .popup {
+        display: none;
+        position: fixed;
+        z-index: 10;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+    }
+
+    .popup-content {
+        background-color: #f0f0f0;
+        padding: 20px;
+        border-radius: 10px;
+        width: 400px;
+        text-align: left;
+    }
+
+    .popup-content label {
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .popup-content input[type="text"] {
+        width: calc(100% - 22px);
+        padding: 10px;
+        margin: 10px 0;
+        box-sizing: border-box;
+        border: 1px solid #888;
+        border-radius: 5px;
+    }
+
+    .popup-content button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .popup-content #popupsubmit {
+        background-color: #4CAF50;
+        color: white;
+        width: 100%;
+    }
+
+    .popup-content button[type="button"] {
+        background-color: #f44336;
+        color: white;
+        width: 100%;
+    }
+
+    .button-container {
+        display: flex;
+        gap: 10px;
+        justify-content: space-between;
+    }
+
+    .button-container-side-by-side {
+        justify-content: center;
+    }
+
+    .full-width-button {
+        width: 100%;
+        text-align: center;
+    }
+
+    .success-message {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px;
+        margin-top: 10px;
+        border-radius: 5px;
+    }
+
+    .error-message {
+        background-color: #f44336;
+        color: white;
+        padding: 10px;
+        margin-top: 10px;
+        border-radius: 5px;
+    }
+
+    .user-list {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        background-color: #ddd;
+        padding: 5px;
+        border-radius: 5px;
+        flex-wrap: wrap; /* Ensure the items wrap */
+    }
+
+    .user-list .name-item {
+        background-color: #eee;
+        padding: 5px 10px;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px; /* Add some space between rows */
+    }
+
+    .user-list .name-item span {
+        margin-right: 10px;
+    }
+
+    .user-list .remove-btn {
+        color: red;
+        border: none;
+        line-height: 20px;
+        text-align: center;
+        padding: 0;
+        cursor: pointer;
+    }
+
+    #nameInput {
+        width: 100%;
+    }
+
+    #cname {
+        width: 100%;
+    }
+
+    .direct-chat-contacts {
+        background-color: #343a40; /* Matching background color */
+        color: #fff; /* Text color */
+        border-radius: 5px;
+        padding: 10px;
+    }
+
+    .header {
+        display: flex;
+        justify-content: center; /* Center the new chat button */
+        padding: 10px;
+        background-color: #3b4148; /* Slightly different background for header */
+        border-radius: 5px;
+    }
+
+    .contacts-list {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .contacts-list-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        border-bottom: 1px solid #495057; /* Separator */
+        position: relative; /* Ensure it positions relative to allow dropdown positioning */
+        z-index: 1; /* Lower z-index to ensure dropdown is above */
+    }
+
+    .contacts-list-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        color: #fff;
+        margin-left: 20px;
+    }
+
+    .contacts-list-name {
+        flex: 1;
+        padding-right: 10px;
+        color: #fff;
+    }
+
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropbtn {
+        background-color: #3b4148; /* Matching background color */
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        font-size: 18px;
+        border-radius: 5px;
+        padding: 5px 10px;
+        z-index: 2; /* Ensure button is above other elements */
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translate(-100%, -50%);
+        background-color: #fff; /* Matching background color */
+        color: #000; /* Text color for dropdown items */
+        min-width: 100px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 100000; /* Higher z-index */
+        border-radius: 5px;
+        overflow: visible; /* Prevent clipping */
+        padding: 5px 0; /* Add padding to make it look better */
+    }
+
+    .dropdown-content button {
+        color: #000; /* Text color for dropdown items */
+        padding: 10px 16px;
+        text-decoration: none;
+        display: block;
+        width: 100%;
+        text-align: left;
+        border: none;
+        background: none;
+        cursor: pointer;
+    }
+
+    .dropdown-content button:hover {
+        background-color: #ddd; /* Hover background color */
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    .dropdown:hover .dropbtn {
+        background-color: #495057; /* Hover background color */
+    }
+
+    .group-button, .destroy-button, .leave-button {
+        background-color: #3b4148; /* Matching button background */
+        color: #fff; /* Button text color */
+        border: none;
+        border-radius: 5px;
+        padding: 5px 10px;
+        cursor: pointer;
+        width: 100%;
+    }
+
+    .group-button:hover, .destroy-button:hover, .leave-button:hover {
+        background-color: #495057; /* Hover background color */
+    }
+    
+</style>
+
+
+
 
 <!-- Content Header (Page header) -->
 <div class="content-header">
@@ -91,11 +337,10 @@
             <!-- Left col -->
             <div class="col-md-6">
                 <!-- DIRECT CHAT -->
-                <div class="card direct-chat direct-chat-warning">
+                <div class="card direct-chat direct-chat-warning" id="directChat">
                     <div class="card-header">
-                        <h3 class="card-title">Direct Chat</h3>
+                        <h3 class="card-title" id="chat_title">Chat Messenger</h3>
                         <div class="card-tools">
-                            <span title="3 New Messages" class="badge badge-warning">3</span>
                             <button type="button" class="btn btn-tool" data-card-widget="collapse">
                                 <i class="fas fa-minus"></i>
                             </button>
@@ -111,150 +356,49 @@
                     <div class="card-body">
                         <!-- Conversations are loaded here -->
                         <div class="direct-chat-messages">
-                            <!-- Message. Default to the left -->
-                            <div class="direct-chat-msg">
-                                <div class="direct-chat-infos clearfix">
-                                    <span class="direct-chat-name float-left">Professor</span>
-                                    <span class="direct-chat-timestamp float-right">23 Jan 2:00 pm</span>
-                                </div>
-                                <!-- /.direct-chat-infos -->
-                                <img class="direct-chat-img" src="{% static 'adminlte/dist/img/user1-128x128.jpg' %}" alt="message user image">
-                                <!-- /.direct-chat-img -->
-                                <div class="direct-chat-text"> Is this template really for free? That's unbelievable! </div>
-                                <!-- /.direct-chat-text -->
+                            <div class="chat__item__container" id="id_chat_item_container" style="font-size: 20px">
+                                <span>No Chat Selected</span>
                             </div>
-                            <!-- /.direct-chat-msg -->
-                            <!-- Message to the right -->
-                            <div class="direct-chat-msg right">
-                                <div class="direct-chat-infos clearfix">
-                                    <span class="direct-chat-name float-right">Student</span>
-                                    <span class="direct-chat-timestamp float-left">23 Jan 2:05 pm</span>
-                                </div>
-                                <!-- /.direct-chat-infos -->
-                                <img class="direct-chat-img" src="{% static 'adminlte/dist/img/user3-128x128.jpg' %}" alt="message user image">
-                                <!-- /.direct-chat-img -->
-                                <div class="direct-chat-text"> You better believe it! </div>
-                                <!-- /.direct-chat-text -->
-                            </div>
-                            <!-- /.direct-chat-msg -->
-                            <!-- Message. Default to the left -->
-                            <div class="direct-chat-msg">
-                                <div class="direct-chat-infos clearfix">
-                                    <span class="direct-chat-name float-left">Professor</span>
-                                    <span class="direct-chat-timestamp float-right">23 Jan 5:37 pm</span>
-                                </div>
-                                <!-- /.direct-chat-infos -->
-                                <img class="direct-chat-img" src="{% static 'adminlte/dist/img/user1-128x128.jpg' %}" alt="message user image">
-                                <!-- /.direct-chat-img -->
-                                <div class="direct-chat-text"> Working with AdminLTE on a great new app! Wanna join? </div>
-                                <!-- /.direct-chat-text -->
-                            </div>
-                            <!-- /.direct-chat-msg -->
-                            <!-- Message to the right -->
-                            <div class="direct-chat-msg right">
-                                <div class="direct-chat-infos clearfix">
-                                    <span class="direct-chat-name float-right">Student</span>
-                                    <span class="direct-chat-timestamp float-left">23 Jan 6:10 pm</span>
-                                </div>
-                                <!-- /.direct-chat-infos -->
-                                <img class="direct-chat-img" src="{% static 'adminlte/dist/img/user3-128x128.jpg' %}" alt="message user image">
-                                <!-- /.direct-chat-img -->
-                                <div class="direct-chat-text"> I would love to. </div>
-                                <!-- /.direct-chat-text -->
-                            </div>
-                            <!-- /.direct-chat-msg -->
                         </div>
                         <!--/.direct-chat-messages-->
                         <!-- Contacts are loaded here -->
                         <div class="direct-chat-contacts">
-                            <ul class="contacts-list">
-                                <li>
-                                    <a href="#">
-                                        <img class="contacts-list-img" src="{% static 'adminlte/dist/img/user1-128x128.jpg' %}" alt="User Avatar">
-                                        <div class="contacts-list-info">
-                                            <span class="contacts-list-name"> Count Dracula <small class="contacts-list-date float-right">2/28/2015</small>
-                                            </span>
-                                            <span class="contacts-list-msg">How have you been? I was...</span>
+                            <div class="header">
+                                <button class="group-button" onclick="openForm('new')">New Chat</button>
+                            </div>
+                            <ul class="contacts-list" id="id_contacts_list">
+                                {% for chat in chats %}
+                                <li class="contacts-list-item" data-room="{{chat.id}}">
+                                    <div class="contacts-list-info">
+                                        <span class="contacts-list-name">{{chat.name}}</span>
+                                        <div class="dropdown">
+                                            <button class="dropbtn">⋮</button>
+                                            <div class="dropdown-content">
+                                                {% if chat.creator == user.id %}
+                                                <button class="group-button" onclick="viewGroup('{{chat.id}}')">Edit</button>
+                                                <button class="destroy-button" onclick="destroyGroup('{{chat.id}}')">Delete</button>
+                                                {% else %}
+                                                <button class="group-button" onclick="viewGroup('{{chat.id}}')">Details</button>
+                                                <button class="leave-button" onclick="leaveGroup('{{chat.id}}')">Leave</button>
+                                                {% endif %}
+                                            </div>
                                         </div>
-                                        <!-- /.contacts-list-info -->
-                                    </a>
+                                    </div>
                                 </li>
-                                <!-- End Contact Item -->
-                                <li>
-                                    <a href="#">
-                                        <img class="contacts-list-img" src="{% static 'adminlte/dist/img/user7-128x128.jpg' %}" alt="User Avatar">
-                                        <div class="contacts-list-info">
-                                            <span class="contacts-list-name"> Sarah Doe <small class="contacts-list-date float-right">2/23/2015</small>
-                                            </span>
-                                            <span class="contacts-list-msg">I will be waiting for...</span>
-                                        </div>
-                                        <!-- /.contacts-list-info -->
-                                    </a>
-                                </li>
-                                <!-- End Contact Item -->
-                                <li>
-                                    <a href="#">
-                                        <img class="contacts-list-img" src="{% static 'adminlte/dist/img/user3-128x128.jpg' %}" alt="User Avatar">
-                                        <div class="contacts-list-info">
-                                            <span class="contacts-list-name"> Nadia Jolie <small class="contacts-list-date float-right">2/20/2015</small>
-                                            </span>
-                                            <span class="contacts-list-msg">I'll call you back at...</span>
-                                        </div>
-                                        <!-- /.contacts-list-info -->
-                                    </a>
-                                </li>
-                                <!-- End Contact Item -->
-                                <li>
-                                    <a href="#">
-                                        <img class="contacts-list-img" src="{% static 'adminlte/dist/img/user5-128x128.jpg' %}" alt="User Avatar">
-                                        <div class="contacts-list-info">
-                                            <span class="contacts-list-name"> Nora S. Vans <small class="contacts-list-date float-right">2/10/2015</small>
-                                            </span>
-                                            <span class="contacts-list-msg">Where is your new...</span>
-                                        </div>
-                                        <!-- /.contacts-list-info -->
-                                    </a>
-                                </li>
-                                <!-- End Contact Item -->
-                                <li>
-                                    <a href="#">
-                                        <img class="contacts-list-img" src="{% static 'adminlte/dist/img/user6-128x128.jpg' %}" alt="User Avatar">
-                                        <div class="contacts-list-info">
-                                            <span class="contacts-list-name"> John K. <small class="contacts-list-date float-right">1/27/2015</small>
-                                            </span>
-                                            <span class="contacts-list-msg">Can I take a look at...</span>
-                                        </div>
-                                        <!-- /.contacts-list-info -->
-                                    </a>
-                                </li>
-                                <!-- End Contact Item -->
-                                <li>
-                                    <a href="#">
-                                        <img class="contacts-list-img" src="{% static 'adminlte/dist/img/user8-128x128.jpg' %}" alt="User Avatar">
-                                        <div class="contacts-list-info">
-                                            <span class="contacts-list-name"> Kenneth M. <small class="contacts-list-date float-right">1/4/2015</small>
-                                            </span>
-                                            <span class="contacts-list-msg">Never mind I found...</span>
-                                        </div>
-                                        <!-- /.contacts-list-info -->
-                                    </a>
-                                </li>
-                                <!-- End Contact Item -->
+                                {% endfor %}
                             </ul>
-                            <!-- /.contacts-list -->
                         </div>
+                        
                         <!-- /.direct-chat-pane -->
                     </div>
                     <!-- /.card-body -->
                     <div class="card-footer">
-                        <form action="#" method="post">
-                            <div class="input-group">
-                                <input type="text" name="message" placeholder="Type Message ..." class="form-control">
-                                <span class="input-group-append">
-                                    <button type="button" class="btn btn-warning">Send</button>
-                                </span>
-                            </div>
-                        </form>
+                        <div class="input-group">
+                            <input type="text" id="id_message_send_input" name="message" placeholder="Type Message ..." class="form-control">
+                            <span class="input-group-append">
+                                <button type="button" id="id_message_send_button" class="btn btn-warning">Send</button>
+                            </span>
+                        </div>
                     </div>
                     <!-- /.card-footer-->
                 </div>
@@ -304,6 +448,338 @@
     </div>
     <!--/. container-fluid -->
 </section>
-<!-- /.content -->
+<div id="formPopup" class="popup">
+    <div class="popup-content">
+        <div id="dynamicForm">
+            <div>
+                <label for="cname">Chat Name:</label><br>
+                <input type="text" id="cname" name="cname">
+            </div>
+            <div>
+                <label for="nameInput">User ID:</label><br>
+                <input type="text" id="nameInput" name="name" onkeyup="checkEnter(event)">
+            </div>
+            <div id="nameList" class="user-list"></div>
+            <br>
+            <div id="buttonContainer" class="button-container">
+                <button id="popupsubmit" onclick="submitForm()">Submit</button>
+                <button type="button" onclick="closeForm()">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    let roomid = "";
+    // create a chat socket link
+    chatSocket = new WebSocket("ws://" + window.location.host + "/" + "{{request.user.id}}");
+
+    chatSocket.onopen = function (e) {
+        console.log("The connection was setup successfully!");
+    };
+
+    chatSocket.onclose = function (e) {
+        console.log("An unexpected error has occurred.");
+    };
+
+    // retrieving message from server
+    chatSocket.onmessage = function (e) {
+        const data = JSON.parse(e.data);
+        if (roomid === data.group) {
+            const chatbox = document.querySelector("#id_chat_item_container");
+            // new message
+            if (data.action == "message") {
+                const div = document.createElement("div");
+                div.id = data.message.id;
+                createMessage(div, data.message);
+                chatbox.appendChild(div);
+            }
+            // edit existing message
+            if (data.action == "edit") {
+                const elementToEdit = document.getElementById(data.message.id);
+                createMessage(elementToEdit, data.message);
+            }
+            // populate chatroom with messages
+            if (data.action == "chat_history") {
+                chatbox.innerHTML = "";
+                data.message.forEach(function (message) {
+                    const div = document.createElement("div");
+                    div.id = message.id;
+                    createMessage(div, message);
+                    chatbox.appendChild(div);
+                });
+            }
+            // populate chatroom members
+            if (data.action == "chat_details") {
+                const creatorid = data.message[0].userid.toString();
+                data.message.forEach(function (message) {
+                    document.getElementById('nameInput').value = message.uid;
+                    addUser(message.userid, creatorid);
+                });
+                if (creatorid != "{{request.user.id}}") {
+                    document.getElementById("nameInput").style.display = 'none';
+                    document.getElementById("popupsubmit").style.display = 'none';
+                } else {
+                    document.getElementById("popupsubmit").innerHTML = "Save";
+                }
+                openForm("edit");
+            }
+            // delete message
+            if (data.action == "delete") {
+                const elementToRemove = document.getElementById(data.message.id);
+                if (elementToRemove) {
+                    elementToRemove.parentNode.removeChild(elementToRemove);
+                }
+            }
+        }
+
+        // creating new chatroom
+        if (data.action == "new_chat") {
+            if (data.message.member == "{{request.user.id}}") {
+                createGroup(data);
+                chatSocket.send(JSON.stringify({ group: data.group, action: "join", username: "{{request.user.first_name}}" }));
+            }
+        }
+        // leaving chatroom
+        if (data.action == "leave") {
+            if (data.message.member == "{{request.user.id}}"|| data.message.member == "all") {
+                removeGroup(data.group);
+            }
+        }
+    };
+    // checking for user pressing enter to send message
+    document.querySelector("#id_message_send_input").focus();
+
+    document.querySelector("#id_message_send_input").onkeyup = function (e) {
+        if (e.keyCode == 13) {
+            document.querySelector("#id_message_send_button").click();
+        }
+    };
+
+    // if submit in message box is clicked
+    document.querySelector("#id_message_send_button").onclick = function (e) {
+        const inputbutton = document.querySelector("#id_message_send_button");
+        const messageInput = document.querySelector("#id_message_send_input").value;
+
+        if (roomid != "" && messageInput != "") {
+            // sends new message to server side
+            if (inputbutton.innerHTML == "Send") {
+                chatSocket.send(JSON.stringify({ group: roomid, action: 'send', message: messageInput, username: "{{request.user.first_name}}" }));
+            // sends edited message to server side
+            } else if (inputbutton.innerHTML == "Save") {
+                const messageid = inputbutton.getAttribute('data-message-id');
+                chatSocket.send(JSON.stringify({ group: roomid, action: 'edit', messageid: messageid, message: messageInput, username: "{{request.user.first_name}}" }));
+                inputbutton.removeAttribute('data-message-id');
+            }
+            // revert back to normal
+            inputbutton.innerHTML = "Send";
+            document.querySelector("#id_message_send_input").value = "";
+        } else {
+            alert("Check that you are in a chatroom and input is not blank.");
+        }
+    };
+
+    // add listener to chatroom list
+    const contactItems = document.querySelectorAll('.contacts-list-item');
+    contactItems.forEach(item => {
+        item.addEventListener('click', () => {
+            roomlistener(item);
+        });
+    });
+
+    // chatroom list functions
+    function roomlistener(item){
+        roomid = item.getAttribute('data-room');
+            roomname = item.getElementsByClassName('contacts-list-name')[0].innerText;
+            if (event.target.classList.contains('destroy-button') || event.target.classList.contains('leave-button')) {}
+            else if(event.target.classList.contains('group-button')){
+                document.getElementById("cname").value = roomname
+            }
+            else{
+            document.querySelector('#chat_title').innerHTML = `${roomname}`;
+            document.querySelector("#id_chat_item_container").innerHTML = "";
+            chatSocket.send(JSON.stringify({ group:roomid, action:'retrieve', username : "{{request.user.first_name}}"}));
+
+                document.querySelector('#chat_title').innerHTML = `${roomname}`;
+                document.querySelector("#id_chat_item_container").innerHTML = "";
+                chatSocket.send(JSON.stringify({ group:roomid, action:'retrieve_chat_history', username : "{{request.user.first_name}}"}));
+            }
+            document.getElementById('directChat').classList.remove('direct-chat-contacts-open');
+    }
+
+    // change html for editing
+    function editMessage(messageid) {
+        if (!document.querySelector("#id_message_send_button").getAttribute('data-message-id')) {
+            const messageElement = document.getElementById(messageid);
+            const message = messageElement.querySelector('span').textContent.split(': ')[1].trim();
+            const buttons = messageElement.querySelectorAll('button');
+            buttons.forEach(button => button.remove());
+            document.querySelector("#id_message_send_input").value = message;
+            document.querySelector("#id_message_send_button").innerHTML = "Save";
+            document.querySelector("#id_message_send_button").setAttribute('data-message-id', messageid);
+        } else {
+            alert("Already in edit");
+        }
+    }
+
+    // send delete message to server side
+    function deleteMessage(postid) {
+        chatSocket.send(JSON.stringify({ group: roomid, action: 'delete', messageid: postid, username: "{{request.user.first_name}}" }));
+    }
+
+    // send leave group message to server side
+    function leaveGroup(groupid) {
+        removeGroup(groupid);
+        chatSocket.send(JSON.stringify({ group: groupid, action: 'leave', username: "{{request.user.first_name}}" }));
+    }
+
+    // send destroy group message to server side 
+    function destroyGroup(groupid) {
+        removeGroup(groupid);
+        chatSocket.send(JSON.stringify({ group: groupid, action: 'destroy', username: "{{request.user.first_name}}" }));
+    }
+
+    // send retrieve chatroom details to server side 
+    function viewGroup(groupid) {
+        chatSocket.send(JSON.stringify({ group: groupid, action: 'retrieve_chat_details', username: "{{request.user.first_name}}" }));
+    }
+
+    // update html with new chatroom
+    function createGroup(data){
+        container = document.getElementById('id_contacts_list');
+        var li = document.createElement("li");
+        li.className = "contacts-list-item";
+        li.setAttribute("data-room", data.group);
+        li.innerHTML = `
+            <div class="contacts-list-info">
+                <span class="contacts-list-name">${data.message.group_name}</span>
+                <div class="dropdown">
+                    <button class="dropbtn">⋮</button>
+                    <div class="dropdown-content">
+                        ${data.message.creator == "{{request.user.id}}" ? 
+                            `<button class="group-button" onclick="viewGroup('${data.group}')">Edit</button>
+                            <button class="destroy-button" onclick="destroyGroup('${data.group}')">Delete</button>` :
+                            `<button class="group-button" onclick="viewGroup('${data.group}')">View</button>
+                            <button class="leave-button" onclick="leaveGroup('${data.group}')">Leave</button>`}
+                    </div>
+                </div>
+            </div>
+        `;
+        li.addEventListener('click', () => {
+            roomlistener(li);
+        });
+        container.append(li);
+    }
+    
+   // remove a chatroom from html 
+    function removeGroup(groupid) {
+        const elementToRemove = document.querySelector(`[data-room='${groupid}']`);
+        if (elementToRemove) {
+            elementToRemove.parentNode.removeChild(elementToRemove);
+            if (roomid == groupid) {
+                document.querySelector('#chat_title').innerHTML = "Chat Messenger";
+                document.querySelector("#id_chat_item_container").innerHTML = "<span>No Chat Selected</span>";
+            }
+        }
+    }
+    
+    // create message in html
+    function createMessage(element, message) {
+        element.innerHTML = `
+            <span>${message.username} : ${message.message}</span>
+            ${"{{request.user.first_name}}" === message.username ? `
+                <button type="button" class="btn btn-tool" onclick="deleteMessage(${message.id})">
+                    <i class="fas fa-times"></i>
+                </button>
+                <button type="button" class="btn btn-tool" onclick="editMessage(${message.id})">
+                    <i class="fas fa-pen"></i>
+                </button>
+            ` : ''}
+        `;
+    }
+
+    // opening pop up form for chatroom CRUD
+    function openForm(action) {
+        if (action == "new") {
+            document.getElementById('nameInput').value = "{{request.user.username}}";
+            addUser("{{request.user.id}}", "{{request.user.id}}");
+            document.getElementById("cname").removeAttribute("disabled");
+            document.getElementById("buttonContainer").classList.remove("button-container-side-by-side");
+        } else if (action == "edit") {
+            document.getElementById("cname").setAttribute("disabled", "true");
+            document.getElementById("buttonContainer").classList.add("button-container-side-by-side");
+        }
+        document.getElementById('formPopup').style.display = 'flex';
+    }
+
+    // closing pop up form
+    function closeForm() {
+        document.getElementById("popupsubmit").style.display = "";
+        document.getElementById("nameInput").style.display = "";
+        document.getElementById("popupsubmit").innerHTML = "Submit";
+        document.getElementById('cname').value = "";
+        document.getElementById('cname').removeAttribute("disabled");
+        document.getElementById('formPopup').style.display = 'none';
+        document.getElementById('nameList').innerHTML = "";
+        roomid = "";
+    }
+
+    // sending form details to serverside
+    function submitForm(){
+        let members = [];
+        groupname = document.getElementById('cname').value;
+        document.getElementById('nameList').querySelectorAll('.name-item').forEach(item => {
+            let span = item.querySelector('span');
+            if (span) {
+                members.push(span.textContent);
+        }
+        });
+        if (members.length >=1 && groupname != ""){
+            if (document.getElementById("popupsubmit").innerHTML == "Submit"){
+                chatSocket.send(JSON.stringify({ group:roomid, groupname:groupname ,action:'create',username : "{{request.user.first_name}}", members:members}))
+            }
+            else if (document.getElementById("popupsubmit").innerHTML == "Save"){
+                chatSocket.send(JSON.stringify({ group:roomid, groupname:groupname ,action:'edit_group',username : "{{request.user.first_name}}", members:members}))
+            }
+        }
+        else{
+                alert("Please input a chatroom name and have at least one member")
+            }
+        members =[]
+        closeForm()
+    };
+
+    // adding users in pop up form
+    function addUser(id, creatorid) {
+        const nameList = document.getElementById('nameList');
+        const nameItem = document.createElement('div');
+        nameItem.className = 'name-item';
+        const nameSpan = document.createElement('span');
+        const nameInput = document.getElementById('nameInput').value.trim();
+        if (nameInput) {
+            nameSpan.textContent = nameInput;
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'remove-btn';
+            removeBtn.textContent = 'X';
+            removeBtn.addEventListener('click', function () {
+                nameList.removeChild(nameItem);
+            });
+            nameItem.appendChild(nameSpan);
+            if ((id != "{{request.user.id}}") && creatorid == "{{request.user.id}}") {
+                nameItem.appendChild(removeBtn);
+            }
+            nameList.appendChild(nameItem);
+            document.getElementById('nameInput').value = "";
+        }
+    }
+
+    // allows user to use enter to input users 
+    function checkEnter(event) {
+        if (event.key === 'Enter') {
+            addUser(0, '{{request.user.id}}');
+        }
+    }
+</script>
 
 {% endblock %}

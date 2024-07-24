@@ -1,16 +1,10 @@
 import os
-from dotenv import load_dotenv
 from django.shortcuts import redirect, render
 from django.contrib.auth import logout
-from django.db.models import Count
 from allauth.socialaccount.models import SocialAccount
+from lms.models import Admin, CourseAdmin, EnrolledCourse, ChatRoom, Event
 from lms.models import Admin, CourseAdmin, EnrolledCourse
-from django.utils import timezone
-from ..models import Event
 from django.utils.timezone import now
-
-
-
 
 def login(request):
     session_data = request.session
@@ -35,7 +29,7 @@ def student_dashboard(request):
     user = request.user
     uid = request.user.id
     context = {}
-
+    
     # Get avatar
     social_account = SocialAccount.objects.filter(
         user=user, provider='microsoft').first()
@@ -44,6 +38,18 @@ def student_dashboard(request):
         avatar_url = extra_data.get('photo', {}).get('url')
         context['avatar_url'] = avatar_url
 
+    # Get chats
+    chat_rooms = ChatRoom.objects.filter(chatroomuser__user=user)
+    if chat_rooms.exists():
+        chat_data = []
+        for chat in chat_rooms:
+            chat_data.append({
+                'id': chat.id,
+                'name': chat.name,
+                'creator': chat.creator_id
+            })
+        context['chats'] = chat_data
+    
     # Check if user is lms admin
     context["is_admin"] = request.is_admin
 

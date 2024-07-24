@@ -1,6 +1,6 @@
 # lms/urls.py
 from django.urls import path
-from .views import views_login, views_announcement, views_course, views_discussion, views_profile, api_generative, views_calender, views_assignment
+from .views import views_login, views_announcement, views_content,views_course, views_discussion, views_profile, api_generative, views_calender, views_analytics, views_assignment
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -13,15 +13,6 @@ urlpatterns = [
      
      # Course
      path("student/course/<int:id>", views_course.student_course_info, name="course"),
-     path("student/course/<int:id>/grade", views_course.grades, name="grades"),
-     path("student/course/<int:id>/feedback", views_course.feedback, name="feedback"),
-
-     # Course
-     path("student/course/<int:id>",
-          views_course.student_course_info, name="course"),
-     path("student/course/<int:id>/grade", views_course.grades, name="grades"),
-     path("student/course/<int:id>/feedback",
-          views_course.feedback, name="feedback"),
 
      # Profile
      path("student/dashboard/profile/",
@@ -60,11 +51,21 @@ urlpatterns = [
      path("student/course/<int:id>/assignment_add", views_assignment.assignment_add, name="assignment_add"),
      path("student/course/<int:course_id>/assignment_view/<int:assignment_id>", views_assignment.assignment_view, name="assignment_view"),
      path("student/course/<int:course_id>/assignment_view_submission/<int:assignment_id>", views_assignment.view_submission, name="view_submission"),
+     
+     # Content
+     path("student/course/<int:id>/content_add", views_content.content_add, name="content_add"),
+     path("student/course/<int:id>/content_edit/<int:content_id>", views_content.content_edit, name="content_edit"), 
+     path("student/course/<int:id>/content_delete/<int:content_id>", views_content.content_delete, name="content_delete"), 
+     path("media/<str:content_name>/", views_content.content_download, name="content_download"), 
 
-     # Generative AI API
+     # Generative
      path("api/generative", api_generative.generate, name="generative"),
      path("api/generate_tldr", api_generative.generate_tldr, name="generative")
-]
+
+     # Analytics
+     path("analytics/content_seen/<int:content_id>", views_analytics.mark_as_seen, name="mark_as_seen"),
+     path("analytics/announcement_seen/<int:announce_id>", views_analytics.mark_as_seen_announce, name="mark_as_seen_announce"),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
