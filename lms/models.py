@@ -74,6 +74,7 @@ class Thread(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    deleted_at = models.DateTimeField(null=True, blank=True, default=None)
     course = models.ForeignKey('Course', on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     likes = models.ManyToManyField(
@@ -93,6 +94,7 @@ class Post(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    deleted_at = models.DateTimeField(null=True, blank=True, default=None)
     parent_post = models.ForeignKey(
         'self', null=True, blank=True, on_delete=models.CASCADE)
     thread = models.ForeignKey(Thread, on_delete=models.CASCADE)
