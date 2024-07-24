@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'daphne',
     'django.contrib.staticfiles',
     'allauth',
     'allauth.account',
@@ -48,6 +49,7 @@ INSTALLED_APPS = [
     'markdownify',
     'lms',
     'lmsadmin',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -75,12 +77,13 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'django.template.context_processors.request'
+                'lms.context_processors.user_profile',
             ],
         },
     },
 ]
 
+ASGI_APPLICATION = 'genlms.asgi.application'
 WSGI_APPLICATION = 'genlms.wsgi.application'
 
 
@@ -126,7 +129,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Singapore'
 USE_I18N = True
 USE_TZ = True
 
@@ -179,3 +182,25 @@ MARKDOWNIFY = {
         "WHITELIST_PROTOCOLS": ['http', 'https']
    }
 }
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
+
+# Azure Blob Storage
+DEFAULT_FILE_STORAGE = 'storages.backends.azure_storage.AzureStorage'
+AZURE_ACCOUNT_NAME = 'genlmsstorage'
+AZURE_ACCOUNT_KEY = 'V7oWxPVFLy4FrU1gIZaCD2S/J+jgoZKgQvXXtr/i7wT8Y6TEaTeL1ELWHJkp9Mauf8OLRBSjnN8++AStUt3ejg=='
+AZURE_CONTAINER = 'genlmsblob'
+
+# Construct the connection string
+AZURE_CONNECTION_STRING = (
+    f"DefaultEndpointsProtocol=https;"
+    f"AccountName={AZURE_ACCOUNT_NAME};"
+    f"AccountKey={AZURE_ACCOUNT_KEY};"
+    f"EndpointSuffix=core.windows.net"
+)
+
+MEDIA_URL = f'https://{AZURE_ACCOUNT_NAME}.blob.core.windows.net/{AZURE_CONTAINER}/'

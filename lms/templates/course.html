@@ -50,20 +50,27 @@
             <hr class="solid" color="9C9C9C">
             {% if courseAnnouncement_info%}
               {% for announce in courseAnnouncement_info%}
-                <a href="{%url 'announcement_view' course_info.course_id announce.id %}">
+                <a href="{%url 'announcement_view' course_info.course_id announce.id %}" onclick="markAsSeen_announce({{ announce.id }})">
                   <h3>{{ announce.title }}</h3>
                 </a>
                 <p><em>Last updated on: {{ announce.updated_at }}</em></p>
                 <div class="latest-anouncement">
-                  {{ announce.content|markdownify }} 
-                  
-                  {% if is_admin%}
-                  <a href="{% url 'announcement_edit' course_info.course_id announce.id %}" class="btn btn-outline-primary">Edit</a>
-                  <a href="{% url 'announcement_delete' course_info.course_id announce.id %}" class="btn btn-outline-danger">Delete</a>
-                  {% endif %}           
-                </div>
-              {% endfor %}
+                  {{ announce.content|markdownify }}
 
+                  </br>
+                  <button class="btn btn-secondary" onClick="generateTLDR('announce', {{ announce.id }});">TLDR</button>
+                  {% if is_admin %}
+                  <a href="{% url 'announcement_edit' course_info.course_id announce.id %}" class="btn btn-primary">Edit</a>
+                  <a href="{% url 'announcement_delete' course_info.course_id announce.id %}" class="btn btn-danger">Delete</a>
+                  {% endif %}
+                  <hr class="solid" color="9C9C9C">
+                </div>
+                {% if request.is_admin %}
+                  <div class="card-footer">
+                    Seen: {{ announce.total_seen }} out of {{ total_students }} students
+                  </div>
+                  {% endif %}
+              {% endfor %}
             {% else %}
               <p>No announcements at the moment. Check back later!</p>
             {% endif %}
@@ -86,13 +93,16 @@
               <div id="accordion">
                 <div class="card">
                   <div class="card-header" id="heading-{{ forloop.counter }}">
-                    <button class="btn btn-link dropdown-btn" data-toggle="collapse" data-target="#collapse-{{ forloop.counter }}" aria-expanded="true" aria-controls="collapseOne">
+                    <button class="btn btn-link dropdown-btn" data-toggle="collapse" data-target="#collapse-{{ forloop.counter }}" aria-expanded="true" aria-controls="collapseOne" onclick="markAsSeen({{ content.id }})">
                       {{ content.title }}
                     </button>
                     {% if is_admin%}
                       <div class="float-right content-buttons">
-                        <a href="" class="btn btn-outline-primary">Edit</a>
-                        <a href="" class="btn btn-outline-danger">Delete</a>
+                        <a href="{% url 'content_edit' course_info.course_id content.id %}" class="btn btn-outline-secondary">Edit</a>
+                        <form action="{% url 'content_delete' course_info.course_id content.id %}" method="post">
+                          {% csrf_token %}
+                          <input type="submit" class="btn btn-outline-danger" value="Delete"/>
+                        </form>
                       </div>
                     {% endif %}
                     <p class="mt-0 mb-0 text-justify">{{ content.description }}</p>
@@ -100,9 +110,23 @@
               
                   <div id="collapse-{{ forloop.counter }}" class="collapse" aria-labelledby="heading-{{ forloop.counter }}" data-parent="#accordion">
                     <div class="card-body">
-                      <p class="mt-0 mb-0 text-justify">{{ content.content }}</p>
+                    {% if content.content%}
+                      <a href="{{ content.content.sas_url }}" target="_blank" class="btn btn-outline-primary float-center">
+                        <h3>
+                          {{ content.content.name }}
+                        </h3>                        
+                      </a>
+                      {% else %}
+                      <p>No content available</p>
+                      {% endif %}
                     </div>
                   </div>
+
+                  {% if request.is_admin %}
+                  <div class="card-footer">
+                    Seen: {{ content.total_seen }} out of {{ total_students }} students
+                  </div>
+                  {% endif %}
                 </div>
               </div>
               {% endfor %}
@@ -111,6 +135,34 @@
             {% endif %}
           </div>
         </div>
+
+        <div class="card">
+          <div class="card-body">
+            <h4>Assignments</h4>
+
+            {% if assignment_info %}
+              <ol>
+              {% for assignment in assignment_info %}
+                <li>
+                  <a href="{% url 'assignment_view' course_info.course_id assignment.id %}">
+                    {{ assignment.title }}
+                  </a>
+                  <p><em>Due at: {{ assignment.due_at }}</em></p>
+                </li>
+              {% endfor %}
+              </ol>
+            {% else %}
+              <p>No Assignment</p>
+            {% endif %}
+          </div>
+
+          <div class="card-footer">
+            {% if is_admin %}
+            <a href="{% url 'assignment_add' course_info.course_id %}" class="btn btn-primary">Create Assignment</a>
+            {% endif %}
+          </div>
+        </div>
+
       </div>
 
       <!-- RIGHT CARDS-->
@@ -126,9 +178,6 @@
                   </li>
                   <li class="nav-item">
                     <a class="nav-link p-2 text-muted" href="{% url 'discussion_board' course_info.course_id %}">Discussion Forums</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link p-2 text-muted" href="">Analytics</a>
                   </li>
                 </ul>
               </nav>
@@ -174,5 +223,5 @@
     </div>
   </div>
 </section>
-
+<script src="{% static 'js/mark-as-seen.js' %}"></script>
 {% endblock %}

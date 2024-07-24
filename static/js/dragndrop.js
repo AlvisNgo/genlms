@@ -165,15 +165,47 @@
         processData: false, // Don't process the data
         contentType: false, // Don't set any content type header
         success: function(response) {
-            // Handle the successful response here
-            console.log("Form submitted successfully:", response);
-            window.location.href = window.location.href.replace(/\/[^\/]+$/, '');
+          // Handle the successful response here
+          console.log("Form submitted successfully:", response);
+          window.location.href = window.location.href.replace(/\/[^\/]+$/, '');
         },
         error: function(jqXHR, textStatus, errorThrown) {
-            // Handle any errors here
-            console.error("Error submitting form:", textStatus, errorThrown);
-            alert(errorThrown);
+          // Handle any errors here
+          console.error("Error submitting form:", textStatus, errorThrown);
+          alert(errorThrown);
         }
+    });
+  });
+
+  $("#content-edit").on("submit", function(event) {
+    event.preventDefault();
+
+    // Create a FormData object and append title and description
+    const formData = new FormData();
+    formData.append("csrfmiddlewaretoken", $("input[name=csrfmiddlewaretoken]").val());
+    formData.append("title", $("#title").val());
+    formData.append("description", $("#description").val());
+    formData.append("content", currentFile);
+
+    // Send the form data using AJAX
+    $.ajax({
+      url: $(this).attr("action"), // URL to send the request to
+      type: $(this).attr("method"), // Request method (GET, POST, etc.)
+      data: formData,
+      processData: false, // Don't process the data
+      contentType: false, // Don't set any content type header
+      success: function(response) {
+        // Handle the successful response here
+        console.log("Form submitted successfully:", response);
+        const pathArray = window.location.pathname.split( '/' );
+        const url = (window.location.protocol + "//"+window.location.host+"/student/course/"+pathArray[3]).toString();
+        window.location.href = url;
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+          // Handle any errors here
+          console.error("Error submitting form:", textStatus, errorThrown);
+          alert(errorThrown);
+      }
     });
   });
 

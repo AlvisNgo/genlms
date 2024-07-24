@@ -1,11 +1,12 @@
 import os
-from dotenv import load_dotenv
 from django.shortcuts import redirect, render
 from django.contrib.auth import logout
+from allauth.socialaccount.models import SocialAccount
+from lms.models import Admin, CourseAdmin, EnrolledCourse, ChatRoom, Event
+from lms.models import Admin, CourseAdmin, EnrolledCourse
+from django.utils.timezone import now
 from django.utils import timezone
 from django.db.models import Count
-from allauth.socialaccount.models import SocialAccount
-from lms.models import Admin, CourseAdmin, EnrolledCourse
 
 def login(request):
     session_data = request.session
@@ -25,10 +26,12 @@ def logoutfunction(request):
     return redirect(logout_url)
 
 def student_dashboard(request):
+    # Get the current date and time
+    current_date = now()
     user = request.user
     uid = request.user.id
     context = {}
-
+    
     # Get avatar
     social_account = SocialAccount.objects.filter(user=user, provider='microsoft').first()
     if social_account:
@@ -36,6 +39,18 @@ def student_dashboard(request):
         avatar_url = extra_data.get('photo', {}).get('url')
         context['avatar_url'] = avatar_url
 
+    # Get chats
+    chat_rooms = ChatRoom.objects.filter(chatroomuser__user=user)
+    if chat_rooms.exists():
+        chat_data = []
+        for chat in chat_rooms:
+            chat_data.append({
+                'id': chat.id,
+                'name': chat.name,
+                'creator': chat.creator_id
+            })
+        context['chats'] = chat_data
+    
     # Check if user is lms admin
     context["is_admin"] = request.is_admin
 
@@ -56,7 +71,10 @@ def student_dashboard(request):
         else:
             previous_courses.append(enrolled_course)
     
+    upcoming_events = Event.objects.filter(user=request.user, end_date__gte=current_date).order_by('end_date')[:5]
+    
     context['ongoing_courses'] = ongoing_courses
     context['previous_courses'] = previous_courses
+    context['upcoming_events'] = upcoming_events
     
     return render(request, 'dashboard.html', context)

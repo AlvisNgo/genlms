@@ -1,0 +1,84 @@
+{% extends "base-student.html" %}
+{% block title %}Upload Assignment{% endblock %}
+{% load static %}
+{% load markdownify %}
+{% block content-wrapper %}
+{% load tz %}
+
+<!-- Header -->
+<div class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1 class="m-0">{{ course.course_name }} - Upload Assignment</h1>
+      </div>
+
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item">
+                <a href="{% url 'dashboard' %}">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item active">{{ course.course_name }}</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Body -->
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body">
+            <h2>Upload Assignment for {{ course.course_name }}</h2>
+            <p>Deadline: {{ assignment.deadline|date:"F j, Y, g:i" }}</p>
+            <p>Current Time: <span id="current-time"></span></p>
+            {% if success_message %}
+            <div class="alert alert-success" role="alert">
+                {{ success_message }}
+            </div>
+            {% endif %}
+            {% if assignment.submitted %}
+            <p>Status: Submitted on {{ assignment.uploaded_at|date:"Y-m-d H:i:s" }}</p>
+            {% if assignment.file %}
+            <p>Submitted File: <a href="{{ assignment.file.url }}">{{ assignment.file.name }}</a></p>
+            {% endif %}
+            {% else %}
+            <p>No file has been submitted yet.</p>
+            {% endif %}
+            {% if not assignment.is_past_deadline %}
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="{{ form.file.id_for_label }}">{{ form.file.label }}</label>
+                    <input type="file" name="{{ form.file.name }}" id="{{ form.file.id_for_label }}">
+                    {% if form.file.help_text %}
+                        <small class="form-text text-muted">{{ form.file.help_text }}</small>
+                    {% endif %}
+                </div>
+                <button type="submit" class="btn btn-primary">Upload</button>
+            </form>
+            {% else %}
+            <p>The deadline has passed. You cannot submit the assignment.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+    function updateTime() {
+        const now = new Date();
+        const formattedTime = now.toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'long' });
+        document.getElementById('current-time').textContent = formattedTime;
+    }
+
+    setInterval(updateTime, 1000); // Update every second
+    updateTime(); // Initial call to display time immediately
+</script>
+
+{% endblock %}
