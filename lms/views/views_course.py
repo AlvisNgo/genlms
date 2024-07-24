@@ -1,8 +1,9 @@
-from django.http import Http404, HttpResponseForbidden
+from django.http import Http404, HttpResponseForbidden, JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.db.models import Count
 from lms.models import Course, CourseAnnouncement, EnrolledCourse, Thread, CourseAdmin, Admin, CourseContent
-from django.http import JsonResponse
+import mimetypes
+
 
 def student_course_info(request, id):
     # Check if they have access to this course
@@ -36,3 +37,5 @@ def student_course_info(request, id):
     
     print(context)
     return render(request, 'course.html', context)
+
+

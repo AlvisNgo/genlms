@@ -1,6 +1,8 @@
 # lms/urls.py
 from django.urls import path
 from .views import views_login, views_announcement, views_content,views_course, views_discussion, views_profile, api_generative, views_calender, views_analytics
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
      path("", views_login.login, name="login"),
@@ -47,6 +49,7 @@ urlpatterns = [
      
      # Content
      path("student/course/<int:id>/content_add", views_content.content_add, name="content_add"), 
+     path("media/<str:content_name>/", views_content.content_download, name="content_download"), 
 
 
      # Generative AI API
@@ -56,4 +59,4 @@ urlpatterns = [
      path("analytics/content_seen/<int:content_id>", views_analytics.mark_as_seen, name="mark_as_seen"),
      path("analytics/announcement_seen/<int:announce_id>", views_analytics.mark_as_seen_announce, name="mark_as_seen_announce"),
 
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

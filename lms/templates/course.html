@@ -105,7 +105,15 @@
               
                   <div id="collapse-{{ forloop.counter }}" class="collapse" aria-labelledby="heading-{{ forloop.counter }}" data-parent="#accordion">
                     <div class="card-body">
-                      <p class="mt-0 mb-0 text-justify">{{ content.content }}</p>
+                    {% if content.content%}
+                      <a href="{% url 'content_download' content.content %}" class="btn btn-outline-primary float-center">
+                        <h3>
+                          {{ content.content }}
+                        </h3>                        
+                      </a>
+                      {% else %}
+                      <p>No content available</p>
+                      {% endif %}
                     </div>
                   </div>
 
