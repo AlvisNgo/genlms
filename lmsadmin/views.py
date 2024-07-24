@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from django.urls import reverse
 from .forms import CSVUploadForm
@@ -127,3 +127,12 @@ def course_list(request):
         course_data.append((course, num_enrolled_users, num_course_admins))
     
     return render(request, 'admin_course_list.html', {'course_data': course_data})
+
+def enrolled_students(request, course_id):
+    course = get_object_or_404(Course, pk=course_id)
+    enrolled_students = EnrolledCourse.objects.filter(course=course).select_related('user')
+    
+    return render(request, 'admin_course_students.html', {
+        'course': course,
+        'enrolled_students': enrolled_students
+    })

@@ -1,5 +1,5 @@
 {% extends "base-lmsadmin.html" %}
-{% block title %}Course List{% endblock %}
+{% block title %}Enrolled Students{% endblock %}
 
 {% block content-wrapper %}
 {% load static %}
@@ -9,7 +9,7 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0">Courses</h1>
+                <h1 class="m-0">Enrolled Students for {{ course.course_name }}</h1>
             </div>
             <!-- /.col -->
         </div>
@@ -25,7 +25,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Course List</h3>
+                        <h3 class="card-title">List of Enrolled Students</h3>
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
@@ -34,33 +34,30 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>Name</th>
-                                    <th>Description</th>
-                                    <th>Start Date</th>
-                                    <th>End Date</th>
-                                    <th>Enrolled Educators</th>
-                                    <th>Enrolled Users</th>
+                                    <th>Email</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for course, num_enrolled_users, num_course_admins in course_data %}
+                                {% for enrollment in enrolled_students %}
                                 <tr>
-                                    <td>{{ course.course_id }}</td>
-                                    <td>{{ course.course_name }}</td>
-                                    <td>{{ course.description }}</td>
-                                    <td>{{ course.start_date }}</td>
-                                    <td>{{ course.end_date }}</td>
-                                    <td><a href="{% url 'admin_enrolled_students' course.course_id %}">{{ num_enrolled_users }}</a></td>
-                                    <td>{{ num_course_admins }}</td>
+                                    <td>{{ enrollment.user.id }}</td>
+                                    <td>{{ enrollment.user.get_full_name }}</td>
+                                    <td>{{ enrollment.user.email }}</td>
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                    <td colspan="6" class="text-center">No courses available</td>
+                                    <td colspan="3" class="text-center">No students enrolled</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
                     </div>
                     <!-- /.card-body -->
+
+                    <div class="card-footer">
+                        <a href="{% url 'admin_add_student_to_course' course.course_id %}" class="btn btn-primary">Add Students</a>
+                    </div>
+                    <!-- /.card-footer -->
                 </div>
                 <!-- /.card -->
             </div>
