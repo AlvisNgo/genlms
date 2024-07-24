@@ -58,8 +58,9 @@ urlpatterns = [
      path("student/course/<int:id>/content_delete/<int:content_id>", views_content.content_delete, name="content_delete"), 
      path("media/<str:content_name>/", views_content.content_download, name="content_download"), 
 
-
+     # Generative
      path("api/generative", api_generative.generate, name="generative"),
+     path("api/generate_tldr", api_generative.generate_tldr, name="generative")
 
      # Analytics
      path("analytics/content_seen/<int:content_id>", views_analytics.mark_as_seen, name="mark_as_seen"),

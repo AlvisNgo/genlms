@@ -55,12 +55,15 @@
                 </a>
                 <p><em>Last updated on: {{ announce.updated_at }}</em></p>
                 <div class="latest-anouncement">
-                  {{ announce.content|markdownify }} 
-                  
-                  {% if is_admin%}
-                  <a href="{% url 'announcement_edit' course_info.course_id announce.id %}" class="btn btn-outline-primary">Edit</a>
-                  <a href="{% url 'announcement_delete' course_info.course_id announce.id %}" class="btn btn-outline-danger">Delete</a>
-                  {% endif %}           
+                  {{ announce.content|markdownify }}
+
+                  </br>
+                  <button class="btn btn-secondary" onClick="generateTLDR('announce', {{ announce.id }});">TLDR</button>
+                  {% if is_admin %}
+                  <a href="{% url 'announcement_edit' course_info.course_id announce.id %}" class="btn btn-primary">Edit</a>
+                  <a href="{% url 'announcement_delete' course_info.course_id announce.id %}" class="btn btn-danger">Delete</a>
+                  {% endif %}
+                  <hr class="solid" color="9C9C9C">
                 </div>
                 {% if request.is_admin %}
                   <div class="card-footer">
