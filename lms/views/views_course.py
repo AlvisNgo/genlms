@@ -29,8 +29,6 @@ def student_course_info(request, id):
         if content.content:
             content.content.sas_url = generate_sas_url(content.content.name)
 
-    print(courseContent_info[0].content.sas_url)
-
     context = {
         'course_info': course_info,
         'assignment_info': assignment_info,
