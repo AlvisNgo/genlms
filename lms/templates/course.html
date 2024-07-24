@@ -19,7 +19,7 @@
             <li class="breadcrumb-item">
                 <a href="{% url 'dashboard' %}">Dashboard</a>
             </li>
-            <li class="breadcrumb-item active">{{ course_info.course_name }} [AY2023/24 Trimester 3]</li>
+            <li class="breadcrumb-item active">{{ course_info.course_name }} [{{course_info.start_date}} to {{course_info.end_date}}]</li>
         </ol>
       </div>
     </div>
