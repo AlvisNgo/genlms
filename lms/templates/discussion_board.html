@@ -86,6 +86,12 @@
                                             No posts
                                         {% endif %}
                                     </td>
+                                    {%if thread.user_id == request.user.id %}
+                                    <td>
+                                        <a href="{% url 'thread_edit' thread.id %}" class="btn btn-primary">Edit</a>
+                                        <a href="{% url 'thread_delete' thread.id %}" class="btn btn-danger">Delete</a>
+                                    </td>
+                                {% endif %}
                                 </tr>
                                 {% endfor %}
                             </tbody>

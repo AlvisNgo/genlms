@@ -23,16 +23,16 @@ def discussion_board(request, id):
             return HttpResponseForbidden("Not allowed to visit this discussion board.")
 
     if sort_option == 'name':
-        threads = Thread.objects.filter(course=course_info).annotate(
+        threads = Thread.objects.filter(course=course_info,deleted_at__isnull=True).annotate(
             post_count=Count('post')).order_by('title')
     elif sort_option == 'id':
-        threads = Thread.objects.filter(course=course_info).annotate(
+        threads = Thread.objects.filter(course=course_info,deleted_at__isnull=True).annotate(
             post_count=Count('post')).order_by('id')
     elif sort_option == 'newest':
-        threads = Thread.objects.filter(course=course_info).annotate(
+        threads = Thread.objects.filter(course=course_info,deleted_at__isnull=True).annotate(
             post_count=Count('post')).order_by('-created_at')
     else:  # Default to sorting by likes
-        threads = Thread.objects.filter(course=course_info).annotate(
+        threads = Thread.objects.filter(course=course_info,deleted_at__isnull=True).annotate(
             like_count=Count('likes')).order_by('-like_count')
 
     context = {
@@ -68,7 +68,38 @@ def thread_create(request, course_id):
         form = ThreadForm()
     return render(request, 'thread_create.html', {'form': form, 'course_info': course_info})
 
-def delete_thread(request, thread_id):
+def thread_edit(request, thread_id):
+    thread = get_object_or_404(Thread, pk=thread_id)
+
+    dynamic_title_value = thread.title
+    dynamic_content_value = thread.content
+    if request.method == 'POST':
+        form = ThreadForm(request.POST)
+        if form.is_valid():
+            # Process the form data
+            title = form.cleaned_data['title']
+            content = form.cleaned_data['content']
+            thread.title = title
+            thread.content = content
+            thread.updated_at = timezone.now()
+            thread.save()
+            return redirect('discussion_board', id=thread.course_id)
+
+        return redirect(reverse('course', args=[id]))
+    else:
+        initial_data = {
+            'title': thread.title,
+            'content': thread.content,
+        }
+        form = ThreadForm(initial=initial_data, instance=thread)
+
+    context = {
+        'thread': thread,
+        'form': form,
+    }
+    return render(request, 'thread_edit.html', context)
+
+def thread_delete(request, thread_id):
     thread = get_object_or_404(Thread, pk=thread_id)
 
     if request.method == 'POST':
@@ -76,10 +107,10 @@ def delete_thread(request, thread_id):
         thread.deleted_at = timezone.now()
         thread.save()
 
-        return redirect(reverse('course', args=[id]))
+        return redirect('discussion_board', id=thread.course_id)
     
     context = {'thread': thread}
-    return render(request, 'delete_thread.html', context)
+    return render(request, 'thread_delete.html', context)
 
 def post_create(request, thread_id):
     thread = get_object_or_404(Thread, pk=thread_id)
