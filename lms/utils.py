@@ -1,6 +1,18 @@
+from .models import Notification
 from azure.storage.blob import BlobServiceClient, generate_blob_sas, BlobSasPermissions
 from datetime import datetime, timedelta
 from django.conf import settings
+
+def add_notification(to: int, title: str, description: str, link: str):
+    notification = Notification(
+        to=to,
+        title=title,
+        description=description,
+        link=link
+    )
+    notification.save()
+    
+    return notification
 
 def generate_sas_url(blob_name):
     blob_service_client = BlobServiceClient.from_connection_string(settings.AZURE_CONNECTION_STRING)

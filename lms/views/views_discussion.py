@@ -1,15 +1,25 @@
 # lms/views/views_discussion.py
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from lms.forms import PostForm, ThreadForm, ReplyPostForm
 from django.db.models import Count
-from lms.models import Course, EnrolledCourse, Post, Thread
-from django.http import JsonResponse
+from lms.models import Course, EnrolledCourse, Post, Thread, CourseAdmin
+from django.http import JsonResponse, HttpResponseForbidden
+
+from lms.utils import add_notification
 
 
 def discussion_board(request, id):
-    enrolled_course = get_object_or_404(EnrolledCourse, pk=id)
-    course_info = get_object_or_404(Course, pk=enrolled_course.course_id)
+    course_info = get_object_or_404(Course, pk=id)
     sort_option = request.GET.get('sort', 'likes')  # Sorting option
+
+    # Validate that user has access to this course
+    if request.is_admin:
+        if not CourseAdmin.objects.filter(admin=request.admin, course_id=id).exists():
+            return HttpResponseForbidden("Not allowed to visit this discussion board.")
+    else:
+        if not EnrolledCourse.objects.filter(user=request.user, course_id=id).exists():
+            return HttpResponseForbidden("Not allowed to visit this discussion board.")
 
     if sort_option == 'name':
         threads = Thread.objects.filter(course=course_info).annotate(
@@ -67,6 +77,10 @@ def create_post(request, thread_id):
             post.thread = thread
             post.user = request.user
             post.save()
+
+            if (thread.user != request.user):
+                add_notification(thread.user, f"{request.user.first_name} replied to your thread.", f"New Discussion Board Reply - {thread.course.course_name}", reverse('view_thread', args=[thread.id]))
+            
             return redirect('view_thread', thread_id=thread.id)
     else:
         form = PostForm()
@@ -83,6 +97,10 @@ def reply_post(request, post_id):
             post.thread = parent_post.thread
             post.user = request.user
             post.save()
+            
+            if (parent_post.user != request.user):
+                add_notification(parent_post.user, f"{request.user.first_name} replied to your post in {post.thread.title}.", f"New Discussion Board Reply - {parent_post.thread.course.course_name}", reverse('view_thread', args=[parent_post.thread.id]))
+            
             return redirect('view_thread', thread_id=parent_post.thread.id)
     else:
         form = ReplyPostForm()

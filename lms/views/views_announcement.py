@@ -1,8 +1,10 @@
+from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from lms.course_annoucement import AnnouncementForm, AnnouncementEditForm
-from lms.models import Admin, Course, CourseAnnouncement
+from lms.models import Admin, Course, CourseAnnouncement, EnrolledCourse
+from lms.utils import add_notification
 
 def announcement_add(request, id):
     context = {}
@@ -23,6 +25,13 @@ def announcement_add(request, id):
 
             new_announcement = CourseAnnouncement(course=course_info, owner=admin_info, title=title, content=content)
             new_announcement.save()
+
+            # Get all students from this course
+            enrolled_courses = EnrolledCourse.objects.filter(course=course_info)
+            students = [enrollment.user for enrollment in enrolled_courses]
+            
+            for student in students:
+                add_notification(student, title, f"New Announcement - {course_info.course_name}", reverse('announcement_view', args=[course_info.course_id, new_announcement.id]))
 
             return redirect(reverse('course', args=[id]))
     else:
@@ -115,17 +124,15 @@ def announcement_view(request, id, announcement_id):
     # Get enrolled course corresponding course id, then get course details
     course_info = get_object_or_404(Course, pk=id)
     announcement_info = get_object_or_404(CourseAnnouncement,pk=announcement_id)
+
+    if announcement_info.deleted_at is not None:
+        raise Http404("Announcement does not exist.")
     
     context['course_info'] = course_info
     context['announcement_info'] = announcement_info
 
-    print(request.method)
     if request.method == 'POST':
-
         return redirect(reverse('course', args=[id]))
-    
-    # Debugging purpose
-    print(context)
 
     return render(request, 'announcement_view.html', context)
     

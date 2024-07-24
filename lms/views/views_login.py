@@ -5,6 +5,8 @@ from allauth.socialaccount.models import SocialAccount
 from lms.models import Admin, CourseAdmin, EnrolledCourse, ChatRoom, Event
 from lms.models import Admin, CourseAdmin, EnrolledCourse
 from django.utils.timezone import now
+from django.utils import timezone
+from django.db.models import Count
 
 def login(request):
     session_data = request.session
@@ -31,8 +33,7 @@ def student_dashboard(request):
     context = {}
     
     # Get avatar
-    social_account = SocialAccount.objects.filter(
-        user=user, provider='microsoft').first()
+    social_account = SocialAccount.objects.filter(user=user, provider='microsoft').first()
     if social_account:
         extra_data = social_account.extra_data
         avatar_url = extra_data.get('photo', {}).get('url')
@@ -55,22 +56,25 @@ def student_dashboard(request):
 
     # Get enrolled course if student, else get assigned course (CourseAdmin)
     if (not request.is_admin):
-        my_courses = EnrolledCourse.objects.filter(
-            user_id=uid).select_related('course')
-        context['my_courses'] = my_courses
+        my_courses = EnrolledCourse.objects.filter(user_id=uid).select_related('course')
     else:
         admin_info = Admin.objects.get(user_id=uid)
-        my_courses = CourseAdmin.objects.filter(
-            admin_id=admin_info.admin_id).select_related('course')
-        context['my_courses'] = my_courses
-    print(context)
+        my_courses = CourseAdmin.objects.filter(admin_id=admin_info.admin_id).select_related('course')
+    
+    ongoing_courses = []
+    previous_courses = []
 
-    # Get the upcoming events for the logged-in user
+    for enrolled_course in my_courses:
+        course = enrolled_course.course
+        if course.start_date <= timezone.now().date() <= course.end_date:
+            ongoing_courses.append(enrolled_course)
+        else:
+            previous_courses.append(enrolled_course)
+    
     upcoming_events = Event.objects.filter(user=request.user, end_date__gte=current_date).order_by('end_date')[:5]
-
-    context = {
-        'my_courses': my_courses,
-        'upcoming_events': upcoming_events
-    }
-
+    
+    context['ongoing_courses'] = ongoing_courses
+    context['previous_courses'] = previous_courses
+    context['upcoming_events'] = upcoming_events
+    
     return render(request, 'dashboard.html', context)

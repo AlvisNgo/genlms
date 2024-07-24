@@ -1,6 +1,6 @@
 # lms/urls.py
 from django.urls import path
-from .views import views_login, views_announcement, views_content,views_course, views_discussion, views_profile, api_generative, views_calender, views_analytics, views_assignment
+from .views import views_login, views_announcement, views_content, views_course, views_discussion, views_notification, views_profile, api_generative, views_calender, views_course_admin, views_analytics, views_assignment
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -58,9 +58,17 @@ urlpatterns = [
      path("student/course/<int:id>/content_delete/<int:content_id>", views_content.content_delete, name="content_delete"), 
      path("media/<str:content_name>/", views_content.content_download, name="content_download"), 
 
-     # Generative
+     # Generative AI API
      path("api/generative", api_generative.generate, name="generative"),
      path("api/generate_tldr", api_generative.generate_tldr, name="generative"),
+
+     # Course Admin
+     path("student/course/<int:id>/admin/student_list", views_course_admin.student_list, name="student_list"),
+     path("student/course/<int:id>/admin/admin_list", views_course_admin.admin_list, name="admin_list"),
+
+     # Notifications
+     path("api/get_notification", views_notification.get_unread, name="api_get_notification"),
+     path("events", views_notification.view_all_events, name="events"),
 
      # Analytics
      path("analytics/content_seen/<int:content_id>", views_analytics.mark_as_seen, name="mark_as_seen"),

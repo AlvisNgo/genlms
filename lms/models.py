@@ -25,6 +25,8 @@ class Course(models.Model):
     course_id = models.AutoField(primary_key=True)
     course_name = models.CharField(max_length=255)
     description = models.TextField()
+    start_date = models.DateField()
+    end_date = models.DateField()
 
     def __str__(self):
         return self.course_name
@@ -136,6 +138,17 @@ class CourseContent(models.Model):
     
     def __str__(self):
         return f"Added by {self.owner.user.username} in {self.course}"
+
+class Notification(models.Model):
+    to = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    created_at = models.DateTimeField(default=timezone.now)
+    read = models.BooleanField(default=False)
+    link = models.URLField(blank=True)
+
+    def __str__(self):
+        return f"{self.title} - {self.description}"
     
 class ChatRoom(models.Model):
 

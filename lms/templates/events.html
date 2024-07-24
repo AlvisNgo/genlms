@@ -1,0 +1,76 @@
+{% extends "base-student.html" %}
+{% block title %}Notifications{% endblock %}
+{% block content-wrapper %}
+{% load static %}
+
+<!-- Header -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Notifications</h1>
+            </div>
+    
+            <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'dashboard' %}">Dashboard</a>
+                </li>
+                <li class="breadcrumb-item active">Notifications</li>
+            </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Latest Events</h3>
+                    </div>
+                    <!-- /.card-header -->
+
+                    <div class="card-body">
+                        <ul>
+                            {% for event in page_obj %}
+                            <li>[{{event.created_at}}] <a href="{{event.link}}">{{event.title}}</a></li>
+                            {% endfor %}
+
+                            {% if not page_obj.object_list %}
+                            <p>No events. Hooray!</p>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    <!-- /.card-body -->
+                    
+                    <div class="card-footer">
+                        <span class="step-links">
+                            {% if page_obj.has_previous %}
+                                <a href="?page=1">&laquo; first</a>
+                                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                            {% endif %}
+                    
+                            <span class="current">
+                                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                            </span>
+                    
+                            {% if page_obj.has_next %}
+                                <a href="?page={{ page_obj.next_page_number }}">next</a>
+                                <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    const csrfToken = "{{ csrf_token }}";
+</script>
+
+{% endblock %}

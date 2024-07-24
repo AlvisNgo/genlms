@@ -1,26 +1,32 @@
 [
-	{
-		"model": "lms.Course",
-		"pk": 1,
-		"fields": {
-			"course_name": "Intro to Computing",
-			"description": "Learn C++."
-		}
-	},
-	{
-		"model": "lms.Course",
-		"pk": 2,
-		"fields": {
-			"course_name": "Math 1",
-			"description": "Learn simple Math."
-		}
-	},
-	{
-		"model": "lms.Course",
-		"pk": 3,
-		"fields": {
-			"course_name": "Object-Oriented Programming",
-			"description": "Learn Java."
-		}
-	}
+    {
+        "model": "lms.Course",
+        "pk": 1,
+        "fields": {
+            "course_name": "Intro to Computing",
+            "description": "Learn C++.",
+            "start_date": "2024-01-01",
+            "end_date": "2024-06-01"
+        }
+    },
+    {
+        "model": "lms.Course",
+        "pk": 2,
+        "fields": {
+            "course_name": "Math 1",
+            "description": "Learn simple Math.",
+            "start_date": "2024-02-01",
+            "end_date": "2024-12-01"
+        }
+    },
+    {
+        "model": "lms.Course",
+        "pk": 3,
+        "fields": {
+            "course_name": "Object-Oriented Programming",
+            "description": "Learn Java.",
+            "start_date": "2024-03-01",
+            "end_date": "2024-12-01"
+        }
+    }
 ]
