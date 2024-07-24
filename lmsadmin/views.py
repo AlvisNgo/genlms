@@ -8,7 +8,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.urls import reverse
 from .forms import CSVUploadForm
-from lms.models import Admin, Course
+from lms.models import Admin, Course, CourseAdmin, EnrolledCourse
 
 def index(request):
 	# Check if user is superadmin
@@ -25,6 +25,7 @@ def index(request):
 		"total_course_count": total_course_count
 	})
 
+# Add new students
 def add_users(request):
 	# Check if user is superadmin
 	if not request.user.is_superuser:
@@ -114,3 +115,15 @@ def import_valid_rows(request):
 		return redirect('admin_add_users')
 	else:
 		return redirect('admin_add_users')
+
+# View all courses
+def course_list(request):
+    courses = Course.objects.all()
+    course_data = []
+    
+    for course in courses:
+        num_enrolled_users = EnrolledCourse.objects.filter(course=course).count()
+        num_course_admins = CourseAdmin.objects.filter(course=course).count()
+        course_data.append((course, num_enrolled_users, num_course_admins))
+    
+    return render(request, 'admin_course_list.html', {'course_data': course_data})
