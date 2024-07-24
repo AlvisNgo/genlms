@@ -9,3 +9,5 @@ django-markdownify==0.9.5
 markdown==3.6
 daphne==4.1.2
 channels==4.1.0
+azure-storage-blob==12.21.0
+django-storages==1.14.4

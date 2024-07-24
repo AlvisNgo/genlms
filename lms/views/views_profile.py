@@ -1,10 +1,12 @@
 from django.shortcuts import redirect, render
 from lms.forms import ProfileForm
 from lms.models import Profile
+from lms.utils import generate_sas_url
 
 def profile_view(request):
     user = request.user
     profile, created = Profile.objects.get_or_create(user=user)
+    profile.profile_picture.sas_url = generate_sas_url(profile.profile_picture.name)
 
     if request.method == 'POST':
         form = ProfileForm(request.POST, request.FILES, instance=profile)
