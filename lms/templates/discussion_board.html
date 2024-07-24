@@ -88,6 +88,12 @@
                                     </td>
                                     {%if thread.user_id == request.user.id %}
                                     <td>
+                                        <button type="button" class="btn btn-link" onclick="window.location.href='{% url 'thread_edit' thread.id %}'">
+                                            <i class="fas fa-pen"></i> Edit
+                                        </button>
+                                        <button type="button" class="btn btn-link" onclick="window.location.href='{% url 'thread_delete' thread.id %}'">
+                                            <i class="fas fa-trash-alt"></i> Delete
+                                        </button>
                                         <a href="{% url 'thread_edit' thread.id %}" >Edit</a>
                                         <a href="{% url 'thread_delete' thread.id %}" >Delete</a>
                                     </td>
