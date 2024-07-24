@@ -125,7 +125,7 @@ class CourseContent(models.Model):
     owner = models.ForeignKey(Admin, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     description = models.TextField()
-    content = models.FileField(null=True, blank=True)
+    content = models.FileField(upload_to='content/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     deleted_at = models.DateTimeField(null=True, blank=True, default=None)

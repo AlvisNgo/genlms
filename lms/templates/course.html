@@ -108,9 +108,9 @@
                   <div id="collapse-{{ forloop.counter }}" class="collapse" aria-labelledby="heading-{{ forloop.counter }}" data-parent="#accordion">
                     <div class="card-body">
                     {% if content.content%}
-                      <a href="{% url 'content_download' content.content %}" class="btn btn-outline-primary float-center">
+                      <a href="{{ content.content.sas_url }}" target="_blank" class="btn btn-outline-primary float-center">
                         <h3>
-                          {{ content.content }}
+                          {{ content.content.name }}
                         </h3>                        
                       </a>
                       {% else %}

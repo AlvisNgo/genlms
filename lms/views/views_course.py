@@ -2,6 +2,7 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404, render
 from django.db.models import Count
 from lms.models import Assignment, Course, CourseAnnouncement, EnrolledCourse, CourseAdmin, Admin, CourseContent
+from lms.utils import generate_sas_url
 
 def student_course_info(request, id):
     # Check if they have access to this course
@@ -24,6 +25,12 @@ def student_course_info(request, id):
     total_seen = CourseContent.objects.filter(course=course_info).annotate(seen_count=Count('is_seen'))
     total_seen_announce = CourseAnnouncement.objects.filter(course=course_info).annotate(seen_count=Count('is_seen'))
 
+    for content in courseContent_info:
+        if content.content:
+            content.content.sas_url = generate_sas_url(content.content.name)
+
+    print(courseContent_info[0].content.sas_url)
+
     context = {
         'course_info': course_info,
         'assignment_info': assignment_info,
@@ -34,6 +41,5 @@ def student_course_info(request, id):
         'total_seen': total_seen,
         'total_seen_announce':total_seen_announce,
     }
-    
-    print(context)
+
     return render(request, 'course.html', context)
