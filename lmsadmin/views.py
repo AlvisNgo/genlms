@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.urls import reverse
 from .forms import CSVUploadForm
 from lms.models import Admin, Course, CourseAdmin, EnrolledCourse
+from django.core.paginator import Paginator
 
 def index(request):
 	# Check if user is superadmin
@@ -213,3 +214,19 @@ def remove_student(request, course_id, user_id):
         messages.error(request, 'Enrollment not found.')
 
     return redirect('admin_enrolled_students', course_id=course_id)
+
+def list_users(request):
+    sort_by = request.GET.get('sort', 'id')  # Default sorting by ID
+    if sort_by not in ['id', 'first_name', 'email']:
+        sort_by = 'id'  # Fallback to default sorting if invalid
+
+    users_list = User.objects.filter(is_superuser=False).order_by(sort_by)  # Exclude superusers and sort
+
+    paginator = Paginator(users_list, 10)  # Show 10 users per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'admin_list_users.html', {
+        'page_obj': page_obj,
+        'sort_by': sort_by  # Pass the current sort parameter to the template
+    })
