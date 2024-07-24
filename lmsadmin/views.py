@@ -182,7 +182,7 @@ def add_students(request, course_id):
             messages.error(request, 'No valid entries found.')
             return redirect('admin_add_student_to_course', course_id=course_id)
     
-    return render(request, 'upload_csv.html', {'course': course})
+    return render(request, 'admin_course_add_students.html', {'course': course})
 
 def confirm_add_students(request):
     course_id = request.session.get('course_id')
@@ -200,3 +200,16 @@ def confirm_add_students(request):
     return render(request, 'confirm_add_students.html', {
         'valid_entries': valid_entries
     })
+
+def remove_student(request, course_id, user_id):
+    course = get_object_or_404(Course, pk=course_id)
+    user = get_object_or_404(User, pk=user_id)
+    
+    try:
+        enrollment = EnrolledCourse.objects.get(course=course, user=user)
+        enrollment.delete()
+        messages.success(request, f'Student {user.email} removed successfully.')
+    except EnrolledCourse.DoesNotExist:
+        messages.error(request, 'Enrollment not found.')
+
+    return redirect('admin_enrolled_students', course_id=course_id)

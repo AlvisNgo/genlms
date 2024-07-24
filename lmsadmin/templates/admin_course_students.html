@@ -35,6 +35,7 @@
                                     <th>ID</th>
                                     <th>Name</th>
                                     <th>Email</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -43,10 +44,13 @@
                                     <td>{{ enrollment.user.id }}</td>
                                     <td>{{ enrollment.user.get_full_name }}</td>
                                     <td>{{ enrollment.user.email }}</td>
+                                    <td>
+                                        <a href="{% url 'remove_student' course.course_id enrollment.user.id %}" class="btn btn-danger btn-sm">Remove</a>
+                                    </td>
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                    <td colspan="3" class="text-center">No students enrolled</td>
+                                    <td colspan="4" class="text-center">No students enrolled</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
