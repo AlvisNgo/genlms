@@ -50,7 +50,7 @@ class ProfileForm(forms.ModelForm):
 
     class Meta:
         model = Profile
-        fields = ['first_name', 'last_name', 'email', 'profile_picture', 'description']
+        fields = ['first_name', 'last_name', 'email', 'profile_picture', 'description', 'phone']
 
     def __init__(self, *args, **kwargs):
         super(ProfileForm, self).__init__(*args, **kwargs)
