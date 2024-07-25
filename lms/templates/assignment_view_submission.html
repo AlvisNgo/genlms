@@ -50,6 +50,7 @@
                                             <th>Student</th>
                                             <th>Submission</th>
                                             <th>Uploaded At</th>
+                                            <th>Grade</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -64,10 +65,23 @@
                                                     {% endif %}
                                                 </td>
                                                 <td>{{ submission.uploaded_at }}</td>
+                                                <td>
+                                                    <form id="gradeForm" action="{% url 'update_grade' submission.id %}" method="post">
+                                                        {% csrf_token %}
+                                                        <div class="form-group">
+                                                            <select name="grade" class="form-control" required onchange="document.getElementById('gradeForm').submit();">
+                                                                <option value="" disabled selected>Select Grade</option>
+                                                                {% for i in grades %}
+                                                                    <option value="{{ i }}" {% if submission.grade == i %}selected{% endif %}>{{ i }}</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                        </div>
+                                                    </form>                                                    
+                                                </td>
                                             </tr>
                                         {% empty %}
                                             <tr>
-                                                <td colspan="3">No submissions found.</td>
+                                                <td colspan="5">No submissions found.</td>
                                             </tr>
                                         {% endfor %}
                                     </tbody>

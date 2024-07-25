@@ -88,6 +88,9 @@
                                     {% for submission in previous_submissions %}
                                         <li>
                                             <a href="{{ submission.sas_url }}" target="_blank">{{ submission.file.name }}</a> - Uploaded at {{ submission.uploaded_at }}
+                                            {% if submission.grade %}
+                                            <strong>(Grade: {{ submission.grade }} / 100)</strong>
+                                            {% endif %}
                                         </li>
                                     {% empty %}
                                         <li>No previous submissions.</li>

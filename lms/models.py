@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -205,8 +206,16 @@ class Assignment(models.Model):
 class AssignmentSubmission(models.Model):
     assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE)
     student = models.ForeignKey(User, on_delete=models.CASCADE)
-    file = models.FileField(upload_to='assignments/', blank=True, null=True)
+    file = models.FileField(upload_to='assignments/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
+    grade = models.IntegerField(
+        validators=[
+            MinValueValidator(0),
+            MaxValueValidator(100)
+        ],
+        blank=True,
+        null=True
+    )
 
     def __str__(self):
         return f"{self.course.course_name} - {self.student.username} - {self.uploaded_at}"
