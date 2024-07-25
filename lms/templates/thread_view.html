@@ -40,7 +40,7 @@
                             <span><span id="thread-likes">{{ thread.total_likes }}</span> likes</span>
                             <button class="btn btn-link like-button" onclick="likeThread({{ thread.id }})">
                                 <i class="fas fa-thumbs-up"></i> Like
-                            </button>
+                            </button>   
                         </div>
                     </div>
                 </div>
@@ -68,6 +68,14 @@
                                                     <button class="btn btn-link reply-button" onclick="replyPost({{ post.id }})">
                                                         <i class="fas fa-reply"></i> Reply
                                                     </button>
+                                                    {%if thread.user_id == request.user.id %}
+                                                    <button type="button" class="btn btn-link" onclick="window.location.href='{% url 'post_edit' post.id %}'">
+                                                        <i class="fas fa-pen"></i> Edit
+                                                    </button>
+                                                    <button type="button" class="btn btn-link" onclick="window.location.href='{% url 'post_delete' post.id %}'">
+                                                        <i class="fas fa-trash-alt"></i> Delete
+                                                    </button>
+                                                    {% endif %}
                                                 </div>
                                                 {% include 'replies.html' with post=post %}
                                             </div>
@@ -82,7 +90,7 @@
                 <div class="card mt-4">
                     <div class="card-body">
                         <h3 class="">Add a new post</h3>
-                        <form method="post" action="{% url 'create_post' thread.id %}">
+                        <form method="post" action="{% url 'post_create' thread.id %}">
                             {% csrf_token %}
                             <div class="form-group">
                                 <label for="content">Content</label>
@@ -131,7 +139,7 @@ function reorderPosts() {
 }
 
 function replyPost(postId) {
-    window.location.href = "{% url 'reply_post' 0 %}".replace('0', postId);
+    window.location.href = "{% url 'post_reply' 0 %}".replace('0', postId);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
