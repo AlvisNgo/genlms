@@ -52,13 +52,6 @@ def assignment_view(request, course_id, assignment_id):
         if not EnrolledCourse.objects.filter(user_id=request.user.id, course_id=course_id).exists():
             raise Http404("Course does not exist")
 
-
-    # Get previous submissions for the current user and assignment
-    previous_submissions = AssignmentSubmission.objects.filter(assignment=assignment_info, student=request.user).order_by('-uploaded_at')
-    for submission in previous_submissions:
-        if submission.file:
-            submission.sas_url = generate_sas_url(submission.file.name)
-
     # Handle form submission
     if request.method == 'POST':
         form = AssignmentSubmissionForm(request.POST, request.FILES)
@@ -69,6 +62,12 @@ def assignment_view(request, course_id, assignment_id):
             submission.save()
     else:
         form = AssignmentSubmissionForm()
+    
+    # Get previous submissions for the current user and assignment
+    previous_submissions = AssignmentSubmission.objects.filter(assignment=assignment_info, student=request.user).order_by('-uploaded_at')
+    for submission in previous_submissions:
+        if submission.file:
+            submission.sas_url = generate_sas_url(submission.file.name)
 
     context['course_info'] = course_info
     context['assignment_info'] = assignment_info
