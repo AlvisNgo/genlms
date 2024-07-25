@@ -16,10 +16,10 @@
                     <i class="fas fa-reply"></i> Reply
                 </button>
                 {%if thread.user_id == request.user.id %}
-                <button type="button" class="btn btn-link" onclick="window.location.href='{% url 'post_edit' post.id %}'">
+                <button type="button" class="btn btn-link" onclick="window.location.href='{% url 'post_edit' reply.id %}'">
                     <i class="fas fa-pen"></i> Edit
                 </button>
-                <button type="button" class="btn btn-link" onclick="window.location.href='{% url 'post_delete' post.id %}'">
+                <button type="button" class="btn btn-link" onclick="window.location.href='{% url 'post_delete' reply.id %}'">
                     <i class="fas fa-trash-alt"></i> Delete
                 </button>
                 {% endif %}
