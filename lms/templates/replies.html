@@ -15,7 +15,7 @@
                 <button class="btn btn-link reply-button" onclick="replyPost({{ reply.id }})">
                     <i class="fas fa-reply"></i> Reply
                 </button>
-                {%if thread.user_id == request.user.id %}
+                {%if post.user_id == request.user.id %}
                 <button type="button" class="btn btn-link" onclick="window.location.href='{% url 'post_edit' reply.id %}'">
                     <i class="fas fa-pen"></i> Edit
                 </button>
