@@ -29,7 +29,6 @@ def content_add(request, id):
             new_content.save()
             return JsonResponse({"success": False})
     else:
-        print("new form")
         form = ContentAddForm()
         context['form'] = form
     
@@ -74,7 +73,6 @@ def content_edit(request, id, content_id):
             content_info.title = title
             content_info.description = description
             content_info.save()
-            print("testststs")
             return JsonResponse({"success": False})
             # return redirect(reverse('course', args=[id]))
     else:

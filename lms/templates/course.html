@@ -58,10 +58,10 @@
                   {{ announce.content|markdownify }}
 
                   </br>
-                  <button class="btn btn-secondary" onClick="generateTLDR('announce', {{ announce.id }});">TLDR</button>
+                  <button class="btn btn-outline-secondary" onClick="generateTLDR('announce', {{ announce.id }});">TLDR</button>
                   {% if is_admin %}
-                  <a href="{% url 'announcement_edit' course_info.course_id announce.id %}" class="btn btn-primary">Edit</a>
-                  <a href="{% url 'announcement_delete' course_info.course_id announce.id %}" class="btn btn-danger">Delete</a>
+                  <a href="{% url 'announcement_edit' course_info.course_id announce.id %}" class="btn btn-outline-primary">Edit</a>
+                  <a href="{% url 'announcement_delete' course_info.course_id announce.id %}" class="btn btn-outline-danger">Delete</a>
                   {% endif %}
                   <hr class="solid" color="9C9C9C">
                 </div>
@@ -105,7 +105,7 @@
                         </form>
                       </div>
                     {% endif %}
-                    <p class="mt-0 mb-0 text-justify">{{ content.description }}</p>
+                    <p class="mt-0 mb-0 text-justify">{{ content.description|markdownify }}</p>
                   </div>
               
                   <div id="collapse-{{ forloop.counter }}" class="collapse" aria-labelledby="heading-{{ forloop.counter }}" data-parent="#accordion">
