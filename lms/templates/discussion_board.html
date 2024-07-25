@@ -86,18 +86,16 @@
                                             No posts
                                         {% endif %}
                                     </td>
+                                    <td class="text-center" style="width:min-content;">
                                     {%if thread.user_id == request.user.id %}
-                                    <td>
                                         <button type="button" class="btn btn-link" onclick="window.location.href='{% url 'thread_edit' thread.id %}'">
-                                            <i class="fas fa-pen"></i> Edit
+                                            <i class="fas fa-pen"></i>
                                         </button>
                                         <button type="button" class="btn btn-link" onclick="window.location.href='{% url 'thread_delete' thread.id %}'">
-                                            <i class="fas fa-trash-alt"></i> Delete
+                                            <i class="fas fa-trash-alt"></i>
                                         </button>
-                                        <a href="{% url 'thread_edit' thread.id %}" >Edit</a>
-                                        <a href="{% url 'thread_delete' thread.id %}" >Delete</a>
+                                        {% endif %}
                                     </td>
-                                    {% endif %}
                                 </tr>
                                 {% endfor %}
                             </tbody>
