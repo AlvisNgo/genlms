@@ -118,15 +118,17 @@ def announcement_delete(request, id, announcement_id):
 def announcement_view(request, id, announcement_id):
     context = {}
 
-    # Check if user is admin - only admin can add new announcement
-    #admin_info = get_object_or_404(Admin, user_id=request.user.id) # TODO: Change to 401 status
-
     # Get enrolled course corresponding course id, then get course details
     course_info = get_object_or_404(Course, pk=id)
     announcement_info = get_object_or_404(CourseAnnouncement,pk=announcement_id)
 
     if announcement_info.deleted_at is not None:
         raise Http404("Announcement does not exist.")
+    
+    # Check if user is admin - only student will add new analytics count
+    if not request.is_admin:
+        if not request.user in announcement_info.is_seen.all():
+            announcement_info.is_seen.add(request.user)
     
     context['course_info'] = course_info
     context['announcement_info'] = announcement_info

@@ -50,7 +50,7 @@
             <hr class="solid" color="9C9C9C">
             {% if courseAnnouncement_info%}
               {% for announce in courseAnnouncement_info%}
-                <a href="{%url 'announcement_view' course_info.course_id announce.id %}" onclick="markAsSeen_announce({{ announce.id }})">
+                <a href="{%url 'announcement_view' course_info.course_id announce.id %}">
                   <h3>{{ announce.title }}</h3>
                 </a>
                 <p><em>Last updated on: {{ announce.updated_at }}</em></p>
