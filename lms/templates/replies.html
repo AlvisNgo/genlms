@@ -2,7 +2,6 @@
 {% for reply in post.post_set.all %}
     {% if reply.deleted_at == null %}
     <div class="media mt-3 ml-4">
-        <img src="path/to/user-pic.png" alt="User Picture" class="rounded-circle mr-3" style="height: 30px;">
         <div class="media-body">
             <h6 class="mt-0">{{ reply.user.username }}</h6>
             <p>{{ reply.content|linebreaks }}</p>
@@ -15,7 +14,7 @@
                 <button class="btn btn-link reply-button" onclick="replyPost({{ reply.id }})">
                     <i class="fas fa-reply"></i> Reply
                 </button>
-                {%if post.user_id == request.user.id %}
+                {%if reply.user_id == request.user.id %}
                 <button type="button" class="btn btn-link" onclick="window.location.href='{% url 'post_edit' reply.id %}'">
                     <i class="fas fa-pen"></i> Edit
                 </button>
