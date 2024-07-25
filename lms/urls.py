@@ -51,6 +51,7 @@ urlpatterns = [
      path("student/course/<int:id>/assignment_add", views_assignment.assignment_add, name="assignment_add"),
      path("student/course/<int:course_id>/assignment_view/<int:assignment_id>", views_assignment.assignment_view, name="assignment_view"),
      path("student/course/<int:course_id>/assignment_view_submission/<int:assignment_id>", views_assignment.view_submission, name="view_submission"),
+     path('api/assignment/<int:submission_id>/update_grade/', views_assignment.update_grade, name='update_grade'),
      
      # Content
      path("student/course/<int:id>/content_add", views_content.content_add, name="content_add"),
